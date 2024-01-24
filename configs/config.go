@@ -1,6 +1,9 @@
 package configs
 
-import "github.com/spf13/viper"
+import (
+	"github.com/go-chi/jwtauth"
+	"github.com/spf13/viper"
+)
 
 type conf struct {
 	DbDriver      string `mapstructure:"DB_DRIVER"`
@@ -12,7 +15,7 @@ type conf struct {
 	WebServerPort string `mapstructure:"WEB_SERVER_PORT"`
 	JwtSecret     string `mapstructure:"JWT_SECRET"`
 	JwtExpiresIn  int    `mapstructure:"JWT_EXPIRES_IN"`
-	//TokenAuth
+	TokenAuth     *jwtauth.JWTAuth
 }
 
 var cfg conf
@@ -38,4 +41,6 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+
+	cfg.TokenAuth = jwtauth.New("HS256", []byte(cfg.JwtSecret), nil)
 }
