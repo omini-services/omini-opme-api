@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewUser(t *testing.T) {
-	user := NewUser("John Doe", "j@j.com", "123456")
+	user, _ := NewUser("John Doe", "j@j.com", "123456")
 
 	assert.NotNil(t, user)
 	assert.NotEmpty(t, user.ID)

@@ -10,6 +10,7 @@ require (
 	github.com/google/uuid v1.4.0
 	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.8.4
+	golang.org/x/crypto v0.16.0
 	gorm.io/driver/sqlite v1.5.4
 	gorm.io/gorm v1.25.5
 )
