@@ -9,9 +9,11 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/jwtauth"
 	"github.com/omini-services/omini-opme-be/configs"
+	_ "github.com/omini-services/omini-opme-be/docs"
 	"github.com/omini-services/omini-opme-be/internal/entity"
 	"github.com/omini-services/omini-opme-be/internal/infra/database"
 	"github.com/omini-services/omini-opme-be/internal/infra/webserver/handlers"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -28,7 +30,7 @@ import (
 // @license.name  Apache 2.0
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host      localhost:8080
+// @host      localhost:8000
 // @BasePath  /api/v1
 
 // @securityDefinitions.apiKey  ApiKeyAuth
@@ -71,6 +73,8 @@ func main() {
 
 	r.Post("/users", userHandler.CreateUser)
 	r.Post("/users/generate-token", userHandler.GetJWT)
+
+	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8000/docs/doc.json")))
 
 	http.ListenAndServe(":8000", r)
 }
