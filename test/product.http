@@ -7,5 +7,6 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8000/products/asdasd HTTP/1.1
+GET http://localhost:8000/products HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYxNDcyMDJ9.F01HX7EGvaRbxbBrNTlNcHmK4w_kG9SSmV-b6_85cug
 Content-Type: application/json

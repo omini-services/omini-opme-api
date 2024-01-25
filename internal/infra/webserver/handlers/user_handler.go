@@ -49,7 +49,7 @@ func (h *UserHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 
 	_, tokenString, _ := h.Jwt.Encode(map[string]interface{}{
 		"sub": u.ID,
-		"exp": time.Now().UTC().Add(time.Second + time.Duration(h.JwtExpiresIn)).Unix(),
+		"exp": time.Now().Add(time.Second * time.Duration(h.JwtExpiresIn)).Unix(),
 	})
 
 	accessToken := struct {
