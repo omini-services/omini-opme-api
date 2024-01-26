@@ -6,16 +6,18 @@ import (
 )
 
 type conf struct {
-	DbDriver      string `mapstructure:"DB_DRIVER"`
-	DbHost        string `mapstructure:"DB_HOST"`
-	DbPort        string `mapstructure:"DB_PORT"`
-	DbUser        string `mapstructure:"DB_USER"`
-	DbPassword    string `mapstructure:"DB_PASSWORD"`
-	DbName        string `mapstructure:"DB_NAME"`
-	WebServerPort string `mapstructure:"WEB_SERVER_PORT"`
-	JwtSecret     string `mapstructure:"JWT_SECRET"`
-	JwtExpiresIn  int    `mapstructure:"JWT_EXPIRES_IN"`
-	TokenAuth     *jwtauth.JWTAuth
+	DbDriver           string `mapstructure:"DB_DRIVER"`
+	DbHost             string `mapstructure:"DB_HOST"`
+	DbPort             string `mapstructure:"DB_PORT"`
+	DbUser             string `mapstructure:"DB_USER"`
+	DbPassword         string `mapstructure:"DB_PASSWORD"`
+	DbName             string `mapstructure:"DB_NAME"`
+	WebServerPort      string `mapstructure:"WEB_SERVER_PORT"`
+	JwtSecret          string `mapstructure:"JWT_SECRET"`
+	JwtExpiresIn       int    `mapstructure:"JWT_EXPIRES_IN"`
+	AwsAccessKeyId     string `mapstructure:"AWS_ACCESS_KEY_ID"`
+	AwsSecretAccessKey string `mapstructure:"AWS_SECRET_ACCESS_KEY"`
+	TokenAuth          *jwtauth.JWTAuth
 }
 
 var cfg conf
