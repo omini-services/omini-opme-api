@@ -9,12 +9,18 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
+var (
+	version string
+	build   string
+)
+
 func main() {
-
-	//cognitoClient.()
-
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+
+	log.Printf("Version=%s", version)
+	log.Printf("Build=%s", build)
+	//cognitoClient.()
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("welcome test"))
