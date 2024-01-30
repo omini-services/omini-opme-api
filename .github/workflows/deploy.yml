@@ -24,5 +24,5 @@ jobs:
       - name: Build and push the image
         run: |
           docker login --username daniloak --password ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }} ghcr.io
-          docker build . --tag ghcr.io/daniloak/opme-be:latest
-          docker push ghcr.io/daniloak/opme-be:latest
+          docker build . --tag ghcr.io/omini-services/opme-be:latest
+          docker push ghcr.io/omini-services/opme-be:latest
