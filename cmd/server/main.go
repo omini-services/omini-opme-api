@@ -26,7 +26,7 @@ func main() {
 		w.Write([]byte("welcome test"))
 	})
 
-	log.Printf("Listening 👂 on %s 🚪", "8000")
+	log.Printf("Listening 👂 on %s 🚪", "80")
 	fmt.Println("To close connection CTRL+C 🔌")
-	http.ListenAndServe(":8000", r)
+	http.ListenAndServe(":80", r)
 }
