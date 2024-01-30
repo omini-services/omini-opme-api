@@ -5,7 +5,7 @@ WORKDIR /app
 COPY . .
 
 #CGO_ENABLED=0
-RUN GOOS=linux CGO_ENABLED=0 go build -o server ./cmd/server 
+RUN GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o server ./cmd/server 
 
 FROM scratch
 

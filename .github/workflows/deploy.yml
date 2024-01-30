@@ -1,0 +1,28 @@
+run-name: Release ${{ inputs.version }} version 💣
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version name'
+        required: true
+        default: 'minor'
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+  
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest  
+    steps:  
+      - name: Checkout
+        uses: actions/checkout@v3   
+        
+      - name: Build and push the image
+        run: |
+          docker login --username daniloak --password ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }} ghcr.io
+          docker build . --tag ghcr.io/daniloak/opme-be:latest
+          docker push ghcr.io/daniloak/opme-be:latest
