@@ -21,8 +21,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3   
         
-      - name: Build and push the image
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      
+      - name: 'Build Inventory Image'
         run: |
-          docker login --username daniloak --password ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }} ghcr.io
-          docker build . --tag ghcr.io/omini-services/opme-be:latest
-          docker push ghcr.io/omini-services/opme-be:latest
+          docker build . --tag ghcr.io/omini-services/store:latest
+          docker push ghcr.io/omini-services/store:latest
