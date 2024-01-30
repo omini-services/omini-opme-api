@@ -14,7 +14,7 @@ FROM scratch
 WORKDIR /app
 COPY --from=builder /app/server .
 
-EXPOSE 8000
+EXPOSE 80
 
 ENTRYPOINT ["./server"]
 
