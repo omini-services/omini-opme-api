@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/omini-services/omini-opme-be/configs"
+	"github.com/omini-services/omini-opme-be/internal/infra/web/webserver"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var (
@@ -15,18 +17,31 @@ var (
 )
 
 func main() {
-	r := chi.NewRouter()
-	r.Use(middleware.Logger)
+	configs, err := configs.LoadConfig(".")
+	if err != nil {
+		panic(err)
+	}
 
-	log.Printf("Version=%s", version)
-	log.Printf("Build=%s", build)
-	//cognitoClient.()
+	dsn := fmt.Sprintf("%s://%s:%s@%s:%s/%s?sslmode=verify-full", configs.DBDriver, configs.DBUser, configs.DBPassword, configs.DBHost, configs.DBPort, configs.DBName)
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome test"))
-	})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal("failed to connect database", err)
+	}
 
-	log.Printf("Listening 👂 on %s 🚪", "80")
-	fmt.Println("To close connection CTRL+C 🔌")
-	http.ListenAndServe(":80", r)
+	dbClient, err := db.DB()
+
+	if err != nil {
+		log.Fatal("failed to connect database", err)
+	}
+
+	defer dbClient.Close()
+
+	itemHandler := NewWebItemHandler(db)
+
+	webserver := webserver.NewWebServer(configs.WebServerPort)
+
+	webserver.AddHandler("/items", itemHandler.GetItems)
+	fmt.Println("Starting web server on port", configs.WebServerPort)
+	webserver.Start()
 }
