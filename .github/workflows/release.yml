@@ -20,13 +20,6 @@ jobs:
     steps:  
       - name: Checkout
         uses: actions/checkout@v3   
-
-      - name: Get tag
-        id: get_tag
-        run: |
-          git branch --show-current
-          git pull
-          echo "version=$(yarn version --no-git-tag-version | grep "Current version:" | awk '{ print "v"$4 }')" >> $GITHUB_OUTPUT
         
       - name: 'Login to GitHub Container Registry'
         uses: docker/login-action@v3
