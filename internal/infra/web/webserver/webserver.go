@@ -7,6 +7,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+
+	customMiddleware "github.com/omini-services/omini-opme-be/internal/infra/web/middleware"
 )
 
 type WebServer struct {
@@ -32,12 +34,13 @@ func (s *WebServer) AddHandler(path string, handler http.HandlerFunc) {
 // start the server
 func (s *WebServer) Start() {
 	s.Router.Use(middleware.Logger)
+	s.Router.Use(customMiddleware.Authenticate)
 	for path, handler := range s.Handlers {
 		s.Router.Handle(path, handler)
 	}
 
 	log.Printf("Listening 👂 on %s 🚪", s.WebServerPort)
-	fmt.Println("To close connection CTRL+C 🔌")
+	fmt.Println("To close connection CTRL+C 🔌 ")
 
 	http.ListenAndServe(s.WebServerPort, s.Router)
 }

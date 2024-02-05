@@ -27,16 +27,20 @@ func (h *WebItemHandler) GetItems(w http.ResponseWriter, r *http.Request) {
 	// 	http.Error(w, err.Error(), http.StatusBadRequest)
 	// 	return
 	// }
-
 	getItems := usecase.NewGetItemsUseCase(h.ItemRepository)
 	output, err := getItems.Execute(dto)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(output)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	w.WriteHeader(http.StatusOK)
 }
