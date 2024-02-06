@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"fmt"
 	"os"
 )
 
@@ -12,7 +13,7 @@ type conf struct {
 func LoadConfig(path string) (*conf, error) {
 	cfg := &conf{
 		DBConnectionString: os.Getenv("DB_CONNECTION_STRING"),
-		WebServerPort:      os.Getenv("WEB_SERVER_PORT"),
+		WebServerPort:      fmt.Sprintf(":%s", os.Getenv("WEB_SERVER_PORT")),
 	}
 
 	// viper.AddConfigPath(path)
