@@ -3,7 +3,7 @@ package configs
 import "github.com/spf13/viper"
 
 type conf struct {
-	DBConnectionString string `mapstructure:"DbConnectionString"`
+	DBConnectionString string `mapstructure:"ConnectionStrings__DefaultDb"`
 	WebServerPort      string `mapstructure:"WEB_SERVER_PORT"`
 }
 
