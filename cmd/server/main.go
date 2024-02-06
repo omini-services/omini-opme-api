@@ -22,7 +22,7 @@ func main() {
 		panic(err)
 	}
 
-	dsn := fmt.Sprintf("%s://%s:%s@%s:%s/%s?sslmode=verify-full", configs.DBDriver, configs.DBUser, configs.DBPassword, configs.DBHost, configs.DBPort, configs.DBName)
+	dsn := configs.DBConnectionString
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
