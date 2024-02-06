@@ -1,6 +1,8 @@
 package configs
 
-import "github.com/spf13/viper"
+import (
+	"os"
+)
 
 type conf struct {
 	DBConnectionString string `mapstructure:"DB_CONNECTION_STRING"`
@@ -8,18 +10,24 @@ type conf struct {
 }
 
 func LoadConfig(path string) (*conf, error) {
-	var cfg *conf
-	viper.AddConfigPath(path)
-	viper.SetConfigFile(".env")
-	viper.SetConfigType("env")
-	viper.AutomaticEnv()
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(err)
+	cfg := &conf{
+		DBConnectionString: os.Getenv("DB_CONNECTION_STRING"),
+		WebServerPort:      os.Getenv("WEB_SERVER_PORT"),
 	}
-	err = viper.Unmarshal(&cfg)
-	if err != nil {
-		panic(err)
-	}
-	return cfg, err
+
+	// viper.AddConfigPath(path)
+	// viper.SetConfigFile(".env")
+	// viper.SetConfigType("env")
+	// viper.AutomaticEnv()
+	// err := viper.ReadInConfig()
+	// if err != nil {
+	// 	if viper.GetString("DB_CONNECTION_STRING") == "" {
+	// 		viper.Set("DB_CONNECTION_STRING", os.Getenv("DB_CONNECTION_STRING"))
+	// 	}
+	// }
+	// err = viper.Unmarshal(&cfg)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	return cfg, nil
 }
