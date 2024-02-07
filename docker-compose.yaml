@@ -2,8 +2,9 @@ version: '3'
 
 services:
   goapp:
-    build: .
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "80:80"
-    volumes:
-      - .:/app
