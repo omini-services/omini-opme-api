@@ -10,15 +10,15 @@ import (
 	"github.com/google/wire"
 	"github.com/omini-services/omini-opme-be/internal/entity"
 	"github.com/omini-services/omini-opme-be/internal/infra/database"
-	"github.com/omini-services/omini-opme-be/internal/infra/web"
+	"github.com/omini-services/omini-opme-be/internal/infra/web/handler"
 	"gorm.io/gorm"
 )
 
 // Injectors from wire.go:
 
-func NewWebItemHandler(db *gorm.DB) *web.WebItemHandler {
+func NewWebItemHandler(db *gorm.DB) *handler.WebItemHandler {
 	itemRepository := database.NewItemRepository(db)
-	webItemHandler := web.NewWebItemHandler(itemRepository)
+	webItemHandler := handler.NewWebItemHandler(itemRepository)
 	return webItemHandler
 }
 

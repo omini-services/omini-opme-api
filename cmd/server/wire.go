@@ -7,7 +7,7 @@ import (
 	"github.com/google/wire"
 	"github.com/omini-services/omini-opme-be/internal/entity"
 	"github.com/omini-services/omini-opme-be/internal/infra/database"
-	"github.com/omini-services/omini-opme-be/internal/infra/web"
+	"github.com/omini-services/omini-opme-be/internal/infra/web/handler"
 	"gorm.io/gorm"
 )
 
@@ -16,10 +16,10 @@ var setItemRepositoryDependency = wire.NewSet(
 	wire.Bind(new(entity.ItemRepositoryInterface), new(*database.ItemRepository)),
 )
 
-func NewWebItemHandler(db *gorm.DB) *web.WebItemHandler {
+func NewWebItemHandler(db *gorm.DB) *handler.WebItemHandler {
 	wire.Build(
 		setItemRepositoryDependency,
-		web.NewWebItemHandler,
+		handler.NewWebItemHandler,
 	)
-	return &web.WebItemHandler{}
+	return &handler.WebItemHandler{}
 }

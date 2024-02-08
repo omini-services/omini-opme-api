@@ -1,13 +1,16 @@
 package usecase
 
-import "github.com/omini-services/omini-opme-be/internal/entity"
+import (
+	"github.com/brianvoe/gofakeit/v6"
+	"github.com/omini-services/omini-opme-be/internal/entity"
+)
 
 type GetItemsInputDTO struct {
 }
 
 type GetItemsOutputDTO struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID   string `json:"id" fake:"{number:1,100}"`
+	Name string `json:"name" fake:"{productname}"`
 }
 
 type GetItemsUseCase struct {
@@ -23,24 +26,31 @@ func NewGetItemsUseCase(
 }
 
 func (c *GetItemsUseCase) Execute(input GetItemsInputDTO) ([]GetItemsOutputDTO, error) {
-	items, err := c.ItemRepository.GetItems()
+	//items, err := c.ItemRepository.GetItems()
+	_, err := c.ItemRepository.GetItems()
 	if err != nil {
 		return []GetItemsOutputDTO{}, err
 	}
 
 	getItemsOutput := []GetItemsOutputDTO{}
 
-	for _, item := range items {
-		getItemOutput := itemToGetItemOutputDTO(item)
+	for i := 1; i <= 100; i++ {
+		var getItemOutput GetItemsOutputDTO
+		gofakeit.Struct(&getItemOutput)
 		getItemsOutput = append(getItemsOutput, getItemOutput)
 	}
+
+	// for _, item := range items {
+	// 	getItemOutput := itemToGetItemOutputDTO(item)
+	// 	getItemsOutput = append(getItemsOutput, getItemOutput)
+	// }
 
 	return getItemsOutput, nil
 }
 
-func itemToGetItemOutputDTO(item entity.Item) GetItemsOutputDTO {
-	return GetItemsOutputDTO{
-		ID:   item.ID,
-		Name: item.Name,
-	}
-}
+// func itemToGetItemOutputDTO(item entity.Item) GetItemsOutputDTO {
+// 	return GetItemsOutputDTO{
+// 		ID:   item.ID,
+// 		Name: item.Name,
+// 	}
+// }
