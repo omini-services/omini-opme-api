@@ -6,5 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    env_file:
+      - path: ./cmd/server/.env
     ports:
       - "80:80"
