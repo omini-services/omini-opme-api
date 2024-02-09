@@ -47,7 +47,7 @@ func Authenticate(next http.Handler) http.Handler {
 }
 
 func getJWTkeyset(ctx context.Context) (jwk.Set, error) {
-	const jwksURL = "https://login.microsoftonline.com/79e0bbd4-b85d-4ad3-a59d-23268b4c65ec/discovery/v2.0/keys"
+	const jwksURL = "https://login.microsoftonline.com/79e0bbd4-b85d-4ad3-a59d-23268b4c65ec/discovery/v2.0/keys?appid=35133114-8f8f-4094-9c95-51a22540c178"
 
 	ar := jwk.NewAutoRefresh(ctx)
 
