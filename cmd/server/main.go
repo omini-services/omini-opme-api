@@ -43,6 +43,6 @@ func main() {
 
 	webserver.AddHandler("/items", "GET", itemHandler.GetItems)
 	webserver.AddHandler("/items", "POST", itemHandler.CreateItem)
-	fmt.Println("Starting web server on port", configs.WebServerPort)
+	fmt.Println("Starting web server on sport", configs.WebServerPort)
 	webserver.Start()
 }
