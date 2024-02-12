@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/omini-services/omini-opme-be/internal/entity"
@@ -31,7 +33,26 @@ func (h *WebItemHandler) GetItems(w http.ResponseWriter, r *http.Request) {
 	getItems := usecase.NewGetItemsUseCase(h.ItemRepository)
 	output, err := getItems.Execute(dto)
 	if err != nil {
-		response.JsonFail(w, []response.Error{{Name: "Root", Message: "Could not get items"}}, http.StatusInternalServerError)
+		response.JsonFail(w, []error{errors.New("could not get items")}, http.StatusInternalServerError)
+		return
+	}
+
+	response.JsonSuccess(w, output, http.StatusOK)
+}
+
+func (h *WebItemHandler) CreateItem(w http.ResponseWriter, r *http.Request) {
+	var dto usecase.CreateItemInputDTO
+	decodeError := json.NewDecoder(r.Body).Decode(&dto)
+	if decodeError != nil {
+		http.Error(w, decodeError.Error(), http.StatusBadRequest)
+		return
+	}
+
+	createOrder := usecase.NewCreateItemUseCase(h.ItemRepository)
+	output, err := createOrder.Execute(dto)
+
+	if err != nil {
+		response.JsonFail(w, err, http.StatusBadRequest)
 		return
 	}
 

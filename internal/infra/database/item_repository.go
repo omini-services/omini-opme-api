@@ -21,3 +21,19 @@ func (r *ItemRepository) GetItems() ([]entity.Item, error) {
 	}
 	return items, nil
 }
+
+func (r *ItemRepository) GetByID(id int64) (entity.Item, error) {
+	var item entity.Item
+	err := r.Db.First(&item, "id = ?", id).Error
+	return item, err
+}
+
+func (r *ItemRepository) Create(item *entity.Item) (entity.Item, error) {
+	result := r.Db.Create(&item)
+	if result.Error != nil {
+		return entity.Item{}, result.Error
+	}
+	itemCreated := *item
+
+	return itemCreated, nil
+}

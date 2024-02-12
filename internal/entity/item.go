@@ -1,40 +1,34 @@
 package entity
 
+import (
+	"errors"
+)
+
 type Item struct {
-	ID   string
+	ID   int64
 	Name string
 }
 
-func NewItem(id string, name string) (*Item, error) {
+func NewItem(name string) (*Item, []error) {
 	item := &Item{
-		ID:   id,
 		Name: name,
 	}
-	//err := item.IsValid()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	err := item.IsValid()
+	if err != nil {
+		return nil, err
+	}
 	return item, nil
 }
 
-// func (o *Order) IsValid() error {
-// 	if o.ID == "" {
-// 		return errors.New("invalid id")
-// 	}
-// 	if o.Price <= 0 {
-// 		return errors.New("invalid price")
-// 	}
-// 	if o.Tax <= 0 {
-// 		return errors.New("invalid tax")
-// 	}
-// 	return nil
-// }
+func (i *Item) IsValid() []error {
+	validationErrors := make([]error, 0)
+	if i.Name == "" {
+		validationErrors = append(validationErrors, errors.New("invalid name"))
+	}
 
-// func (o *Order) CalculateFinalPrice() error {
-// 	o.FinalPrice = o.Price + o.Tax
-// 	err := o.IsValid()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
+	if len(validationErrors) > 0 {
+		return validationErrors
+	}
+
+	return nil
+}

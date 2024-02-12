@@ -9,8 +9,10 @@ type GetItemsInputDTO struct {
 }
 
 type GetItemsOutputDTO struct {
-	ID   string `json:"id" fake:"{number:1,100}"`
-	Name string `json:"name" fake:"{productname}"`
+	ID           string `json:"id" fake:"{number:1,100}"`
+	Name         string `json:"name" fake:"{productname}"`
+	Manufacturer string `json:"manufacturer" fake:"{company}"`
+	Group        string `json:"group" fake:"{productcategory}"`
 }
 
 type GetItemsUseCase struct {

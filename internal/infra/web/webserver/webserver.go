@@ -13,20 +13,20 @@ import (
 
 type WebServer struct {
 	Router        chi.Router
-	Handlers      map[string]http.HandlerFunc
+	Handlers      map[[2]string]http.HandlerFunc
 	WebServerPort string
 }
 
 func NewWebServer(serverPort string) *WebServer {
 	return &WebServer{
 		Router:        chi.NewRouter(),
-		Handlers:      make(map[string]http.HandlerFunc),
+		Handlers:      make(map[[2]string]http.HandlerFunc),
 		WebServerPort: serverPort,
 	}
 }
 
-func (s *WebServer) AddHandler(path string, handler http.HandlerFunc) {
-	s.Handlers[path] = handler
+func (s *WebServer) AddHandler(path string, method string, handler http.HandlerFunc) {
+	s.Handlers[[2]string{method, path}] = handler
 }
 
 // loop through the handlers and add them to the router
@@ -35,8 +35,9 @@ func (s *WebServer) AddHandler(path string, handler http.HandlerFunc) {
 func (s *WebServer) Start() {
 	s.Router.Use(middleware.Logger)
 	s.Router.Use(customMiddleware.Authenticate)
+
 	for path, handler := range s.Handlers {
-		s.Router.Handle(path, handler)
+		s.Router.Method(path[0], path[1], handler)
 	}
 
 	log.Printf("Listening 👂 on %s 🚪", s.WebServerPort)

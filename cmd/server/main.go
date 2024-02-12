@@ -41,7 +41,8 @@ func main() {
 
 	webserver := webserver.NewWebServer(configs.WebServerPort)
 
-	webserver.AddHandler("/items", itemHandler.GetItems)
+	webserver.AddHandler("/items", "GET", itemHandler.GetItems)
+	webserver.AddHandler("/items", "POST", itemHandler.CreateItem)
 	fmt.Println("Starting web server on port", configs.WebServerPort)
 	webserver.Start()
 }
