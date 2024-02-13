@@ -5,6 +5,10 @@ import (
 	"os"
 )
 
+var AuthorizedRoutes = []string{
+	"/api/health",
+}
+
 type conf struct {
 	DBConnectionString string `mapstructure:"DB_CONNECTION_STRING"`
 	WebServerPort      string `mapstructure:"WEB_SERVER_PORT"`

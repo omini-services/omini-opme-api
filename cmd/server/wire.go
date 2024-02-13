@@ -23,3 +23,10 @@ func NewWebItemHandler(db *gorm.DB) *handler.WebItemHandler {
 	)
 	return &handler.WebItemHandler{}
 }
+
+func NewApiHandler() *handler.ApiHandler {
+	wire.Build(
+		handler.NewApiHandler,
+	)
+	return &handler.ApiHandler{}
+}

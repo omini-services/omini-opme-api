@@ -9,10 +9,17 @@ import (
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/lestrrat-go/jwx/jwt"
+	"github.com/omini-services/omini-opme-be/configs"
+	"github.com/omini-services/omini-opme-be/pkg"
 )
 
 func Authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if isProtected(r.URL.Path) {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		authHeader := r.Header.Get("Authorization")
 		splitAuthHeader := strings.Split(authHeader, " ")
 		if len(splitAuthHeader) != 2 {
@@ -26,7 +33,7 @@ func Authenticate(next http.Handler) http.Handler {
 			return
 		}
 
-		token, err := jwt.Parse(
+		_, err = jwt.Parse(
 			[]byte(splitAuthHeader[1]),
 			jwt.WithKeySet(keySet),
 			jwt.WithValidate(true),
@@ -39,8 +46,6 @@ func Authenticate(next http.Handler) http.Handler {
 			http.Error(w, "", http.StatusUnauthorized)
 			return
 		}
-
-		fmt.Println(token)
 
 		next.ServeHTTP(w, r)
 	})
@@ -60,4 +65,8 @@ func getJWTkeyset(ctx context.Context) (jwk.Set, error) {
 	}
 
 	return keyset, nil
+}
+
+func isProtected(path string) bool {
+	return pkg.Contains(configs.AuthorizedRoutes, path)
 }

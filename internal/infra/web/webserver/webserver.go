@@ -11,28 +11,23 @@ import (
 	customMiddleware "github.com/omini-services/omini-opme-be/internal/infra/web/middleware"
 )
 
-const (
-	GET  = "GET"
-	POST = "POST"
-	PUT  = "PUT"
-)
-
 type WebServer struct {
-	Router        chi.Router
-	Handlers      map[[2]string]http.HandlerFunc
-	WebServerPort string
+	Router           chi.Router
+	Handlers         map[string]func(r chi.Router)
+	AuthorizedRoutes []string
+	WebServerPort    string
 }
 
 func NewWebServer(serverPort string) *WebServer {
 	return &WebServer{
 		Router:        chi.NewRouter(),
-		Handlers:      make(map[[2]string]http.HandlerFunc),
+		Handlers:      make(map[string]func(r chi.Router)),
 		WebServerPort: serverPort,
 	}
 }
 
-func (s *WebServer) AddHandler(path string, method string, handler http.HandlerFunc) {
-	s.Handlers[[2]string{method, path}] = handler
+func (s *WebServer) AddRoutes(path string, routes func(r chi.Router)) {
+	s.Handlers[path] = routes
 }
 
 // loop through the handlers and add them to the router
@@ -43,7 +38,7 @@ func (s *WebServer) Start() {
 	s.Router.Use(customMiddleware.Authenticate)
 
 	for path, handler := range s.Handlers {
-		s.Router.Method(path[0], path[1], handler)
+		s.Router.Route(path, handler)
 	}
 
 	log.Printf("Listening 👂 on %s 🚪", s.WebServerPort)

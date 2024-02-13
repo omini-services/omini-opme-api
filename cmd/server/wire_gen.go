@@ -22,6 +22,11 @@ func NewWebItemHandler(db *gorm.DB) *handler.WebItemHandler {
 	return webItemHandler
 }
 
+func NewApiHandler() *handler.ApiHandler {
+	apiHandler := handler.NewApiHandler()
+	return apiHandler
+}
+
 // wire.go:
 
 var setItemRepositoryDependency = wire.NewSet(database.NewItemRepository, wire.Bind(new(entity.ItemRepositoryInterface), new(*database.ItemRepository)))
