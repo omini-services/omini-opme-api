@@ -27,9 +27,9 @@ func NewGetItemsUseCase(
 	}
 }
 
-func (c *GetItemsUseCase) Execute(input GetItemsInputDTO) ([]GetItemsOutputDTO, error) {
+func (u *GetItemsUseCase) Execute(input GetItemsInputDTO) ([]GetItemsOutputDTO, error) {
 	//items, err := c.ItemRepository.GetItems()
-	_, err := c.ItemRepository.GetItems()
+	_, err := u.ItemRepository.GetItems()
 	if err != nil {
 		return []GetItemsOutputDTO{}, err
 	}

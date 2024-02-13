@@ -22,14 +22,25 @@ func (r *ItemRepository) GetItems() ([]entity.Item, error) {
 	return items, nil
 }
 
-func (r *ItemRepository) GetByID(id int64) (entity.Item, error) {
+func (r *ItemRepository) GetByID(id int) (*entity.Item, error) {
 	var item entity.Item
 	err := r.Db.First(&item, "id = ?", id).Error
-	return item, err
+	return &item, err
 }
 
 func (r *ItemRepository) Create(item *entity.Item) (entity.Item, error) {
 	result := r.Db.Create(&item)
+	if result.Error != nil {
+		return entity.Item{}, result.Error
+	}
+	itemCreated := *item
+
+	return itemCreated, nil
+}
+
+func (r *ItemRepository) Edit(id int, item *entity.Item) (entity.Item, error) {
+	item.ID = id
+	result := r.Db.Save(item)
 	if result.Error != nil {
 		return entity.Item{}, result.Error
 	}

@@ -9,7 +9,7 @@ type CreateItemInputDTO struct {
 }
 
 type CreateItemOutputDTO struct {
-	ID   int64  `json:"id" fake:"{number:1,100}"`
+	ID   int    `json:"id" fake:"{number:1,100}"`
 	Name string `json:"name" fake:"{productname}"`
 }
 
@@ -25,14 +25,14 @@ func NewCreateItemUseCase(
 	}
 }
 
-func (c *CreateItemUseCase) Execute(input CreateItemInputDTO) (CreateItemOutputDTO, []error) {
+func (u *CreateItemUseCase) Execute(input CreateItemInputDTO) (CreateItemOutputDTO, []error) {
 	item, validationErrors := entity.NewItem(input.Name)
 
 	if validationErrors != nil {
 		return CreateItemOutputDTO{}, validationErrors
 	}
 
-	itemCreated, err := c.ItemRepository.Create(item)
+	itemCreated, err := u.ItemRepository.Create(item)
 
 	if err != nil {
 		return CreateItemOutputDTO{}, []error{err}

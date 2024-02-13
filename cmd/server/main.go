@@ -39,10 +39,12 @@ func main() {
 
 	itemHandler := NewWebItemHandler(db)
 
-	webserver := webserver.NewWebServer(configs.WebServerPort)
+	server := webserver.NewWebServer(configs.WebServerPort)
 
-	webserver.AddHandler("/items", "GET", itemHandler.GetItems)
-	webserver.AddHandler("/items", "POST", itemHandler.CreateItem)
+	server.AddHandler("/items", webserver.GET, itemHandler.GetAll)
+	server.AddHandler("/items/{id}", webserver.GET, itemHandler.Get)
+	server.AddHandler("/items", webserver.POST, itemHandler.Create)
+	server.AddHandler("/items/{id}", webserver.PUT, itemHandler.Edit)
 	fmt.Println("Starting web server on sport", configs.WebServerPort)
-	webserver.Start()
+	server.Start()
 }

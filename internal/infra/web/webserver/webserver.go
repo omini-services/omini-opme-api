@@ -11,6 +11,12 @@ import (
 	customMiddleware "github.com/omini-services/omini-opme-be/internal/infra/web/middleware"
 )
 
+const (
+	GET  = "GET"
+	POST = "POST"
+	PUT  = "PUT"
+)
+
 type WebServer struct {
 	Router        chi.Router
 	Handlers      map[[2]string]http.HandlerFunc
