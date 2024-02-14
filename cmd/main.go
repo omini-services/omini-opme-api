@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/omini-services/omini-opme-be/cmd/api"
 	"github.com/omini-services/omini-opme-be/configs"
 
 	"gorm.io/driver/postgres"
@@ -16,6 +17,9 @@ var (
 )
 
 func main() {
+	configs.SetBuild(build)
+	configs.SetVersion(version)
+
 	configs, err := configs.LoadConfig(".")
 	if err != nil {
 		panic(err)
@@ -36,16 +40,11 @@ func main() {
 
 	defer dbClient.Close()
 
-	server := NewServer(configs.WebServerPort)
-	server.AddMiddlewares()
-	server.AddHandlers(db)
+	server := api.NewServer(configs.WebServerPort)
+	server.UseDb(db)
 
-	// server.AddRoutes("/api/items", func(r chi.Router) {
-	// 	r.Get("/", itemHandler.GetAll)
-	// 	r.Get("/{id}", itemHandler.Get)
-	// 	r.Post("/{id}", itemHandler.Create)
-	// 	r.Put("/{id}", itemHandler.Edit)
-	// })
+	server.AddMiddlewares()
+	server.AddHandlers()
 
 	// server.AddRoutes("/api", func(r chi.Router) {
 	// 	r.Get("/health", apiHandler.Health)

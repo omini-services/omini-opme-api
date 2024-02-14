@@ -13,7 +13,7 @@ func NewItemRepository(db *gorm.DB) *ItemRepository {
 	return &ItemRepository{db}
 }
 
-func (r *ItemRepository) GetItems() ([]domain.Item, error) {
+func (r *ItemRepository) Get() ([]domain.Item, error) {
 	var items []domain.Item
 	err := r.db.Find(&items).Error
 	if err != nil {

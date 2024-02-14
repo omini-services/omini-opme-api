@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"fmt"
@@ -9,12 +9,13 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"gorm.io/gorm"
 
-	customMiddleware "github.com/omini-services/omini-opme-be/internal/infra/middleware"
+	customMiddlewares "github.com/omini-services/omini-opme-be/cmd/api/middlewares"
 )
 
 type Server struct {
 	Router chi.Router
 	Port   string
+	db     *gorm.DB
 }
 
 func NewServer(serverPort string) *Server {
@@ -24,17 +25,18 @@ func NewServer(serverPort string) *Server {
 	}
 }
 
+func (s *Server) UseDb(db *gorm.DB) {
+	s.db = db
+}
+
 func (s *Server) AddMiddlewares() {
 	s.Router.Use(middleware.Logger)
-	s.Router.Use(customMiddleware.Authenticate)
+	s.Router.Use(customMiddlewares.Authenticate)
 }
 
-func (s *Server) AddDb(db *gorm.DB) {
-	NewItemHandler(s.Router, db)
-}
-
-func (s *Server) AddHandlers(db *gorm.DB) {
-	NewItemHandler(s.Router, db)
+func (s *Server) AddHandlers() {
+	NewItemHandler(s.Router, s.db)
+	NewApiHandler(s.Router)
 }
 
 func (s *Server) Start() {

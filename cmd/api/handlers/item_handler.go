@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import (
 	"encoding/json"
@@ -8,9 +8,9 @@ import (
 
 	"github.com/brianvoe/gofakeit"
 	"github.com/go-chi/chi/v5"
+	"github.com/omini-services/omini-opme-be/cmd/api/dto"
+	"github.com/omini-services/omini-opme-be/cmd/api/response"
 	"github.com/omini-services/omini-opme-be/internal/domain"
-	"github.com/omini-services/omini-opme-be/internal/infra/web/response"
-	"github.com/omini-services/omini-opme-be/internal/item/dto"
 )
 
 type ItemHandler struct {
@@ -22,25 +22,25 @@ func NewItemHandler(r chi.Router, u domain.ItemUsecase) *ItemHandler {
 		iUsecase: u,
 	}
 
-	r.Route("/items", func(r chi.Router) {
-		r.Get("/", handler.GetItems)
+	r.Route("/api/items", func(r chi.Router) {
+		r.Get("/", handler.Get)
 		r.Get("/{id}", handler.GetByID)
-		r.Post("/{id}", handler.Add)
+		r.Post("/", handler.Add)
 		r.Put("/{id}", handler.Update)
 	})
 
 	return handler
 }
 
-func (h *ItemHandler) GetItems(w http.ResponseWriter, r *http.Request) {
-	_, err := h.iUsecase.GetItems()
+func (h *ItemHandler) Get(w http.ResponseWriter, r *http.Request) {
+	_, err := h.iUsecase.Get()
 
-	getItemsOutput := []dto.GetItemsOutputDTO{}
+	outputs := []dto.GetItemsOutputDTO{}
 
 	for i := 1; i <= 100; i++ {
-		var getItemOutput dto.GetItemsOutputDTO
-		gofakeit.Struct(&getItemOutput)
-		getItemsOutput = append(getItemsOutput, getItemOutput)
+		var output dto.GetItemsOutputDTO
+		gofakeit.Struct(&output)
+		outputs = append(outputs, output)
 	}
 
 	if err != nil {
@@ -52,7 +52,7 @@ func (h *ItemHandler) GetItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.JsonSuccess(w, getItemsOutput, http.StatusOK)
+	response.JsonSuccess(w, outputs, http.StatusOK)
 }
 
 func (h *ItemHandler) GetByID(w http.ResponseWriter, r *http.Request) {
@@ -64,7 +64,7 @@ func (h *ItemHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item, err := h.iUsecase.GetByID(parsedId)
+	data, err := h.iUsecase.GetByID(parsedId)
 	if err != nil {
 		if err.ErrCode == domain.Unexpected {
 			response.JsonFail(w, err.Error, http.StatusInternalServerError)
@@ -74,7 +74,7 @@ func (h *ItemHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	output := itemToGetItemOutputDTO(&item)
+	output := itemToGetItemOutputDTO(&data)
 
 	response.JsonSuccess(w, output, http.StatusOK)
 }
@@ -87,13 +87,13 @@ func (h *ItemHandler) Add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item, domainError := domain.NewItem(input.Name)
+	data, domainError := domain.NewItem(input.Name)
 
 	if domainError != nil {
 		response.JsonFail(w, domainError.Error, http.StatusBadRequest)
 	}
 
-	err := h.iUsecase.Add(item)
+	err := h.iUsecase.Add(data)
 
 	if err != nil {
 		if err.ErrCode == domain.Unexpected {
@@ -105,8 +105,8 @@ func (h *ItemHandler) Add(w http.ResponseWriter, r *http.Request) {
 	}
 
 	output := dto.AddItemOutputDTO{
-		ID:   item.ID,
-		Name: item.Name,
+		ID:   data.ID,
+		Name: data.Name,
 	}
 
 	response.JsonSuccess(w, output, http.StatusOK)
@@ -133,13 +133,13 @@ func (h *ItemHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item, domainError := domain.NewItem(input.Name)
+	data, domainError := domain.NewItem(input.Name)
 
 	if domainError != nil {
 		response.JsonFail(w, domainError.Error, http.StatusBadRequest)
 	}
 
-	err := h.iUsecase.Update(id, item)
+	err := h.iUsecase.Update(id, data)
 	if err != nil {
 		if err.ErrCode == domain.Unexpected {
 			response.JsonFail(w, err.Error, http.StatusInternalServerError)
@@ -150,16 +150,16 @@ func (h *ItemHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	output := dto.UpdateItemOutputDTO{
-		ID:   item.ID,
-		Name: item.Name,
+		ID:   data.ID,
+		Name: data.Name,
 	}
 
 	response.JsonSuccess(w, output, http.StatusOK)
 }
 
-func itemToGetItemOutputDTO(item *domain.Item) dto.GetItemOutputDTO {
+func itemToGetItemOutputDTO(data *domain.Item) dto.GetItemOutputDTO {
 	return dto.GetItemOutputDTO{
-		ID:   item.ID,
-		Name: item.Name,
+		ID:   data.ID,
+		Name: data.Name,
 	}
 }

@@ -10,7 +10,10 @@ migratedown:
 	migrate -path=sql/migrations -database "cockroach://dk:M5RX0zreO7Pz-Su3bZPVmw@peppy-orc-7035.g8z.gcp-us-east1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full" -verbose down
 
 run:
-	go run cmd/server/main.go cmd/server/wire_gen.go
+	go run -ldflags="-X 'main.version=v1.0.0' -X 'main.build=$(shell date +'%Y-%m-%d %H:%M:%S')'" cmd/main.go
+
+wire:
+	cd cmd/api && wire
 
 .PHONY: migrate
 

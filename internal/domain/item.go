@@ -5,25 +5,22 @@ import (
 	"time"
 )
 
-type a struct {
-}
-
 type Item struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"title" validate:"required"`
-	UpdatedAt time.Time `json:"updated_at"`
-	CreatedAt time.Time `json:"created_at"`
+	ID        int
+	Name      string
+	UpdatedAt time.Time
+	CreatedAt time.Time
 }
 
 type ItemRepository interface {
-	GetItems() ([]Item, error)
+	Get() ([]Item, error)
 	Add(item *Item) error
 	GetByID(id int) (Item, error)
 	Update(id int, item *Item) error
 }
 
 type ItemUsecase interface {
-	GetItems() ([]Item, *ValidationError)
+	Get() ([]Item, *ValidationError)
 	GetByID(id int) (Item, *ValidationError)
 	Update(id int, item *Item) *ValidationError
 	Add(item *Item) *ValidationError
@@ -31,7 +28,9 @@ type ItemUsecase interface {
 
 func NewItem(name string) (*Item, *ValidationError) {
 	item := &Item{
-		Name: name,
+		Name:      name,
+		UpdatedAt: time.Now().UTC(),
+		CreatedAt: time.Now().UTC(),
 	}
 	err := item.isValid()
 	if err != nil {

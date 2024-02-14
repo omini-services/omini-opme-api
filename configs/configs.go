@@ -9,6 +9,27 @@ var AuthorizedRoutes = []string{
 	"/api/health",
 }
 
+var (
+	build   string
+	version string
+)
+
+func GetVersion() string {
+	return version
+}
+
+func GetBuild() string {
+	return build
+}
+
+func SetVersion(s string) {
+	version = s
+}
+
+func SetBuild(s string) {
+	build = s
+}
+
 type conf struct {
 	DBConnectionString string `mapstructure:"DB_CONNECTION_STRING"`
 	WebServerPort      string `mapstructure:"WEB_SERVER_PORT"`

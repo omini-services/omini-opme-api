@@ -24,8 +24,8 @@ func NewItemUsecase(r domain.ItemRepository) *ItemUsecase {
 	}
 }
 
-func (u *ItemUsecase) GetItems() ([]domain.Item, *domain.ValidationError) {
-	items, err := u.itemRepository.GetItems()
+func (u *ItemUsecase) Get() ([]domain.Item, *domain.ValidationError) {
+	items, err := u.itemRepository.Get()
 	if err != nil {
 		return []domain.Item{}, &domain.ValidationError{ErrCode: domain.Unexpected, Error: []error{err}}
 	}
