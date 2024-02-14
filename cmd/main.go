@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/omini-services/omini-opme-be/configs"
-	"github.com/omini-services/omini-opme-be/internal/infra/web/webserver"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -38,22 +36,20 @@ func main() {
 
 	defer dbClient.Close()
 
-	server := webserver.NewWebServer(configs.WebServerPort)
+	server := NewServer(configs.WebServerPort)
+	server.AddMiddlewares()
+	server.AddHandlers(db)
 
-	itemHandler := NewWebItemHandler(db)
+	// server.AddRoutes("/api/items", func(r chi.Router) {
+	// 	r.Get("/", itemHandler.GetAll)
+	// 	r.Get("/{id}", itemHandler.Get)
+	// 	r.Post("/{id}", itemHandler.Create)
+	// 	r.Put("/{id}", itemHandler.Edit)
+	// })
 
-	server.AddRoutes("/api/items", func(r chi.Router) {
-		r.Get("/", itemHandler.GetAll)
-		r.Get("/{id}", itemHandler.Get)
-		r.Post("/{id}", itemHandler.Create)
-		r.Put("/{id}", itemHandler.Edit)
-	})
-
-	apiHandler := NewApiHandler()
-
-	server.AddRoutes("/api", func(r chi.Router) {
-		r.Get("/health", apiHandler.Health)
-	})
+	// server.AddRoutes("/api", func(r chi.Router) {
+	// 	r.Get("/health", apiHandler.Health)
+	// })
 
 	fmt.Println("Starting web server on sport", configs.WebServerPort)
 	server.Start()

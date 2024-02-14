@@ -3,7 +3,7 @@ module github.com/omini-services/omini-opme-be
 go 1.21.5
 
 require (
-	github.com/brianvoe/gofakeit/v6 v6.28.0
+	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/go-chi/chi/v5 v5.0.11
 	github.com/google/wire v0.5.0
 	github.com/lestrrat-go/jwx v1.2.28
