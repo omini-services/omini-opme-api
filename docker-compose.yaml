@@ -7,6 +7,6 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file:
-      - path: ./cmd/server/.env
+      - path: ./cmd/.env
     ports:
       - "80:80"
