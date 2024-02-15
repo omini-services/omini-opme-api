@@ -22,7 +22,7 @@ func NewInvoiceHandler(r chi.Router, u domain.InvoiceUsecase) *InvoiceHandler {
 		iUsecase: u,
 	}
 
-	r.Route("/api/invoices", func(r chi.Router) {
+	r.Route("/invoices", func(r chi.Router) {
 		r.Get("/", handler.Get)
 		r.Get("/{id}", handler.GetByID)
 		r.Post("/", handler.Add)

@@ -1,0 +1,66 @@
+basePath: /v2
+consumes:
+    - application/json
+    - application/xml
+host: localhost
+info:
+    contact:
+        email: john.doe@example.com
+        name: John Doe
+        url: http://john.doe.com
+    description: |-
+        the purpose of this application is to provide an application
+        that is using plain go code to define an API
+
+        This should demonstrate all the possible comment annotations
+        that are available to turn go code into a fully compliant swagger 2.0 spec
+    license:
+        name: MIT
+        url: http://opensource.org/licenses/MIT
+    termsOfService: there are no TOS at this moment, use at your own risk we take no responsibility
+    title: Petstore API.
+    version: 0.0.1
+paths:
+    /admin/company/{id}:
+        delete:
+            description: Delete company
+            operationId: deleteCompany
+            responses:
+                "200":
+                    $ref: '#/responses/CommonSuccess'
+                "401":
+                    $ref: '#/responses/CommonError'
+            security:
+                - apiKey:
+                    - '[]'
+            tags:
+                - admin
+produces:
+    - application/json
+    - application/xml
+schemes:
+    - http
+    - https
+security:
+    - api_key: []
+securityDefinitions:
+    api_key:
+        in: header
+        name: KEY
+        type: apiKey
+    oauth2:
+        authorizationUrl: /oauth2/auth
+        flow: accessCode
+        in: header
+        scopes:
+            bar: foo
+        tokenUrl: /oauth2/token
+        type: oauth2
+swagger: "2.0"
+x-meta-array:
+    - value1
+    - value2
+x-meta-array-obj:
+    - name: obj
+      value: field
+x-meta-value: value

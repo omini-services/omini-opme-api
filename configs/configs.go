@@ -5,10 +5,6 @@ import (
 	"os"
 )
 
-var AuthorizedRoutes = []string{
-	"/api/health",
-}
-
 var (
 	build   string
 	version string

@@ -22,7 +22,7 @@ func NewItemHandler(r chi.Router, u domain.ItemUsecase) *ItemHandler {
 		iUsecase: u,
 	}
 
-	r.Route("/api/items", func(r chi.Router) {
+	r.Route("/items", func(r chi.Router) {
 		r.Get("/", handler.Get)
 		r.Get("/{id}", handler.GetByID)
 		r.Post("/", handler.Add)
