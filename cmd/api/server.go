@@ -31,8 +31,8 @@ func (s *Server) UseDb(db *gorm.DB) {
 }
 
 func (s *Server) UseSwagger(r chi.Router) {
-	r.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
-	opts := openApi.SwaggerUIOpts{SpecURL: "/swagger.yaml", BasePath: "/api"}
+	r.Handle("/swagger.yaml", http.StripPrefix("/api/", http.FileServer(http.Dir("./"))))
+	opts := openApi.SwaggerUIOpts{SpecURL: "/api/swagger.yaml", BasePath: "/api"}
 	sh := openApi.SwaggerUI(opts, nil)
 	r.Handle("/docs", sh)
 }
