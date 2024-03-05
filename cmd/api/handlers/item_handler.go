@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/brianvoe/gofakeit"
 	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 	"github.com/omini-services/omini-opme-be/cmd/api/dto"
 	"github.com/omini-services/omini-opme-be/cmd/api/response"
 	"github.com/omini-services/omini-opme-be/internal/domain"
@@ -35,10 +35,10 @@ func NewItemHandler(r chi.Router, u domain.ItemUsecase) *ItemHandler {
 func (h *ItemHandler) Get(w http.ResponseWriter, r *http.Request) {
 	_, err := h.iUsecase.Get()
 
-	outputs := []dto.GetItemsOutputDTO{}
+	outputs := []dto.ItemOutputDTO{}
 
 	for i := 1; i <= 100; i++ {
-		var output dto.GetItemsOutputDTO
+		var output dto.ItemOutputDTO
 		gofakeit.Struct(&output)
 		outputs = append(outputs, output)
 	}
@@ -56,15 +56,15 @@ func (h *ItemHandler) Get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ItemHandler) GetByID(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-	parsedId, routeError := strconv.Atoi(id)
+	uuidString := chi.URLParam(r, "id")
+	id, routeError := uuid.Parse(uuidString)
 
 	if routeError != nil {
 		response.JsonFail(w, []error{errors.New("invalid id")}, http.StatusBadRequest)
 		return
 	}
 
-	data, err := h.iUsecase.GetByID(parsedId)
+	data, err := h.iUsecase.GetByID(id)
 	if err != nil {
 		if err.ErrCode == domain.Unexpected {
 			response.JsonFail(w, err.Error, http.StatusInternalServerError)
@@ -74,7 +74,7 @@ func (h *ItemHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	output := itemToGetItemOutputDTO(&data)
+	output := MapItemToOutputItem(&data)
 
 	response.JsonSuccess(w, output, http.StatusOK)
 }
@@ -87,11 +87,11 @@ func (h *ItemHandler) Add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, domainError := domain.NewItem(input.Name)
+	data := MapAddItemInputToItem(&input)
 
-	if domainError != nil {
-		response.JsonFail(w, domainError.Error, http.StatusBadRequest)
-	}
+	// if domainError != nil {
+	// 	response.JsonFail(w, domainError.Error, http.StatusBadRequest)
+	// }
 
 	err := h.iUsecase.Add(data)
 
@@ -104,17 +104,14 @@ func (h *ItemHandler) Add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	output := dto.AddItemOutputDTO{
-		ID:   data.ID,
-		Name: data.Name,
-	}
+	output := MapItemToOutputItem(data)
 
 	response.JsonSuccess(w, output, http.StatusOK)
 }
 
 func (h *ItemHandler) Update(w http.ResponseWriter, r *http.Request) {
-	stringId := chi.URLParam(r, "id")
-	id, routeError := strconv.Atoi(stringId)
+	uuidString := chi.URLParam(r, "id")
+	id, routeError := uuid.Parse(uuidString)
 
 	if routeError != nil {
 		response.JsonFail(w, []error{errors.New("invalid id")}, http.StatusBadRequest)
@@ -149,17 +146,41 @@ func (h *ItemHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	output := dto.UpdateItemOutputDTO{
-		ID:   data.ID,
-		Name: data.Name,
-	}
+	output := MapItemToOutputItem(data)
 
 	response.JsonSuccess(w, output, http.StatusOK)
 }
 
-func itemToGetItemOutputDTO(data *domain.Item) dto.GetItemOutputDTO {
-	return dto.GetItemOutputDTO{
-		ID:   data.ID,
-		Name: data.Name,
+func MapAddItemInputToItem(dto *dto.AddItemInputDTO) *domain.Item {
+	return &domain.Item{
+		ParentID:      dto.ParentID,
+		Code:          dto.Code,
+		Name:          dto.Name,
+		SalesName:     dto.SalesName,
+		Description:   dto.Description,
+		Uom:           dto.Uom,
+		AnvisaCode:    dto.AnvisaCode,
+		AnvisaDueDate: dto.AnvisaDueDate,
+		SupplierCode:  dto.SupplierCode,
+		Cst:           dto.Cst,
+		SusCode:       dto.SusCode,
+		NcmCode:       dto.NcmCode,
+	}
+}
+
+func MapItemToOutputItem(data *domain.Item) *dto.ItemOutputDTO {
+	return &dto.ItemOutputDTO{
+		ParentID:      data.ParentID,
+		Code:          data.Code,
+		Name:          data.Name,
+		SalesName:     data.SalesName,
+		Description:   data.Description,
+		Uom:           data.Uom,
+		AnvisaCode:    data.AnvisaCode,
+		AnvisaDueDate: data.AnvisaDueDate,
+		SupplierCode:  data.SupplierCode,
+		Cst:           data.Cst,
+		SusCode:       data.SusCode,
+		NcmCode:       data.NcmCode,
 	}
 }

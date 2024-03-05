@@ -2,7 +2,9 @@ package usecase
 
 import (
 	"errors"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/omini-services/omini-opme-be/internal/domain"
 	"gorm.io/gorm"
 )
@@ -33,7 +35,7 @@ func (u *ItemUsecase) Get() ([]domain.Item, *domain.ValidationError) {
 	return items, nil
 }
 
-func (u *ItemUsecase) GetByID(id int) (domain.Item, *domain.ValidationError) {
+func (u *ItemUsecase) GetByID(id uuid.UUID) (domain.Item, *domain.ValidationError) {
 	item, err := u.itemRepository.GetByID(id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -46,7 +48,7 @@ func (u *ItemUsecase) GetByID(id int) (domain.Item, *domain.ValidationError) {
 	return item, nil
 }
 
-func (u *ItemUsecase) Update(id int, item *domain.Item) *domain.ValidationError {
+func (u *ItemUsecase) Update(id uuid.UUID, item *domain.Item) *domain.ValidationError {
 	err := u.itemRepository.Update(id, item)
 
 	if err != nil {
@@ -57,6 +59,12 @@ func (u *ItemUsecase) Update(id int, item *domain.Item) *domain.ValidationError 
 }
 
 func (i *ItemUsecase) Add(item *domain.Item) *domain.ValidationError {
+	item.ID = uuid.New()
+	item.CreatedBy = uuid.New()
+	item.CreatedAt = time.Now()
+	item.UpdatedBy = uuid.New()
+	item.UpdatedAt = time.Now()
+
 	err := i.itemRepository.Add(item)
 
 	if err != nil {

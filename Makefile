@@ -1,13 +1,14 @@
+include cmd/.env
 .DEFAULT_GOAL := help
 
 createmigration:
 	migrate create -ext=sql -dir=sql/migrations -seq $(name)
 	
 migrateup:
-	migrate -path=sql/migrations -database "cockroach://dk:M5RX0zreO7Pz-Su3bZPVmw@peppy-orc-7035.g8z.gcp-us-east1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full" -verbose up
+	migrate -path=sql/migrations -database $(DB_CONNECTION_STRING_MIGRATION) -verbose up
 
 migratedown:
-	migrate -path=sql/migrations -database "cockroach://dk:M5RX0zreO7Pz-Su3bZPVmw@peppy-orc-7035.g8z.gcp-us-east1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full" -verbose down
+	migrate -path=sql/migrations -database $(DB_CONNECTION_STRING_MIGRATION) -verbose down
 
 run:
 	go run -ldflags="-X 'main.version=v1.0.0' -X 'main.build=$(shell date +'%Y-%m-%d %H:%M:%S')'" cmd/main.go

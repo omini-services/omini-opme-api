@@ -1,35 +1,58 @@
 package dto
 
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
 type AddItemInputDTO struct {
-	Name string `json:"name"`
+	ParentID      uuid.UUID `json:"parentId"`
+	Code          string    `json:"code"`
+	Name          string    `json:"name"`
+	SalesName     string    `json:"salesName"`
+	Description   string    `json:"description"`
+	Uom           string    `json:"uom"`
+	AnvisaCode    string    `json:"anvisaCode"`
+	AnvisaDueDate time.Time `json:"anvisaDueDate"`
+	SupplierCode  string    `json:"supplierCode"`
+	Cst           string    `json:"cst"`
+	SusCode       string    `json:"susCode"`
+	NcmCode       string    `json:"ncmCode"`
 }
 
-type AddItemOutputDTO struct {
-	ID   int    `json:"id" fake:"{number:1,100}"`
-	Name string `json:"name" fake:"{productname}"`
+type ItemOutputDTO struct {
+	ID            uuid.UUID `json:"id"`
+	ParentID      uuid.UUID `json:"parentId"`
+	Code          string    `json:"code"`
+	Name          string    `json:"name"`
+	SalesName     string    `json:"salesName"`
+	Description   string    `json:"description"`
+	Uom           string    `json:"uom"`
+	AnvisaCode    string    `json:"anvisaCode"`
+	AnvisaDueDate time.Time `json:"anvisaDueDate"`
+	SupplierCode  string    `json:"supplierCode"`
+	Cst           string    `json:"cst"`
+	SusCode       string    `json:"susCode"`
+	NcmCode       string    `json:"ncmCode"`
+	CreatedBy     uuid.UUID `json:"createdBy"`
+	CreatedAt     time.Time `json:"createdAt"`
+	UpdatedBy     uuid.UUID `json:"updatedBy"`
+	UpdatedAt     time.Time `json:"updatedAt"`
 }
 
 type UpdateItemInputDTO struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-}
-
-type UpdateItemOutputDTO struct {
-	ID   int    `json:"id" fake:"{number:1,100}"`
-	Name string `json:"name" fake:"{productname}"`
-}
-
-type GetItemOutputDTO struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-}
-
-type GetItemsInputDTO struct {
-}
-
-type GetItemsOutputDTO struct {
-	ID           string `json:"id" fake:"{number:1,100}"`
-	Name         string `json:"name" fake:"{productname}"`
-	Manufacturer string `json:"manufacturer" fake:"{company}"`
-	Group        string `json:"group" fake:"{productcategory}"`
+	ID            uuid.UUID `json:"id"`
+	ParentID      uuid.UUID `json:"parentId"`
+	Code          string    `json:"code"`
+	Name          string    `json:"name"`
+	SalesName     string    `json:"salesName"`
+	Description   string    `json:"description"`
+	Uom           string    `json:"uom"`
+	AnvisaCode    string    `json:"anvisaCode"`
+	AnvisaDueDate time.Time `json:"anvisaDueDate"`
+	SupplierCode  string    `json:"supplierCode"`
+	Cst           string    `json:"cst"`
+	SusCode       string    `json:"susCode"`
+	NcmCode       string    `json:"ncmCode"`
 }

@@ -3,26 +3,41 @@ package domain
 import (
 	"errors"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Item struct {
-	ID        int
-	Name      string
-	UpdatedAt time.Time
-	CreatedAt time.Time
+	ID            uuid.UUID
+	ParentID      uuid.UUID
+	Code          string
+	Name          string
+	SalesName     string
+	Description   string
+	Uom           string
+	AnvisaCode    string
+	AnvisaDueDate time.Time
+	SupplierCode  string
+	Cst           string
+	SusCode       string
+	NcmCode       string
+	CreatedBy     uuid.UUID
+	CreatedAt     time.Time
+	UpdatedBy     uuid.UUID
+	UpdatedAt     time.Time
 }
 
 type ItemRepository interface {
 	Get() ([]Item, error)
 	Add(item *Item) error
-	GetByID(id int) (Item, error)
-	Update(id int, item *Item) error
+	GetByID(id uuid.UUID) (Item, error)
+	Update(id uuid.UUID, item *Item) error
 }
 
 type ItemUsecase interface {
 	Get() ([]Item, *ValidationError)
-	GetByID(id int) (Item, *ValidationError)
-	Update(id int, item *Item) *ValidationError
+	GetByID(id uuid.UUID) (Item, *ValidationError)
+	Update(id uuid.UUID, item *Item) *ValidationError
 	Add(item *Item) *ValidationError
 }
 

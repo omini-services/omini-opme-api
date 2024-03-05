@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/google/uuid"
 	"github.com/omini-services/omini-opme-be/internal/domain"
 	"gorm.io/gorm"
 )
@@ -31,13 +32,13 @@ func (r *ItemRepository) Add(item *domain.Item) error {
 	return nil
 }
 
-func (r *ItemRepository) GetByID(id int) (domain.Item, error) {
+func (r *ItemRepository) GetByID(id uuid.UUID) (domain.Item, error) {
 	var item domain.Item
 	err := r.db.First(&item, "id = ?", id).Error
 	return item, err
 }
 
-func (r *ItemRepository) Update(id int, item *domain.Item) error {
+func (r *ItemRepository) Update(id uuid.UUID, item *domain.Item) error {
 	item.ID = id
 	result := r.db.Save(item)
 	if result.Error != nil {
