@@ -7,7 +7,6 @@ import (
 )
 
 type AddItemInputDTO struct {
-	ParentID      uuid.UUID `json:"parentId"`
 	Code          string    `json:"code"`
 	Name          string    `json:"name"`
 	SalesName     string    `json:"salesName"`
@@ -23,7 +22,6 @@ type AddItemInputDTO struct {
 
 type ItemOutputDTO struct {
 	ID            uuid.UUID `json:"id"`
-	ParentID      uuid.UUID `json:"parentId"`
 	Code          string    `json:"code"`
 	Name          string    `json:"name"`
 	SalesName     string    `json:"salesName"`
@@ -43,7 +41,6 @@ type ItemOutputDTO struct {
 
 type UpdateItemInputDTO struct {
 	ID            uuid.UUID `json:"id"`
-	ParentID      uuid.UUID `json:"parentId"`
 	Code          string    `json:"code"`
 	Name          string    `json:"name"`
 	SalesName     string    `json:"salesName"`

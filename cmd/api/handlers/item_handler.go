@@ -153,7 +153,6 @@ func (h *ItemHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 func MapAddItemInputToItem(dto *dto.AddItemInputDTO) *domain.Item {
 	return &domain.Item{
-		ParentID:      dto.ParentID,
 		Code:          dto.Code,
 		Name:          dto.Name,
 		SalesName:     dto.SalesName,
@@ -170,7 +169,6 @@ func MapAddItemInputToItem(dto *dto.AddItemInputDTO) *domain.Item {
 
 func MapItemToOutputItem(data *domain.Item) *dto.ItemOutputDTO {
 	return &dto.ItemOutputDTO{
-		ParentID:      data.ParentID,
 		Code:          data.Code,
 		Name:          data.Name,
 		SalesName:     data.SalesName,
