@@ -80,7 +80,7 @@ func main() {
 		panic(err)
 	}
 
-	dsn := "postgresql://dk:rQjN27iNUWiqEBNosrrlqQ@peppy-orc-7035.g8z.gcp-us-east1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full"
+	dsn := configs.DBConnectionString
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
