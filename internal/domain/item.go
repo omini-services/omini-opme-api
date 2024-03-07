@@ -8,23 +8,22 @@ import (
 )
 
 type Item struct {
-	ID            uuid.UUID
-	ParentID      uuid.UUID
-	Code          string
-	Name          string
-	SalesName     string
-	Description   string
-	Uom           string
-	AnvisaCode    string
-	AnvisaDueDate time.Time
-	SupplierCode  string
-	Cst           string
-	SusCode       string
-	NcmCode       string
-	CreatedBy     uuid.UUID
-	CreatedAt     time.Time
-	UpdatedBy     uuid.UUID
-	UpdatedAt     time.Time
+	ID            uuid.UUID `gorm:"type:uuid;primaryKey;column:ID"`
+	Code          string    `gorm:"type:varchar(50);not null;column:Code"`
+	Name          string    `gorm:"type:varchar(400);not null;column:Name"`
+	SalesName     string    `gorm:"type:varchar(400);not null;column:SalesName"`
+	Description   string    `gorm:"type:varchar(1000);not null;column:Description"`
+	Uom           string    `gorm:"type:varchar(20);not null;column:Uom"`
+	AnvisaCode    string    `gorm:"type:varchar(20);not null;column:AnvisaCode"`
+	AnvisaDueDate time.Time `gorm:"type:timestamptz;not null;column:AnvisaDueDate"`
+	SupplierCode  string    `gorm:"type:varchar(50);not null;column:SupplierCode"`
+	Cst           string    `gorm:"type:varchar(10);not null;column:Cst"`
+	SusCode       string    `gorm:"type:varchar(20);not null;column:SusCode"`
+	NcmCode       string    `gorm:"type:varchar(10);not null;column:NcmCode"`
+	CreatedBy     uuid.UUID `gorm:"type:uuid;not null;column:CreatedBy"`
+	CreatedAt     time.Time `gorm:"type:timestamptz;not null;column:CreatedAt"`
+	UpdatedBy     uuid.UUID `gorm:"type:uuid;not null;column:UpdatedBy"`
+	UpdatedAt     time.Time `gorm:"type:timestamptz;not null;column:UpdatedAt"`
 }
 
 type ItemRepository interface {

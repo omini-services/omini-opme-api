@@ -11,7 +11,7 @@ CREATE TABLE items (
 	"Cst" VARCHAR(10) NOT NULL,
 	"SusCode" VARCHAR(20) NOT NULL,
 	"NcmCode" VARCHAR(10) NOT NULL,
-	"Createdby" UUID NOT NULL,
+	"CreatedBy" UUID NOT NULL,
 	"CreatedAt" TIMESTAMPTZ NOT NULL,
 	"UpdatedBy" UUID NOT NULL,
 	"UpdatedAt" TIMESTAMPTZ NOT NULL,
