@@ -14,11 +14,11 @@ type Item struct {
 	SalesName     string    `gorm:"type:varchar(400);not null;column:SalesName"`
 	Description   string    `gorm:"type:varchar(1000);not null;column:Description"`
 	Uom           string    `gorm:"type:varchar(20);not null;column:Uom"`
-	AnvisaCode    string    `gorm:"type:varchar(20);not null;column:AnvisaCode"`
-	AnvisaDueDate time.Time `gorm:"type:timestamptz;not null;column:AnvisaDueDate"`
-	SupplierCode  string    `gorm:"type:varchar(50);not null;column:SupplierCode"`
+	AnvisaCode    string    `gorm:"type:varchar(20);null;column:AnvisaCode"`
+	AnvisaDueDate time.Time `gorm:"type:timestamptz;null;column:AnvisaDueDate"`
+	SupplierCode  string    `gorm:"type:varchar(50);null;column:SupplierCode"`
 	Cst           string    `gorm:"type:varchar(10);not null;column:Cst"`
-	SusCode       string    `gorm:"type:varchar(20);not null;column:SusCode"`
+	SusCode       string    `gorm:"type:varchar(20);null;column:SusCode"`
 	NcmCode       string    `gorm:"type:varchar(10);not null;column:NcmCode"`
 	CreatedBy     uuid.UUID `gorm:"type:uuid;not null;column:CreatedBy"`
 	CreatedAt     time.Time `gorm:"type:timestamptz;not null;column:CreatedAt"`
