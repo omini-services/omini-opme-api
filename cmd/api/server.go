@@ -6,8 +6,9 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	openApi "github.com/go-openapi/runtime/middleware"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 
 	customMiddlewares "github.com/omini-services/omini-opme-be/cmd/api/middlewares"
@@ -17,6 +18,7 @@ type Server struct {
 	router chi.Router
 	Port   string
 	db     *gorm.DB
+	log    *logrus.Logger
 }
 
 func NewServer(serverPort string) *Server {
@@ -47,17 +49,18 @@ func (s *Server) AddHandlers(options func(r chi.Router)) {
 func (s *Server) addProtectedHandlers(r chi.Router) {
 
 	r.Group(func(r chi.Router) {
-		// r.Use(cors.Handler(cors.Options{
-		// 	// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
-		// 	AllowedOrigins: []string{"https://*", "http://*"},
-		// 	// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
-		// 	AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		// 	AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		// 	ExposedHeaders:   []string{"Link"},
-		// 	AllowCredentials: true,
-		// 	MaxAge:           300, // Maximum value not ignored by any of major browsers
-		// }))
-		r.Use(middleware.Logger)
+		r.Use(cors.Handler(cors.Options{
+			// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
+			AllowedOrigins: []string{"https://*", "http://*"},
+			// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+			AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+			AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+			ExposedHeaders:   []string{"Link"},
+			AllowCredentials: true,
+			MaxAge:           300, // Maximum value not ignored by any of major browsers
+		}))
+
+		r.Use(customMiddlewares.Logging)
 		r.Use(customMiddlewares.Authenticate)
 
 		NewItemHandler(r, s.db)
@@ -66,7 +69,7 @@ func (s *Server) addProtectedHandlers(r chi.Router) {
 
 func addPublicHandlers(r chi.Router, options func(r chi.Router)) {
 	r.Group(func(r chi.Router) {
-		r.Use(middleware.Logger)
+		r.Use(customMiddlewares.Logging)
 		options(r)
 
 		NewApiHandler(r)

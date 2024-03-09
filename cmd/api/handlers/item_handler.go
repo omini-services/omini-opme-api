@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/brianvoe/gofakeit"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/omini-services/omini-opme-be/cmd/api/dto"
@@ -33,14 +32,17 @@ func NewItemHandler(r chi.Router, u domain.ItemUsecase) *ItemHandler {
 }
 
 func (h *ItemHandler) Get(w http.ResponseWriter, r *http.Request) {
-	_, err := h.iUsecase.Get()
+	items, err := h.iUsecase.Get()
+
+	if err != nil {
+		response.JsonFail(w, err.Error, http.StatusBadRequest)
+	}
 
 	outputs := []dto.ItemOutputDTO{}
 
-	for i := 1; i <= 100; i++ {
-		var output dto.ItemOutputDTO
-		gofakeit.Struct(&output)
-		outputs = append(outputs, output)
+	for _, item := range items {
+		output := MapItemToOutputItem(&item)
+		outputs = append(outputs, *output)
 	}
 
 	if err != nil {
@@ -169,6 +171,7 @@ func MapAddItemInputToItem(dto *dto.AddItemInputDTO) *domain.Item {
 
 func MapItemToOutputItem(data *domain.Item) *dto.ItemOutputDTO {
 	return &dto.ItemOutputDTO{
+		ID:            data.ID,
 		Code:          data.Code,
 		Name:          data.Name,
 		SalesName:     data.SalesName,
