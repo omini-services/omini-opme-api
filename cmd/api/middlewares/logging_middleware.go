@@ -16,6 +16,6 @@ func init() {
 
 func Logging(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.WithFields(log.Fields{"hostname": "foo", "int": 1, "float": 1.1}).Info("My first event from golang to stdout")
+		log.WithFields(log.Fields{"int": 1, "float": 1.1}).Info("My first event from golang to stdout")
 	})
 }

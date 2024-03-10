@@ -6,7 +6,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    labels:
+      com.datadoghq.ad.logs: '[{"source": "goapp", "service": "goapp"}]'
     env_file:
       - path: ./cmd/.env
     ports:
       - "80:80"
+  datadog:
+    platform: linux/amd64
+    image: datadog/agent:latest
+    env_file:
+      - path: ./cmd/.env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc/:/host/proc/
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup
+      - /var/lib/docker/containers:/host/var/lib/docker/containers
