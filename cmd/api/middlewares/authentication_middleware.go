@@ -2,27 +2,33 @@ package middlewares
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/lestrrat-go/jwx/jwt"
+	"github.com/omini-services/omini-opme-be/pkg/logger"
+	"go.uber.org/zap"
 )
 
 func Authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		logger := logger.FromContext(ctx)
+
 		authHeader := r.Header.Get("Authorization")
 		splitAuthHeader := strings.Split(authHeader, " ")
 		if len(splitAuthHeader) != 2 {
 			http.Error(w, "", http.StatusUnauthorized)
+			logger.Error("Missing JWT")
 			return
 		}
 
 		keySet, err := getJWTkeyset(r.Context())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			logger.Error("Could not get JWTkeyset", zap.Error(err))
 			return
 		}
 
@@ -36,6 +42,7 @@ func Authenticate(next http.Handler) http.Handler {
 
 		if err != nil {
 			http.Error(w, "", http.StatusUnauthorized)
+			logger.Error("Invalid JWT", zap.Error(err))
 			return
 		}
 
@@ -52,7 +59,6 @@ func getJWTkeyset(ctx context.Context) (jwk.Set, error) {
 
 	keyset, err := ar.Refresh(ctx, jwksURL)
 	if err != nil {
-		fmt.Printf("failed to refresh JWKS: %s\n", err)
 		return nil, err
 	}
 

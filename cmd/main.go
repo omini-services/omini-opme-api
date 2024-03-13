@@ -56,11 +56,12 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/omini-services/omini-opme-be/cmd/api"
 	"github.com/omini-services/omini-opme-be/configs"
+	"github.com/omini-services/omini-opme-be/pkg/logger"
+	"go.uber.org/zap"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -72,6 +73,8 @@ var (
 )
 
 func main() {
+	log := logger.NewLog()
+
 	configs.SetBuild(build)
 	configs.SetVersion(version)
 
@@ -84,13 +87,13 @@ func main() {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("failed to connect database", err)
+		log.Fatal("failed to connect database", zap.Error(err))
 	}
 
 	dbClient, err := db.DB()
 
 	if err != nil {
-		log.Fatal("failed to connect database", err)
+		log.Fatal("failed to connect database", zap.Error(err))
 	}
 
 	defer dbClient.Close()

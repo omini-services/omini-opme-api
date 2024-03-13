@@ -2,13 +2,12 @@ package api
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	openApi "github.com/go-openapi/runtime/middleware"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 
 	customMiddlewares "github.com/omini-services/omini-opme-be/cmd/api/middlewares"
@@ -18,7 +17,21 @@ type Server struct {
 	router chi.Router
 	Port   string
 	db     *gorm.DB
-	log    *logrus.Logger
+}
+
+//var app *newrelic.Application
+
+func init() {
+	// var err error
+	// app, err = newrelic.NewApplication(
+	// 	newrelic.ConfigAppName("opme-be"),
+	// 	newrelic.ConfigLicense("b27925bbceb7c1600bd35c74776f65f4FFFFNRAL"),
+	// 	newrelic.ConfigAppLogForwardingEnabled(true),
+	// )
+
+	// if err != nil {
+	// 	panic(fmt.Sprintf("Can`t initiate logging - %s", err))
+	// }
 }
 
 func NewServer(serverPort string) *Server {
@@ -49,6 +62,7 @@ func (s *Server) AddHandlers(options func(r chi.Router)) {
 func (s *Server) addProtectedHandlers(r chi.Router) {
 
 	r.Group(func(r chi.Router) {
+		r.Use(customMiddlewares.Logging)
 		r.Use(cors.Handler(cors.Options{
 			// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
 			AllowedOrigins: []string{"https://*", "http://*"},
@@ -60,7 +74,6 @@ func (s *Server) addProtectedHandlers(r chi.Router) {
 			MaxAge:           300, // Maximum value not ignored by any of major browsers
 		}))
 
-		r.Use(customMiddlewares.Logging)
 		r.Use(customMiddlewares.Authenticate)
 
 		NewItemHandler(r, s.db)
@@ -77,8 +90,10 @@ func addPublicHandlers(r chi.Router, options func(r chi.Router)) {
 }
 
 func (s *Server) Start() {
-	log.Printf("Listening 👂 on %s 🚪", s.Port)
-	fmt.Println("To close connection CTRL+C 🔌 ")
+	zap.L().Debug("Starting from port 8080")
+
+	zap.L().Info(fmt.Sprintf("Listening 👂 on %s 🚪", s.Port))
+	zap.L().Info("To close connection CTRL+C 🔌 ")
 
 	http.ListenAndServe(s.Port, s.router)
 }
