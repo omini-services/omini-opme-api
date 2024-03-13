@@ -8,6 +8,7 @@ import (
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/lestrrat-go/jwx/jwt"
+	"github.com/omini-services/omini-opme-be/internal/constants"
 	"github.com/omini-services/omini-opme-be/pkg/logger"
 	"go.uber.org/zap"
 )
@@ -32,7 +33,7 @@ func Authenticate(next http.Handler) http.Handler {
 			return
 		}
 
-		_, err = jwt.Parse(
+		token, err := jwt.Parse(
 			[]byte(splitAuthHeader[1]),
 			jwt.WithKeySet(keySet),
 			jwt.WithValidate(true),
@@ -46,7 +47,9 @@ func Authenticate(next http.Handler) http.Handler {
 			return
 		}
 
-		next.ServeHTTP(w, r)
+		ctx = context.WithValue(ctx, constants.JwtKey, token)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 

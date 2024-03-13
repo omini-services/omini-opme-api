@@ -2,8 +2,6 @@ package constants
 
 import "github.com/omini-services/omini-opme-be/pkg"
 
-type LogContextKeys string
-
 var (
 	CorrelationIdKey = pkg.ContextKey("correlationId")
 	LoggerKey        = pkg.ContextKey("logger")

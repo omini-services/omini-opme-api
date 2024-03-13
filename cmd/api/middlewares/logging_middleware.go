@@ -15,13 +15,13 @@ type loggingResponseWriter struct {
 }
 
 func NewLoggingResponseWriter(w http.ResponseWriter) *loggingResponseWriter {
-	return &loggingResponseWriter{w, http.StatusNotAcceptable}
+	return &loggingResponseWriter{w, http.StatusBadRequest}
 }
 
 func (lrw *loggingResponseWriter) WriteHeader(code int) {
 	lrw.statusCode = code
 
-	if code != 200 {
+	if code != http.StatusOK {
 		lrw.ResponseWriter.WriteHeader(code)
 	}
 }
