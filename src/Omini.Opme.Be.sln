@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omini.Opme.Be.Application",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omini.Opme.Be.Infrastructure", "Omini.Opme.Be.Infrastructure\Omini.Opme.Be.Infrastructure.csproj", "{C7D3866D-B921-411C-9196-E55FE06036EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omini.Opme.Be.Shared", "Omini.Opme.Be.Shared\Omini.Opme.Be.Shared.csproj", "{C8C6177D-8FF9-467F-A0B5-1E6E78E40EAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{C7D3866D-B921-411C-9196-E55FE06036EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7D3866D-B921-411C-9196-E55FE06036EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7D3866D-B921-411C-9196-E55FE06036EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8C6177D-8FF9-467F-A0B5-1E6E78E40EAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8C6177D-8FF9-467F-A0B5-1E6E78E40EAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8C6177D-8FF9-467F-A0B5-1E6E78E40EAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8C6177D-8FF9-467F-A0B5-1E6E78E40EAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
