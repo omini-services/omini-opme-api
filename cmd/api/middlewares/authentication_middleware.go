@@ -8,12 +8,17 @@ import (
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/lestrrat-go/jwx/jwt"
-	"github.com/omini-services/omini-opme-be/internal/constants"
+	ominiidentity "github.com/omini-services/omini-opme-be/pkg/identity"
 	"github.com/omini-services/omini-opme-be/pkg/logger"
 	"go.uber.org/zap"
 )
 
-func Authenticate(next http.Handler) http.Handler {
+type userInfoWriter struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func AuthenticationMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		logger := logger.FromContext(ctx)
@@ -47,7 +52,8 @@ func Authenticate(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx = context.WithValue(ctx, constants.JwtKey, token)
+		i := ominiidentity.NewOminiIdentity(token)
+		ctx = ominiidentity.WithContext(ctx, i)
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})

@@ -62,7 +62,7 @@ func (s *Server) AddHandlers(options func(r chi.Router)) {
 func (s *Server) addProtectedHandlers(r chi.Router) {
 
 	r.Group(func(r chi.Router) {
-		r.Use(customMiddlewares.Logging)
+		r.Use(customMiddlewares.LoggingMiddleware)
 		r.Use(cors.Handler(cors.Options{
 			// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
 			AllowedOrigins: []string{"https://*", "http://*"},
@@ -74,7 +74,8 @@ func (s *Server) addProtectedHandlers(r chi.Router) {
 			MaxAge:           300, // Maximum value not ignored by any of major browsers
 		}))
 
-		r.Use(customMiddlewares.Authenticate)
+		r.Use(customMiddlewares.AuthenticationMiddleware)
+		r.Use(customMiddlewares.DbMiddleware(s.db))
 
 		NewItemHandler(r, s.db)
 	})
@@ -82,7 +83,7 @@ func (s *Server) addProtectedHandlers(r chi.Router) {
 
 func addPublicHandlers(r chi.Router, options func(r chi.Router)) {
 	r.Group(func(r chi.Router) {
-		r.Use(customMiddlewares.Logging)
+		r.Use(customMiddlewares.LoggingMiddleware)
 		options(r)
 
 		NewApiHandler(r)

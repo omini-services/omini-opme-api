@@ -26,7 +26,7 @@ func (lrw *loggingResponseWriter) WriteHeader(code int) {
 	}
 }
 
-func Logging(next http.Handler) http.Handler {
+func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		correlationID := uuid.New().String()
 

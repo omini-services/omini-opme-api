@@ -26,6 +26,7 @@ func NewItemHandler(r chi.Router, u domain.ItemUsecase) *ItemHandler {
 		r.Get("/{id}", handler.GetByID)
 		r.Post("/", handler.Add)
 		r.Put("/{id}", handler.Update)
+		r.Delete("/{id}", handler.SoftDelete)
 	})
 
 	return handler
@@ -151,6 +152,30 @@ func (h *ItemHandler) Update(w http.ResponseWriter, r *http.Request) {
 	output := MapItemToOutputItem(data)
 
 	response.JsonSuccess(w, output, http.StatusOK)
+}
+
+func (h *ItemHandler) SoftDelete(w http.ResponseWriter, r *http.Request) {
+	// uuidString := chi.URLParam(r, "id")
+	// id, routeError := uuid.Parse(uuidString)
+
+	// if routeError != nil {
+	// 	response.JsonFail(w, []error{errors.New("invalid id")}, http.StatusBadRequest)
+	// 	return
+	// }
+
+	// err := h.iUsecase.SoftDelete(id)
+	// if err != nil {
+	// 	if err.ErrCode == domain.Unexpected {
+	// 		response.JsonFail(w, err.Error, http.StatusInternalServerError)
+	// 		return
+	// 	}
+	// 	response.JsonFail(w, err.Error, http.StatusBadRequest)
+	// 	return
+	// }
+
+	// output := MapItemToOutputItem(data)
+
+	//response.JsonSuccess(w, output, http.StatusOK)
 }
 
 func MapAddItemInputToItem(dto *dto.AddItemInputDTO) *domain.Item {

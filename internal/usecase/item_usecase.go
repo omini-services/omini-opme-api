@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/omini-services/omini-opme-be/internal/domain"
@@ -58,12 +57,27 @@ func (u *ItemUsecase) Update(id uuid.UUID, item *domain.Item) *domain.Validation
 	return nil
 }
 
+func (u *ItemUsecase) SoftDelete(id uuid.UUID) *domain.ValidationError {
+	item, err := u.itemRepository.GetByID(id)
+
+	if err != nil {
+		return &domain.ValidationError{ErrCode: domain.InvalidId, Error: []error{err}}
+	}
+
+	deletedBy := uuid.New()
+	item.SoftDelete(deletedBy)
+
+	err = u.itemRepository.Update(id, &item)
+
+	if err != nil {
+		return &domain.ValidationError{ErrCode: domain.Unexpected, Error: []error{err}}
+	}
+
+	return nil
+}
+
 func (i *ItemUsecase) Add(item *domain.Item) *domain.ValidationError {
 	item.ID = uuid.New()
-	item.CreatedBy = uuid.New()
-	item.CreatedAt = time.Now()
-	item.UpdatedBy = uuid.New()
-	item.UpdatedAt = time.Now()
 
 	err := i.itemRepository.Add(item)
 

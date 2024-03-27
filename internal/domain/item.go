@@ -20,10 +20,7 @@ type Item struct {
 	Cst           string    `gorm:"type:varchar(10);not null;column:Cst"`
 	SusCode       string    `gorm:"type:varchar(20);null;column:SusCode"`
 	NcmCode       string    `gorm:"type:varchar(10);not null;column:NcmCode"`
-	CreatedBy     uuid.UUID `gorm:"type:uuid;not null;column:CreatedBy"`
-	CreatedAt     time.Time `gorm:"type:timestamptz;not null;column:CreatedAt"`
-	UpdatedBy     uuid.UUID `gorm:"type:uuid;not null;column:UpdatedBy"`
-	UpdatedAt     time.Time `gorm:"type:timestamptz;not null;column:UpdatedAt"`
+	Auditable
 }
 
 type ItemRepository interface {
@@ -38,13 +35,12 @@ type ItemUsecase interface {
 	GetByID(id uuid.UUID) (Item, *ValidationError)
 	Update(id uuid.UUID, item *Item) *ValidationError
 	Add(item *Item) *ValidationError
+	SoftDelete(id uuid.UUID) *ValidationError
 }
 
 func NewItem(name string) (*Item, *ValidationError) {
 	item := &Item{
-		Name:      name,
-		UpdatedAt: time.Now().UTC(),
-		CreatedAt: time.Now().UTC(),
+		Name: name,
 	}
 	err := item.isValid()
 	if err != nil {
@@ -68,4 +64,10 @@ func (i *Item) isValid() *ValidationError {
 	}
 
 	return nil
+}
+
+func (i *Item) SoftDelete(id uuid.UUID) {
+	i.IsDeleted = true
+	i.IsDeletedAt = time.Now().UTC()
+	i.IsDeletedBy = uuid.New()
 }
