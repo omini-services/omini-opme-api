@@ -48,10 +48,10 @@ public class ItemsController : MainController
             return CreatedAtRoute("GetExpenseGroup", new { id = newExpenseGroup.Id }, newExpenseGroup);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, [FromBody] UpdateExpenseGroupDto updateExpenseGroupDto)
+        [HttpPut("{id:guid}")]
+        public async Task<ActionResult> Update(Guid id, [FromBody] ItemUpdateDto itemUpdateDto)
         {
-            if (updateExpenseGroupDto.Id != id)
+            if (itemUpdateDto.Id != id)
             {
                 return BadRequest();
             }

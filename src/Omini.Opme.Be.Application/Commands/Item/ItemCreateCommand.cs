@@ -27,16 +27,16 @@ public record ItemCreateCommand : IRequest<Result<Item, ValidationFailed>>
 
         public Task<Result<Item, ValidationFailed>> Handle(ItemCreateCommand request, CancellationToken cancellationToken)
         {
-             var expenseGroup = new ExpenseGroup(request.Name);
-                //foreach (var expenseCommand in command.Expenses)
-                //{
-                //    expenseGroup.AddExpense(new ExpenseGroupChildren(expenseCommand.Name, expenseCommand.ExtItemCode, expenseCommand.ExtUsage));
-                //}
+            var item = new Item(request.Name);
+            //foreach (var expenseCommand in command.Expenses)
+            //{
+            //    expenseGroup.AddExpense(new ExpenseGroupChildren(expenseCommand.Name, expenseCommand.ExtItemCode, expenseCommand.ExtUsage));
+            //}
 
-                await _itemRepository.Create(expenseGroup);
-                await _unitOfWork.Commit();
+            await _itemRepository.Create(item);
+            await _unitOfWork.Commit();
 
-                return Result.Success(expenseGroup);
+            return item;
         }
     }
 }

@@ -1,6 +1,7 @@
 using System.Reflection;
 using FluentValidation;
 using MediatR;
+using Omini.Opme.Be.Application;
 using Omini.Opme.Be.Application.PipelineBehaviors;
 using Omini.Opme.Be.Infrastructure;
 
@@ -21,9 +22,10 @@ internal class Startup
 
         services.AddInfrastructure(Configuration);
 
-        services.AddValidatorsFromAssembly(typeof(Startup).Assembly);
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Startup).Assembly));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+        services.AddApplication();
+        
         services.AddAutoMapper(typeof(Startup));
     }
     public void Configure(WebApplication app, IWebHostEnvironment env)
