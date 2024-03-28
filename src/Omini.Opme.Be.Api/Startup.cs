@@ -1,3 +1,9 @@
+using System.Reflection;
+using FluentValidation;
+using MediatR;
+using Omini.Opme.Be.Application.PipelineBehaviors;
+using Omini.Opme.Be.Infrastructure;
+
 internal class Startup
 {
     public Startup(IConfiguration configuration)
@@ -10,16 +16,23 @@ internal class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        // services.AddEndpointsApiExplorer();
+        // services.AddSwaggerGen();
+
+        services.AddInfrastructure(Configuration);
+
+        services.AddValidatorsFromAssembly(typeof(Startup).Assembly);
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Startup).Assembly));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddAutoMapper(typeof(Startup));
     }
     public void Configure(WebApplication app, IWebHostEnvironment env)
     {
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            // app.UseSwagger();
+            // app.UseSwaggerUI();
         }
 
         app.UseHttpsRedirection();
