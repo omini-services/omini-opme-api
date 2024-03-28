@@ -8,12 +8,18 @@ namespace Omini.Opme.Be.Application.Commands;
 
 public record ItemCreateCommand : IRequest<Result<Item, ValidationFailed>>
 {
-    public ItemCreateCommand(string name)
-    {
-        Name = name;
-    }
+    public string Code { get; init; }
+    public string Name { get; init; }
+    public string SalesName { get; init; }
+    public string Description { get; init; }
+    public string Uom { get; init; }
+    public string AnvisaCode { get; init; }
+    public DateTime AnvisaDueDate { get; init; }
+    public string SupplierCode { get; init; }
+    public string Cst { get; init; }
+    public string SusCode { get; init; }
+    public string NcmCode { get; init; }
 
-    public string Name { get; }
 
     public class ItemCreateCommandHandler : IRequestHandler<ItemCreateCommand, Result<Item, ValidationFailed>>
     {

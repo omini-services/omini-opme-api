@@ -36,14 +36,26 @@ public class ItemsController : MainController
         public async Task<ActionResult> Create(
             [FromBody] ItemCreateDto itemCreateDto)
         {
-            var command = new ItemCreateCommand(createExpenseGroupDto.Name);
+            var command = new ItemCreateCommand(){
+                Code = itemCreateDto.Code,
+                Name = itemCreateDto.Name,
+                SalesName =itemCreateDto.SalesName,
+                Description = itemCreateDto.Description,
+                Uom = itemCreateDto.Uom,
+                AnvisaCode = itemCreateDto.AnvisaCode,
+                AnvisaDueDate = itemCreateDto.AnvisaDueDate,
+                SupplierCode = itemCreateDto.SupplierCode,
+                Cst = itemCreateDto.Cst,
+                SusCode = itemCreateDto.SusCode,
+                NcmCode = itemCreateDto.NcmCode
+            };
 
             var result = await Mediator.Send(command);
 
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
+            // if (!result.Succeeded)
+            //     return BadRequest(result.Errors);
 
-            var newExpenseGroup = Mapper.Map<ExpenseGroupDto>((ExpenseGroup)result.Data);
+            // var newExpenseGroup = Mapper.Map<ExpenseGroupDto>((ExpenseGroup)result.Data);
 
             return CreatedAtRoute("GetExpenseGroup", new { id = newExpenseGroup.Id }, newExpenseGroup);
         }
