@@ -6,7 +6,7 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record ItemCreateCommand : IRequest<Result<Item, ValidationFailed>>
+public record CreateItemCommand : IRequest<Result<Item, ValidationFailed>>
 {
     public string Code { get; init; }
     public string Name { get; init; }
@@ -21,7 +21,7 @@ public record ItemCreateCommand : IRequest<Result<Item, ValidationFailed>>
     public string NcmCode { get; init; }
 
 
-    public class ItemCreateCommandHandler : IRequestHandler<ItemCreateCommand, Result<Item, ValidationFailed>>
+    public class ItemCreateCommandHandler : IRequestHandler<CreateItemCommand, Result<Item, ValidationFailed>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IItemRepository _itemRepository;
@@ -31,13 +31,22 @@ public record ItemCreateCommand : IRequest<Result<Item, ValidationFailed>>
             _itemRepository = itemRepository;
         }
 
-        public Task<Result<Item, ValidationFailed>> Handle(ItemCreateCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Item, ValidationFailed>> Handle(CreateItemCommand request, CancellationToken cancellationToken)
         {
-            var item = new Item(request.Name);
-            //foreach (var expenseCommand in command.Expenses)
-            //{
-            //    expenseGroup.AddExpense(new ExpenseGroupChildren(expenseCommand.Name, expenseCommand.ExtItemCode, expenseCommand.ExtUsage));
-            //}
+            var item = new Item(){
+                AnvisaCode = request.AnvisaCode,
+                AnvisaDueDate = request.AnvisaDueDate,
+                Code = request.Code,
+                Cst = request.Cst,
+                Description = request.Description,
+                Id = Guid.NewGuid(),
+                Name = request.Name,
+                NcmCode = request.NcmCode,
+                SalesName = request.SalesName,
+                SupplierCode= request.SupplierCode,
+                SusCode = request.SusCode,
+                Uom = request.Uom
+            };
 
             await _itemRepository.Create(item);
             await _unitOfWork.Commit();

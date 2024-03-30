@@ -1,6 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Omini.Opme.Be.Domain;
+using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Infrastructure.Contexts
 {
@@ -41,27 +43,27 @@ namespace Omini.Opme.Be.Infrastructure.Contexts
         {
             //var userId = _userService.GetUserId();
 
-            // foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().BaseType == typeof(Auditable)))
-            // {
-            //    // UpdateAuditable(userId, entry);
+            foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().BaseType == typeof(Auditable)))
+            {
+               SetAuditable(new Guid(), entry);
 
-            //    // UpdateCompanyId(entry);
-            // }
+               // UpdateCompanyId(entry);
+            }
 
             return await base.SaveChangesAsync(cancellationToken);
         }
 
-        // private static void UpdateAuditable(Guid userId, EntityEntry entry)
-        // {
-        //     if (entry.State == EntityState.Added)
-        //     {
-        //         entry.Property(nameof(Auditable.CreatedBy)).CurrentValue = userId;
-        //         entry.Property(nameof(Auditable.CreatedDate)).CurrentValue = DateTime.UtcNow;
-        //     }
+        private static void SetAuditable(Guid userId, EntityEntry entry)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Property(nameof(Auditable.CreatedBy)).CurrentValue = userId;
+                entry.Property(nameof(Auditable.CreatedDate)).CurrentValue = DateTime.UtcNow;
+            }
 
-        //     entry.Property(nameof(Auditable.LastModifiedBy)).CurrentValue = userId;
-        //     entry.Property(nameof(Auditable.LastModified)).CurrentValue = DateTime.UtcNow;
-        // }
+            entry.Property(nameof(Auditable.LastModifiedBy)).CurrentValue = userId;
+            entry.Property(nameof(Auditable.LastModified)).CurrentValue = DateTime.UtcNow;
+        }
 
         // private void UpdateCompanyId(EntityEntry entry)
         // {

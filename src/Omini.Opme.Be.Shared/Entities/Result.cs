@@ -5,6 +5,8 @@ public readonly struct Result<TValue, TError>
     private readonly TValue? _value;
     private readonly TError? _error;
 
+    public TValue Response { get { return _value! ;} }
+
     private Result(TValue value)
     {
         IsError = false;

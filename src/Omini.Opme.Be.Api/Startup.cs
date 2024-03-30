@@ -1,9 +1,9 @@
-using System.Reflection;
-using FluentValidation;
-using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Omini.Opme.Be.Api.Configuration;
 using Omini.Opme.Be.Application;
-using Omini.Opme.Be.Application.PipelineBehaviors;
 using Omini.Opme.Be.Infrastructure;
+using Omini.Opme.Be.Middlewares;
 
 internal class Startup
 {
@@ -14,18 +14,26 @@ internal class Startup
 
     public IConfiguration Configuration { get; }
 
-    public void ConfigureServices(IServiceCollection services)
+    public void ConfigureServices(WebApplicationBuilder app, IServiceCollection services)
     {
-        services.AddControllers();
+        services.AddControllers(options =>
+        {
+            var policy = new AuthorizationPolicyBuilder()
+                            .RequireAuthenticatedUser()
+                            .Build();
+            options.Filters.Add(new AuthorizeFilter(policy));
+        }).AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+        });
         // services.AddEndpointsApiExplorer();
         // services.AddSwaggerGen();
 
+        services.AddAuthenticationConfiguration(Configuration);
         services.AddInfrastructure(Configuration);
 
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Startup).Assembly));
-
         services.AddApplication();
-        
+
         services.AddAutoMapper(typeof(Startup));
     }
     public void Configure(WebApplication app, IWebHostEnvironment env)
@@ -39,8 +47,8 @@ internal class Startup
 
         app.UseHttpsRedirection();
 
-        // app.UseRequestLogging();
-        // app.UseGlobalException();
+        app.UseLoggingMiddleware();
+        app.UseExceptionMiddleware();
 
         app.UseAuthentication();
         app.UseAuthorization();

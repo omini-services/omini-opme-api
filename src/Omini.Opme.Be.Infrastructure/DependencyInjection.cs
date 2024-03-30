@@ -2,8 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Omini.Opme.Be.Domain.Repositories;
+using Omini.Opme.Be.Domain.Transactions;
 using Omini.Opme.Be.Infrastructure.Contexts;
 using Omini.Opme.Be.Infrastructure.Repositories;
+using Omini.Opme.Be.Infrastructure.Transaction;
 
 namespace Omini.Opme.Be.Infrastructure;
 
@@ -13,7 +15,9 @@ public static class DependecyInjection
     {
         services.AddDbContext<OpmeContext>(opt => opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
-        services.AddScoped<IItemRepository, ItemRepository>();
+        services.AddTransient<IItemRepository, ItemRepository>();
+
+        services.AddTransient<IUnitOfWork, UnitOfWork>();
         return services;
     }
 }

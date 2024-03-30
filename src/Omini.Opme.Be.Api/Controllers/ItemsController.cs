@@ -1,11 +1,15 @@
+
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using Omini.Opme.Be.Api.Dtos;
 using Omini.Opme.Be.Application.Commands;
 using Omini.Opme.Be.Domain.Repositories;
 
 namespace Omini.Opme.Be.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route($"{Constants.ApiPath}/[controller]")]
 public class ItemsController : MainController
 {
     private readonly ILogger<ItemsController> _logger;
@@ -20,60 +24,70 @@ public class ItemsController : MainController
         var items = await repository.GetAll();
         var result = Mapper.Map<IList<ItemOutputDto>>(items);
 
-        return Ok(result);
+        return Ok(ResponseDto.ApiSuccess(result));
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name = "GetById")]
     public async Task<ActionResult<ItemOutputDto>> GetById([FromServices] IItemRepository repository, Guid id)
     {
         var items = await repository.GetById(id);
         var result = Mapper.Map<ItemOutputDto>(items);
 
-        return Ok(result);
+        return Ok(ResponseDto.ApiSuccess(result));
     }
 
-        [HttpPost]
-        public async Task<ActionResult> Create(
-            [FromBody] ItemCreateDto itemCreateDto)
+    [HttpPost]
+    public async Task<ActionResult> Create(
+        [FromBody] ItemCreateDto itemCreateDto)
+    {
+        var command = new CreateItemCommand()
         {
-            var command = new ItemCreateCommand(){
-                Code = itemCreateDto.Code,
-                Name = itemCreateDto.Name,
-                SalesName =itemCreateDto.SalesName,
-                Description = itemCreateDto.Description,
-                Uom = itemCreateDto.Uom,
-                AnvisaCode = itemCreateDto.AnvisaCode,
-                AnvisaDueDate = itemCreateDto.AnvisaDueDate,
-                SupplierCode = itemCreateDto.SupplierCode,
-                Cst = itemCreateDto.Cst,
-                SusCode = itemCreateDto.SusCode,
-                NcmCode = itemCreateDto.NcmCode
-            };
+            Code = itemCreateDto.Code,
+            Name = itemCreateDto.Name,
+            SalesName = itemCreateDto.SalesName,
+            Description = itemCreateDto.Description,
+            Uom = itemCreateDto.Uom,
+            AnvisaCode = itemCreateDto.AnvisaCode,
+            AnvisaDueDate = itemCreateDto.AnvisaDueDate,
+            SupplierCode = itemCreateDto.SupplierCode,
+            Cst = itemCreateDto.Cst,
+            SusCode = itemCreateDto.SusCode,
+            NcmCode = itemCreateDto.NcmCode
+        };
 
-            var result = await Mediator.Send(command);
+        var result = await Mediator.Send(command);
 
-            // if (!result.Succeeded)
-            //     return BadRequest(result.Errors);
+        var newItem = Mapper.Map<ItemOutputDto>(result.Response);
 
-            // var newExpenseGroup = Mapper.Map<ExpenseGroupDto>((ExpenseGroup)result.Data);
+        return CreatedAtRoute("GetById", new { id = newItem.Id }, ResponseDto.ApiSuccess(newItem));
+    }
 
-            return CreatedAtRoute("GetExpenseGroup", new { id = newExpenseGroup.Id }, newExpenseGroup);
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult> Update(Guid id, [FromBody] ItemUpdateDto itemUpdateDto)
+    {
+        if (itemUpdateDto.Id != id)
+        {
+            throw new ValidationException("invalid id", new List<ValidationFailure>() { new ValidationFailure("id", "invalid id") });
         }
 
-        [HttpPut("{id:guid}")]
-        public async Task<ActionResult> Update(Guid id, [FromBody] ItemUpdateDto itemUpdateDto)
+        var command = new UpdateItemCommand()
         {
-            if (itemUpdateDto.Id != id)
-            {
-                return BadRequest();
-            }
+            Code = itemUpdateDto.Code,
+            Name = itemUpdateDto.Name,
+            SalesName = itemUpdateDto.SalesName,
+            Description = itemUpdateDto.Description,
+            Id = itemUpdateDto.Id,
+            Uom = itemUpdateDto.Uom,
+            AnvisaCode = itemUpdateDto.AnvisaCode,
+            AnvisaDueDate = itemUpdateDto.AnvisaDueDate,
+            SupplierCode = itemUpdateDto.SupplierCode,
+            Cst = itemUpdateDto.Cst,
+            SusCode = itemUpdateDto.SusCode,
+            NcmCode = itemUpdateDto.NcmCode
+        };
 
-            var command = new UpdateExpenseGroupCommand(updateExpenseGroupDto.Id, updateExpenseGroupDto.Name);
-            var result = await Mediator.Send(command);
+        await Mediator.Send(command);
 
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-
-            return NoContent();
-        }
+        return NoContent();
+    }
 }

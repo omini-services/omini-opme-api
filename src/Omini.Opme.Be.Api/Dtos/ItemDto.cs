@@ -1,4 +1,4 @@
-namespace Omini.Opme.Be.Api;
+namespace Omini.Opme.Be.Api.Dtos;
 
 public sealed record ItemCreateDto
 {
