@@ -1,6 +1,6 @@
 using Omini.Opme.Be.Shared.Entities;
 
-namespace Omini.Opme.Be.Domain;
+namespace Omini.Opme.Be.Domain.Entities;
 
 public class Item : Auditable
 {

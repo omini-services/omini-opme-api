@@ -2,12 +2,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Omini.Opme.Be.Domain\Omini.Opme.Be.Domain.csproj" />
+    <ProjectReference Include="..\Omini.Opme.Be.Shared\Omini.Opme.Be.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.9.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
     <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.3" />
   </ItemGroup>
 
   <PropertyGroup>

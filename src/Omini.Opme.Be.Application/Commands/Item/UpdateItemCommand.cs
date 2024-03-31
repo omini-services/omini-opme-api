@@ -1,6 +1,7 @@
 using FluentValidation.Results;
 using MediatR;
 using Omini.Opme.Be.Domain;
+using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Transactions;
 using Omini.Opme.Be.Shared.Entities;

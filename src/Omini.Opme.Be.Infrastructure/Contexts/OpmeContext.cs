@@ -1,20 +1,23 @@
 
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Omini.Opme.Be.Domain;
+using Omini.Opme.Be.Application;
+using Omini.Opme.Be.Domain.Entities;
+using Omini.Opme.Be.Domain.Services;
 using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Infrastructure.Contexts
 {
-    internal class OpmeContext : DbContext
+    internal class OpmeContext : IdentityDbContext<IdentityOpmeUser>, IOpmeContext
     {
-        //private readonly IUserService _userService;
+        private readonly IUserService _userService;
 
-        public OpmeContext(DbContextOptions<OpmeContext> options)
+        public OpmeContext(DbContextOptions<OpmeContext> options, IUserService userService)
             : base(options)
         {
             this.ChangeTracker.LazyLoadingEnabled = false;
-           // _userService = userService;
+            _userService = userService;
         }
 
         public DbSet<Item> Items { get; set; }
@@ -33,21 +36,19 @@ namespace Omini.Opme.Be.Infrastructure.Contexts
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             configurationBuilder
-                .Properties<string>()                
+                .Properties<string>()
                 .HaveMaxLength(100);
-                
+
             base.ConfigureConventions(configurationBuilder);
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            //var userId = _userService.GetUserId();
+            var userId = new Guid();//_userService.GetUserId();
 
             foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().BaseType == typeof(Auditable)))
             {
-               SetAuditable(new Guid(), entry);
-
-               // UpdateCompanyId(entry);
+                SetAuditable(userId, entry);
             }
 
             return await base.SaveChangesAsync(cancellationToken);

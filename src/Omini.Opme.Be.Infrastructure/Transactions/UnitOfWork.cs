@@ -5,14 +5,14 @@ namespace Omini.Opme.Be.Infrastructure.Transaction;
 
 internal class UnitOfWork : IUnitOfWork
 {
-    private readonly OpmeContext _diContext;
-    public UnitOfWork(OpmeContext diContext)
+    private readonly OpmeContext _opmeContext;
+    public UnitOfWork(OpmeContext opmeContext)
     {
-        _diContext = diContext;
+        _opmeContext = opmeContext;
     }
 
     public async Task Commit()
     {
-        var a = await _diContext.SaveChangesAsync();
+        await _opmeContext.SaveChangesAsync();
     }
 }

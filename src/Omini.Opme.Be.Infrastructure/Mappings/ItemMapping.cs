@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Omini.Opme.Be.Domain;
+using Omini.Opme.Be.Domain.Entities;
 
 internal class ItemMapping : IEntityTypeConfiguration<Item>
 {
