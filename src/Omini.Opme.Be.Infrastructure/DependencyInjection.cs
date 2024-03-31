@@ -22,6 +22,7 @@ public static class DependecyInjection
         services.AddTransient<IItemRepository, ItemRepository>();
 
         services.AddTransient<IUnitOfWork, UnitOfWork>();
+        
         return services;
     }
 }

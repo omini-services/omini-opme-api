@@ -45,7 +45,7 @@ internal class Startup
             // app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        //app.UseHttpsRedirection();
 
         app.UseLoggingMiddleware();
         app.UseExceptionMiddleware();
