@@ -22,11 +22,11 @@ public record CreateItemCommand : IRequest<Result<Item, ValidationFailed>>
     public string NcmCode { get; init; }
 
 
-    public class ItemCreateCommandHandler : IRequestHandler<CreateItemCommand, Result<Item, ValidationFailed>>
+    public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, Result<Item, ValidationFailed>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IItemRepository _itemRepository;
-        public ItemCreateCommandHandler(IUnitOfWork unitOfWork, IItemRepository itemRepository)
+        public CreateItemCommandHandler(IUnitOfWork unitOfWork, IItemRepository itemRepository)
         {
             _unitOfWork = unitOfWork;
             _itemRepository = itemRepository;

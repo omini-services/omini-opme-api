@@ -11,7 +11,7 @@ public static class ClaimsPrincipalExtensions
             throw new ArgumentException("Claim userId not found", nameof(principal));
         }
 
-        var claim = principal.FindFirst(ClaimTypes.NameIdentifier);
+        var claim = principal.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier");
         return claim?.Value;
     }
 

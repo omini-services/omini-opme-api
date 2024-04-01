@@ -90,4 +90,15 @@ public class ItemsController : MainController
 
         return NoContent();
     }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> Delete(Guid id)
+    {       
+        var command = new DeleteItemCommand(){
+            Id = id
+        };
+        await Mediator.Send(command);
+
+        return NoContent();
+    }
 }

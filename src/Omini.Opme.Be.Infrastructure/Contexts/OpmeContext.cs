@@ -44,7 +44,7 @@ namespace Omini.Opme.Be.Infrastructure.Contexts
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var userId = new Guid();//_userService.GetUserId();
+            var userId = _userService.GetUserId();
 
             foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().BaseType == typeof(Auditable)))
             {
