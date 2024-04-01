@@ -36,6 +36,7 @@ public record DeleteItemCommand : IRequest<Result<Item, ValidationFailed>>
 
             _auditableService.SoftDelete(item);
 
+            _itemRepository.Update(item);
             await _unitOfWork.Commit();
 
             return item;
