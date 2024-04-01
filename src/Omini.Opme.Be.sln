@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omini.Opme.Be.Infrastructur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omini.Opme.Be.Shared", "Omini.Opme.Be.Shared\Omini.Opme.Be.Shared.csproj", "{C8C6177D-8FF9-467F-A0B5-1E6E78E40EAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omini.Opme.Authentication", "Omini.Opme.Authentication\Omini.Opme.Authentication.csproj", "{D9FA4C30-B1F0-46E3-B02C-D59705ADA23E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{C8C6177D-8FF9-467F-A0B5-1E6E78E40EAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8C6177D-8FF9-467F-A0B5-1E6E78E40EAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8C6177D-8FF9-467F-A0B5-1E6E78E40EAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9FA4C30-B1F0-46E3-B02C-D59705ADA23E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9FA4C30-B1F0-46E3-B02C-D59705ADA23E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9FA4C30-B1F0-46E3-B02C-D59705ADA23E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9FA4C30-B1F0-46E3-B02C-D59705ADA23E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
