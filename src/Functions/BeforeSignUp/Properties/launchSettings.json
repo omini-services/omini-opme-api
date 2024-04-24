@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "Omini_Opme_Authentication": {
+    "BeforeSignUp": {
       "commandName": "Project",
-      "commandLineArgs": "--port 7268",
+      "commandLineArgs": "--port 7272",
       "launchBrowser": false
     }
   }

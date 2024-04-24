@@ -1,25 +1,25 @@
 
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Omini.Opme.Be.Application;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Services;
 using Omini.Opme.Be.Shared.Entities;
+using Omini.Opme.Be.Shared.Interfaces;
 
 namespace Omini.Opme.Be.Infrastructure.Contexts
 {
-    internal class OpmeContext : IdentityDbContext<IdentityOpmeUser>, IOpmeContext
+    public class OpmeContext : DbContext, IOpmeContext
     {
-        private readonly IUserService _userService;
+        private readonly IClaimsProvider _claimsProvider;
 
-        public OpmeContext(DbContextOptions<OpmeContext> options, IUserService userService)
+        public OpmeContext(DbContextOptions<OpmeContext> options, IClaimsProvider claimsProvider)
             : base(options)
         {
             this.ChangeTracker.LazyLoadingEnabled = false;
-            _userService = userService;
+            _claimsProvider = claimsProvider;
         }
-
+        public DbSet<IdentityOpmeUser> IdentityOpmeUsers { get; set; }
         public DbSet<Item> Items { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -27,7 +27,7 @@ namespace Omini.Opme.Be.Infrastructure.Contexts
             //builder.Ignore<Notification>();
             builder.ApplyConfigurationsFromAssembly(typeof(OpmeContext).Assembly);
 
-            //builder.Entity<ExpenseGroup>().HasQueryFilter(p => p.CompanyId == _userService.GetCompanyId() && p.CreatedBy == _userService.UserId);
+            builder.Entity<Item>().HasQueryFilter(p => !p.IsDeleted);
             //builder.Entity<ExpenseReport>().HasQueryFilter(p => p.CompanyId == _userService.GetCompanyId() && p.CreatedBy == _userService.UserId);
 
             base.OnModelCreating(builder);
@@ -44,7 +44,7 @@ namespace Omini.Opme.Be.Infrastructure.Contexts
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var userId = _userService.GetUserId();
+            var userId = _claimsProvider.GetUserId();
 
             foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().BaseType == typeof(Auditable)))
             {

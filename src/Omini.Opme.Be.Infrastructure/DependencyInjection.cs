@@ -18,8 +18,8 @@ public static class DependecyInjection
         services.AddDbContext<OpmeContext>(opt => opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddTransient<IAuditableService, AuditableService>();
-        services.AddTransient<IUserService, UserService>();
 
+        services.AddTransient<IIdentityOpmeUserRepository, IdentityOpmeUserRepository>();
         services.AddTransient<IItemRepository, ItemRepository>();
 
         services.AddTransient<IUnitOfWork, UnitOfWork>();

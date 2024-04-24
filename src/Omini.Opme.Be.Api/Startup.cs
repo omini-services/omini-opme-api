@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Omini.Opme.Be.Api.Configuration;
+using Omini.Opme.Be.Api.Configuration.Models;
+using Omini.Opme.Be.Api.Security;
 using Omini.Opme.Be.Application;
 using Omini.Opme.Be.Infrastructure;
 using Omini.Opme.Be.Middlewares;
+using Omini.Opme.Be.Shared.Interfaces;
 
 internal class Startup
 {
@@ -26,6 +29,10 @@ internal class Startup
         {
             options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
         });
+
+        var apiConnectorsOptions = Configuration.GetSection("APIConnectors");
+        services.Configure<APIConnectors>(apiConnectorsOptions);
+        
         // services.AddEndpointsApiExplorer();
         // services.AddSwaggerGen();
 
@@ -33,6 +40,8 @@ internal class Startup
         services.AddInfrastructure(Configuration);
 
         services.AddApplication();
+
+        services.AddScoped<IClaimsProvider, ClaimsProvider>();
 
         services.AddAutoMapper(typeof(Startup));
     }

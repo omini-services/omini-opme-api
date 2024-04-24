@@ -8,7 +8,7 @@ public static class AuthenticationConfiguration
     public static IServiceCollection AddAuthenticationConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                        .AddMicrosoftIdentityWebApi(configuration.GetSection("AzureAd"));
+                        .AddMicrosoftIdentityWebApi(configuration.GetSection("AzureAdB2C"));
         services.AddAuthorization(config =>
         {
             // config.AddPolicy("AuthZPolicy", policyBuilder =>

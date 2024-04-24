@@ -1,19 +1,20 @@
 using Omini.Opme.Be.Domain.Services;
 using Omini.Opme.Be.Shared.Entities;
+using Omini.Opme.Be.Shared.Interfaces;
 
 namespace Omini.Opme.Be.Infrastructure.Services;
 
 internal class AuditableService : IAuditableService
 {
-    private readonly IUserService _userService;
-    public AuditableService(IUserService userService)
+    private readonly IClaimsProvider _claimsProvider;
+    public AuditableService(IClaimsProvider claimsProvider)
     {
-        _userService = userService;
+        _claimsProvider = claimsProvider;
     }
     public void SoftDelete<T>(T entity) where T : Auditable
     {
         entity.IsDeleted = true;
-        entity.DeletedBy = _userService.GetUserId();
+        entity.DeletedBy = _claimsProvider.GetUserId();
         entity.DeletedAt = DateTime.UtcNow;
     }
 }

@@ -23,4 +23,7 @@
   <ItemGroup>
     <Using Include="System.Threading.ExecutionContext" Alias="ExecutionContext" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Omini.Opme.Be.Infrastructure\Omini.Opme.Be.Infrastructure.csproj" />
+  </ItemGroup>
 </Project>
