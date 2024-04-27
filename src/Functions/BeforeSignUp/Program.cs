@@ -15,7 +15,7 @@ var host = new HostBuilder()
     .ConfigureServices((hostContext, services) =>
     {
         services.AddInfrastructure(hostContext.Configuration);
-        services.AddScoped<IClaimsService, ClaimsProvider>();
+        services.AddScoped<IClaimsService, ClaimsService>();
     })
     .Build();
 
