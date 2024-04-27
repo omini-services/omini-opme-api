@@ -42,13 +42,9 @@ public readonly struct Result<TValue>
 
     private Result(TValue value)
     {
-        IsError = false;
         _value = value;
     }
 
-    public bool IsError { get; }
-
-    public bool IsSuccess => !IsError;
 
     public static implicit operator Result<TValue>(TValue value) => new(value);
 }
