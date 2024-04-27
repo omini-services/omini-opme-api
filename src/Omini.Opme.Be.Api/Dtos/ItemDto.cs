@@ -8,7 +8,7 @@ public sealed record ItemCreateDto
     public string Description { get; set; }
     public string Uom { get; set; }
     public string AnvisaCode { get; set; }
-    public DateTime AnvisaDueDate { get; set; }
+    public DateTime? AnvisaDueDate { get; set; }
     public string SupplierCode { get; set; }
     public string Cst { get; set; }
     public string SusCode { get; set; }
@@ -24,7 +24,7 @@ public sealed record ItemUpdateDto
     public string Description { get; set; }
     public string Uom { get; set; }
     public string AnvisaCode { get; set; }
-    public DateTime AnvisaDueDate { get; set; }
+    public DateTime? AnvisaDueDate { get; set; }
     public string SupplierCode { get; set; }
     public string Cst { get; set; }
     public string SusCode { get; set; }
@@ -41,7 +41,7 @@ public sealed record ItemOutputDto
     public string Description { get; set; }
     public string Uom { get; set; }
     public string AnvisaCode { get; set; }
-    public DateTime AnvisaDueDate { get; set; }
+    public DateTime? AnvisaDueDate { get; set; }
     public string SupplierCode { get; set; }
     public string Cst { get; set; }
     public string SusCode { get; set; }

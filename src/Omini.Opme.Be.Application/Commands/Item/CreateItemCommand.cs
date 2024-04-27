@@ -15,7 +15,7 @@ public record CreateItemCommand : IRequest<Result<Item, ValidationFailed>>
     public string Description { get; init; }
     public string Uom { get; init; }
     public string AnvisaCode { get; init; }
-    public DateTime AnvisaDueDate { get; init; }
+    public DateTime? AnvisaDueDate { get; init; }
     public string SupplierCode { get; init; }
     public string Cst { get; init; }
     public string SusCode { get; init; }

@@ -6,7 +6,10 @@ using Omini.Opme.Be.Infrastructure;
 using Omini.Opme.Be.Shared.Interfaces;
 
 var host = new HostBuilder()
-    .ConfigureFunctionsWorkerDefaults()
+    .ConfigureFunctionsWorkerDefaults((worker) =>
+    {
+        worker.UseMiddleware<AuthenticationMiddleware>();
+    })
     .ConfigureAppConfiguration((hostContext, builder) =>
     {
         builder.AddJsonFile("local.settings.json");
