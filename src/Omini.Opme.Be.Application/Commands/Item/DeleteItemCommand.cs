@@ -1,3 +1,4 @@
+using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Omini.Opme.Be.Domain.Entities;
@@ -8,11 +9,11 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record DeleteItemCommand : IRequest<Result<Item, ValidationFailed>>
+public record DeleteItemCommand : IRequest<Result<Item>>
 {
     public Guid Id { get; init; }
 
-    public class DeleteItemCommandHandler : IRequestHandler<DeleteItemCommand, Result<Item, ValidationFailed>>
+    public class DeleteItemCommandHandler : IRequestHandler<DeleteItemCommand, Result<Item>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IItemRepository _itemRepository;
@@ -26,12 +27,12 @@ public record DeleteItemCommand : IRequest<Result<Item, ValidationFailed>>
             _auditableService = auditableService;
         }
 
-        public async Task<Result<Item, ValidationFailed>> Handle(DeleteItemCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Item>> Handle(DeleteItemCommand request, CancellationToken cancellationToken)
         {
             var item = await _itemRepository.GetById(request.Id);
             if (item is null)
             {
-                return new ValidationFailed(new ValidationFailure("id", "invalid id"));
+                throw new ValidationException("Item not found", new List<ValidationFailure>() { new ValidationFailure("id", "invalid id") });
             }
 
             _auditableService.SoftDelete(item);

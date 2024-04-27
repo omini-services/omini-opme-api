@@ -1,5 +1,4 @@
 using MediatR;
-using Omini.Opme.Be.Domain;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Transactions;
@@ -7,7 +6,7 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record CreateItemCommand : IRequest<Result<Item, ValidationFailed>>
+public record CreateItemCommand : IRequest<Result<Item>>
 {
     public string Code { get; init; }
     public string Name { get; init; }
@@ -21,8 +20,7 @@ public record CreateItemCommand : IRequest<Result<Item, ValidationFailed>>
     public string SusCode { get; init; }
     public string NcmCode { get; init; }
 
-
-    public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, Result<Item, ValidationFailed>>
+    public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, Result<Item>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IItemRepository _itemRepository;
@@ -32,7 +30,7 @@ public record CreateItemCommand : IRequest<Result<Item, ValidationFailed>>
             _itemRepository = itemRepository;
         }
 
-        public async Task<Result<Item, ValidationFailed>> Handle(CreateItemCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Item>> Handle(CreateItemCommand request, CancellationToken cancellationToken)
         {
             var item = new Item(){
                 AnvisaCode = request.AnvisaCode,

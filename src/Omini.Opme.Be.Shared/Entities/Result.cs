@@ -33,3 +33,22 @@ public readonly struct Result<TValue, TError>
         Func<TError, TResult> failure) =>
             !IsError ? success(_value!) : failure(_error!);
 }
+
+public readonly struct Result<TValue>
+{
+    private readonly TValue? _value;
+
+    public TValue Response { get { return _value! ;} }
+
+    private Result(TValue value)
+    {
+        IsError = false;
+        _value = value;
+    }
+
+    public bool IsError { get; }
+
+    public bool IsSuccess => !IsError;
+
+    public static implicit operator Result<TValue>(TValue value) => new(value);
+}

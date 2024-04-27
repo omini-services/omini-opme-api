@@ -6,7 +6,7 @@ using Omini.Opme.Be.Application.PipelineBehaviors;
 
 namespace Omini.Opme.Be.Application;
 
-public static class DependecyInjection
+public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
