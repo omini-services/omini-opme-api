@@ -2,7 +2,7 @@ using System.Security.Claims;
 
 namespace Omini.Opme.Be.Shared.Interfaces;
 
-public interface IClaimsProvider{
+public interface IClaimsService{
     ClaimsPrincipal GetClaimsPrincipal();
-    Guid GetUserId();
+    Guid UserId { get; }
 }

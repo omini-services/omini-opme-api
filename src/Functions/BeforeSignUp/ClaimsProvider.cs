@@ -3,15 +3,12 @@ using Omini.Opme.Be.Shared.Interfaces;
 
 namespace BeforeSignUp;
 
-public class ClaimsProvider : IClaimsProvider
+public class ClaimsService : IClaimsService
 {
+    public Guid UserId => new Guid();
+
     public ClaimsPrincipal GetClaimsPrincipal()
     {
         throw new NotImplementedException();
-    }
-
-    public Guid GetUserId()
-    {
-        return new Guid();
     }
 }

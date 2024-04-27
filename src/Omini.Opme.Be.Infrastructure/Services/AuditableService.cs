@@ -6,8 +6,8 @@ namespace Omini.Opme.Be.Infrastructure.Services;
 
 internal class AuditableService : IAuditableService
 {
-    private readonly IClaimsProvider _claimsProvider;
-    public AuditableService(IClaimsProvider claimsProvider)
+    private readonly IClaimsService _claimsProvider;
+    public AuditableService(IClaimsService claimsProvider)
     {
         _claimsProvider = claimsProvider;
     }

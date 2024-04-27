@@ -41,7 +41,7 @@ internal class Startup
 
         services.AddApplication();
 
-        services.AddScoped<IClaimsProvider, ClaimsProvider>();
+        services.AddScoped<IClaimsService, ClaimsService>();
 
         services.AddAutoMapper(typeof(Startup));
     }

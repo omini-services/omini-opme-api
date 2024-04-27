@@ -11,9 +11,9 @@ namespace Omini.Opme.Be.Infrastructure.Contexts
 {
     public class OpmeContext : DbContext, IOpmeContext
     {
-        private readonly IClaimsProvider _claimsProvider;
+        private readonly IClaimsService _claimsProvider;
 
-        public OpmeContext(DbContextOptions<OpmeContext> options, IClaimsProvider claimsProvider)
+        public OpmeContext(DbContextOptions<OpmeContext> options, IClaimsService claimsProvider)
             : base(options)
         {
             this.ChangeTracker.LazyLoadingEnabled = false;
