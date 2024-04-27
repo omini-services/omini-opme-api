@@ -14,7 +14,7 @@ internal class AuditableService : IAuditableService
     public void SoftDelete<T>(T entity) where T : Auditable
     {
         entity.IsDeleted = true;
-        entity.DeletedBy = _claimsProvider.GetUserId();
+        entity.DeletedBy = _claimsProvider.UserId;
         entity.DeletedAt = DateTime.UtcNow;
     }
 }
