@@ -1,6 +1,6 @@
 
 using FluentValidation;
-using Omini.Opme.Be.Api.Dtos;
+using Omini.Opme.Be.Api.Extensions;
 
 namespace Omini.Opme.Be.Middlewares;
 
@@ -27,24 +27,15 @@ public class ExceptionMiddleware
         {
             await _next(context);
         }
-        catch (Exception ex)
+        catch (ValidationException ex)
         {
-            ResponseDto response;
-
-            if (ex is ValidationException)
-            {
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                var validationException = ex as ValidationException;
-                response = ResponseDto.ApiError(validationException.Errors.Select(p => p.ToString()).ToArray());
-            }
-            else
-            {
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                response = ResponseDto.ApiError("An error occurred whilst processing your request");
-            }
-
-            await context.Response.WriteAsJsonAsync(response);
-
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            var error = ex.ToProblemDetails();
+            await context.Response.WriteAsJsonAsync(error);
+        }
+        catch
+        {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             throw;
         }
     }

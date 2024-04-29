@@ -1,9 +1,7 @@
 
 using System.Diagnostics;
-using FluentValidation;
-using Omini.Opme.Be.Api.Dtos;
 
-namespace Omini.Opme.Be.Middlewares;
+namespace Omini.Opme.Be.Api.Middlewares;
 
 public static class LoggingMiddlewareExtensions
 {

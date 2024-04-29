@@ -8,7 +8,7 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record UpdateItemCommand : IRequest<Result<Item>>
+public record UpdateItemCommand : IRequest<Result<Item, ValidationException>>
 {
     public Guid Id { get; init; }
     public string Code { get; init; }
@@ -24,7 +24,7 @@ public record UpdateItemCommand : IRequest<Result<Item>>
     public string NcmCode { get; init; }
 
 
-    public class UpdateItemCommandHandler : IRequestHandler<UpdateItemCommand, Result<Item>>
+    public class UpdateItemCommandHandler : IRequestHandler<UpdateItemCommand, Result<Item, ValidationException>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IItemRepository _itemRepository;
@@ -34,12 +34,12 @@ public record UpdateItemCommand : IRequest<Result<Item>>
             _itemRepository = itemRepository;
         }
 
-        public async Task<Result<Item>> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Item, ValidationException>> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
         {
             var item = await _itemRepository.GetById(request.Id);
             if (item is null)
             {
-                 throw new ValidationException("Item not found", new List<ValidationFailure>() { new ValidationFailure("id", "invalid id") });
+                return new ValidationException([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
             item.AnvisaCode = request.AnvisaCode;

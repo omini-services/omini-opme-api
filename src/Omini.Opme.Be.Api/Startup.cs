@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Omini.Opme.Be.Api.Configuration;
 using Omini.Opme.Be.Api.Configuration.Models;
+using Omini.Opme.Be.Api.Middlewares;
 using Omini.Opme.Be.Api.Security;
 using Omini.Opme.Be.Application;
 using Omini.Opme.Be.Infrastructure;
@@ -35,7 +36,6 @@ internal class Startup
         
         // services.AddEndpointsApiExplorer();
         // services.AddSwaggerGen();
-
         services.AddAuthenticationConfiguration(Configuration);
         services.AddInfrastructure(Configuration);
 

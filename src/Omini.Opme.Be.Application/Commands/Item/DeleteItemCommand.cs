@@ -9,15 +9,16 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record DeleteItemCommand : IRequest<Result<Item>>
+public record DeleteItemCommand : IRequest<Result<Item, ValidationException>>
 {
     public Guid Id { get; init; }
 
-    public class DeleteItemCommandHandler : IRequestHandler<DeleteItemCommand, Result<Item>>
+    public class DeleteItemCommandHandler : IRequestHandler<DeleteItemCommand, Result<Item, ValidationException>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IItemRepository _itemRepository;
         private readonly IAuditableService _auditableService;
+
         public DeleteItemCommandHandler(IUnitOfWork unitOfWork,
                                         IItemRepository itemRepository,
                                         IAuditableService auditableService)
@@ -27,12 +28,12 @@ public record DeleteItemCommand : IRequest<Result<Item>>
             _auditableService = auditableService;
         }
 
-        public async Task<Result<Item>> Handle(DeleteItemCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Item, ValidationException>> Handle(DeleteItemCommand request, CancellationToken cancellationToken)
         {
             var item = await _itemRepository.GetById(request.Id);
             if (item is null)
             {
-                throw new ValidationException("Item not found", new List<ValidationFailure>() { new ValidationFailure("id", "invalid id") });
+                return new ValidationException([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
             _auditableService.SoftDelete(item);

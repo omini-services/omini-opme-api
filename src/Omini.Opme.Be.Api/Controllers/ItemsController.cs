@@ -4,6 +4,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Omini.Opme.Be.Api.Dtos;
 using Omini.Opme.Be.Application.Commands;
+using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 
 namespace Omini.Opme.Be.Api.Controllers;
@@ -27,7 +28,7 @@ public class ItemsController : MainController
         return Ok(ResponseDto.ApiSuccess(result));
     }
 
-    [HttpGet("{id:guid}", Name = "GetById")]
+    [HttpGet("{id:guid}")]
     public async Task<ActionResult<ItemOutputDto>> GetById([FromServices] IItemRepository repository, Guid id)
     {
         var items = await repository.GetById(id);
@@ -37,7 +38,7 @@ public class ItemsController : MainController
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create(
+    public async Task<IActionResult> Create(
         [FromBody] ItemCreateDto itemCreateDto)
     {
         var command = new CreateItemCommand()
@@ -57,17 +58,15 @@ public class ItemsController : MainController
 
         var result = await Mediator.Send(command);
 
-        var newItem = Mapper.Map<ItemOutputDto>(result.Response);
-
-        return CreatedAtRoute("GetById", new { id = newItem.Id }, ResponseDto.ApiSuccess(newItem));
+        return ToCreatedAtRoute(result, Mapper.Map<ItemOutputDto>, nameof(ItemsController), nameof(this.GetById), (mapped) => new { id = mapped.Id });
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult> Update(Guid id, [FromBody] ItemUpdateDto itemUpdateDto)
+    public async Task<IActionResult> Update(Guid id, [FromBody] ItemUpdateDto itemUpdateDto)
     {
         if (itemUpdateDto.Id != id)
         {
-            throw new ValidationException("invalid id", new List<ValidationFailure>() { new ValidationFailure("id", "invalid id") });
+            return ToBadRequest(new ValidationException("Invalid id", new List<ValidationFailure>() { new ValidationFailure("Id", "Invalid id") }));
         }
 
         var command = new UpdateItemCommand()
@@ -86,19 +85,21 @@ public class ItemsController : MainController
             NcmCode = itemUpdateDto.NcmCode
         };
 
-        await Mediator.Send(command);
+        var result = await Mediator.Send(command);
 
-        return NoContent();
+        return ToNoContent(result);
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> Delete(Guid id)
-    {       
-        var command = new DeleteItemCommand(){
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var command = new DeleteItemCommand()
+        {
             Id = id
         };
-        await Mediator.Send(command);
 
-        return NoContent();
+        var result = await Mediator.Send(command);
+
+        return ToNoContent(result);
     }
 }

@@ -1,12 +1,12 @@
-using FluentValidation;
-using Omini.Opme.Be.Application.Commands;
+// using FluentValidation;
+// using Omini.Opme.Be.Application.Commands;
 
-namespace Omini.Opme.Be.Application.Validation;
+// namespace Omini.Opme.Be.Application.Validation;
 
-public class ItemCreateCommandValidator : AbstractValidator<UpdateItemCommand>{
-    public ItemCreateCommandValidator()
-    {
-        RuleFor(x=> x.Name)
-            .NotEmpty();
-    }
-}
+// public class ItemCreateCommandValidator : AbstractValidator<CreateItemCommand>{
+//     public ItemCreateCommandValidator()
+//     {
+//         RuleFor(x=> x.Name)
+//             .NotEmpty();
+//     }
+// }
