@@ -3,13 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Omini.Opme.Be.Application;
 using Omini.Opme.Be.Domain.Entities;
-using Omini.Opme.Be.Domain.Services;
 using Omini.Opme.Be.Shared.Entities;
 using Omini.Opme.Be.Shared.Interfaces;
 
 namespace Omini.Opme.Be.Infrastructure.Contexts
 {
-    public class OpmeContext : DbContext, IOpmeContext
+    internal class OpmeContext : DbContext
     {
         private readonly IClaimsService _claimsProvider;
 
@@ -19,8 +18,12 @@ namespace Omini.Opme.Be.Infrastructure.Contexts
             this.ChangeTracker.LazyLoadingEnabled = false;
             _claimsProvider = claimsProvider;
         }
+        public DbSet<Hospital> Hospitals { get ; set ; }
         public DbSet<IdentityOpmeUser> IdentityOpmeUsers { get; set; }
         public DbSet<Item> Items { get; set; }
+        public DbSet<InsuranceCompany> InsuranceCompanies { get ; set ; }
+        public DbSet<Patient> Patients { get; set ; }
+        public DbSet<Physician> Physicians { get; set ; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

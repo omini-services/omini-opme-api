@@ -8,9 +8,9 @@ internal class IdentityOpmeUserMapping : IEntityTypeConfiguration<IdentityOpmeUs
     {
         builder.HasKey(x => x.Id);
         
-        builder.Property(x=>x.Email)
-               .IsRequired()
-               .HasMaxLength(100);
+        builder.Property(x => x.Email)
+            .IsRequired()
+            .HasMaxLength(100);
                
         builder.ToTable("IdentityOpmeUsers");
     }

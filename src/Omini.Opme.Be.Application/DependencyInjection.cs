@@ -1,6 +1,5 @@
 using System.Reflection;
 using FluentValidation;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 // using Omini.Opme.Be.Application.PipelineBehaviors;
 

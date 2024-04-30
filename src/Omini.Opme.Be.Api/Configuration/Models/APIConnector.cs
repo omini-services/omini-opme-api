@@ -1,12 +1,12 @@
 namespace Omini.Opme.Be.Api.Configuration.Models;
 
-public class APIConnector
+internal class APIConnector
 {
     protected string BasicAuthUsername { get; set; }
     protected string BasicAuthPassword { get; set; }
 }
 
-public class APIConnectors
+internal class APIConnectors
 {
     public APIConnector SignInSignUpExtension { get; set; }
 }

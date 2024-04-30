@@ -33,7 +33,8 @@ internal class Startup
 
         var apiConnectorsOptions = Configuration.GetSection("APIConnectors");
         services.Configure<APIConnectors>(apiConnectorsOptions);
-        
+
+        services.AddScoped<IClaimsService, ClaimsService>();
         // services.AddEndpointsApiExplorer();
         // services.AddSwaggerGen();
         services.AddAuthenticationConfiguration(Configuration);
@@ -41,7 +42,7 @@ internal class Startup
 
         services.AddApplication();
 
-        services.AddScoped<IClaimsService, ClaimsService>();
+
 
         services.AddAutoMapper(typeof(Startup));
     }

@@ -4,7 +4,6 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Omini.Opme.Be.Api.Dtos;
 using Omini.Opme.Be.Application.Commands;
-using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 
 namespace Omini.Opme.Be.Api.Controllers;
@@ -71,11 +70,11 @@ public class ItemsController : MainController
 
         var command = new UpdateItemCommand()
         {
+            Id = itemUpdateDto.Id,
             Code = itemUpdateDto.Code,
             Name = itemUpdateDto.Name,
             SalesName = itemUpdateDto.SalesName,
             Description = itemUpdateDto.Description,
-            Id = itemUpdateDto.Id,
             Uom = itemUpdateDto.Uom,
             AnvisaCode = itemUpdateDto.AnvisaCode,
             AnvisaDueDate = itemUpdateDto.AnvisaDueDate,

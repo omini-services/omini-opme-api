@@ -8,7 +8,6 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Api.Controllers;
 
-
 public class MainController : ControllerBase
 {
     private ISender _mediator;

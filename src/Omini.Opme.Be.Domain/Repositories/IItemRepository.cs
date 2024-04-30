@@ -2,10 +2,6 @@ using Omini.Opme.Be.Domain.Entities;
 
 namespace Omini.Opme.Be.Domain.Repositories;
 
-public interface IItemRepository
+public interface IItemRepository : IRepository<Item>
 {
-    Task Create(Item item);
-    Task<Item> GetById(Guid id);
-    Task<IList<Item>> GetAll();
-    void Update(Item item);
 }
