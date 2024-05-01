@@ -1,14 +1,10 @@
-include cmd/.env
 .DEFAULT_GOAL := help
 
 createmigration:
-	migrate create -ext=sql -dir=sql/migrations -seq $(name)
+	dotnet ef migrations add $(name) --project ./src/Omini.Opme.Be.Infrastructure/Omini.Opme.Be.Infrastructure.csproj --startup-project ./src/Omini.Opme.Be.Api
 	
-migrateup:
-	migrate -path=sql/migrations -database $(DB_CONNECTION_STRING_MIGRATION) -verbose up
-
-migratedown:
-	migrate -path=sql/migrations -database $(DB_CONNECTION_STRING_MIGRATION) -verbose down
+migrate:
+	dotnet ef database update $(name) --project ./src/Omini.Opme.Be.Infrastructure/Omini.Opme.Be.Infrastructure.csproj --startup-project ./src/Omini.Opme.Be.Api
 
 run:
 	go run -ldflags="-X 'main.version=v1.0.0' -X 'main.build=$(shell date +'%Y-%m-%d %H:%M:%S')'" cmd/main.go

@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-
 namespace Omini.Opme.Be.Api.Dtos;
 
 public record ResponseDto

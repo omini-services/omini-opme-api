@@ -1,18 +1,17 @@
-using Omini.Opme.Be.Shared.Entities;
+using Omini.Opme.Be.Domain.Enums;
 
 namespace Omini.Opme.Be.Domain.Entities;
 
-public class Quotation : Auditable
+public class Quotation : Entity
 {
-    public Guid Id { get; set; }
     public string Number { get; set; }
-    public Guid PacientId { get; set; }
+    public Guid PatientId { get; set; }
     public Guid PhysicianId { get; set; }
-    public string PayingSource { get; set; }
-    public Guid PayingSourceI { get; set; }
+    public PayingSourceType PayingSourceType { get; set; }
+    public Guid PayingSourceId { get; set; }
     public Guid HospitalId { get; set; }
-    public Guid InsuranceSupplierId { get; set; }
-    public Guid SpecialistId { get; set; }
+    public Guid InsuranceCompanyId { get; set; }
+    public Guid InternalSpecialistId { get; set; }
     public DateTime DueDate { get; set; }
     public List<QuotationItem> Items { get; set; }
 }

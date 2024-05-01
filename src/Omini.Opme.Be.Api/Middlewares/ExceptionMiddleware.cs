@@ -4,7 +4,7 @@ using Omini.Opme.Be.Api.Extensions;
 
 namespace Omini.Opme.Be.Middlewares;
 
-public static class ExceptionMiddlewareExtensions
+internal static class ExceptionMiddlewareExtensions
 {
     public static IApplicationBuilder UseExceptionMiddleware(this IApplicationBuilder builder)
     {
@@ -12,7 +12,7 @@ public static class ExceptionMiddlewareExtensions
     }
 }
 
-public class ExceptionMiddleware
+internal class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
 

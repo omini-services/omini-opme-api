@@ -1,9 +1,9 @@
-using Omini.Opme.Be.Shared.Entities;
-
 namespace Omini.Opme.Be.Domain.Entities;
 
-public class Physician : Auditable
+public class Physician : Entity
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
+    public PersonName Name { get; set; }
+    public string Cro { get; set; }
+    public string Crm { get; set; }
+    public string Comments { get; set; }
 }

@@ -3,7 +3,7 @@ using Microsoft.Identity.Web;
 
 namespace Omini.Opme.Be.Api.Configuration;
 
-public static class AuthenticationConfiguration
+internal static class AuthenticationConfiguration
 {
     public static IServiceCollection AddAuthenticationConfiguration(this IServiceCollection services, IConfiguration configuration)
     {

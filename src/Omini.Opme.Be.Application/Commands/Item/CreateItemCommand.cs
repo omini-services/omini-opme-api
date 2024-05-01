@@ -56,7 +56,7 @@ public record CreateItemCommand : IRequest<Result<Item, ValidationException>>
                 Uom = request.Uom
             };
 
-            await _itemRepository.Create(item);
+            await _itemRepository.Add(item);
             await _unitOfWork.Commit();
 
             return item;

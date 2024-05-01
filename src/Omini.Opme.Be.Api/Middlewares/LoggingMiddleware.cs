@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Omini.Opme.Be.Api.Middlewares;
 
-public static class LoggingMiddlewareExtensions
+internal static class LoggingMiddlewareExtensions
 {
     public static IApplicationBuilder UseLoggingMiddleware(this IApplicationBuilder builder)
     {
@@ -11,7 +11,7 @@ public static class LoggingMiddlewareExtensions
     }
 }
 
-public class LoggingMiddleware
+internal class LoggingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<LoggingMiddleware> _logger;
