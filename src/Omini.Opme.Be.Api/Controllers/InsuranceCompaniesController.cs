@@ -30,8 +30,13 @@ public class InsuranceCompaniesController : MainController
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<InsuranceCompanyOutputDto>> GetById([FromServices] IInsuranceCompanyRepository repository, Guid id)
     {
-        var insuranceCompanies = await repository.GetById(id);
-        var result = Mapper.Map<InsuranceCompanyOutputDto>(insuranceCompanies);
+        var insuranceCompany = await repository.GetById(id);
+
+        if (insuranceCompany is null){
+            return BadRequest();
+        }        
+
+        var result = Mapper.Map<InsuranceCompanyOutputDto>(insuranceCompany);
 
         return Ok(ResponseDto.ApiSuccess(result));
     }

@@ -30,8 +30,13 @@ public class PhysiciansController : MainController
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<PhysicianOutputDto>> GetById([FromServices] IPhysicianRepository repository, Guid id)
     {
-        var physicians = await repository.GetById(id);
-        var result = Mapper.Map<PhysicianOutputDto>(physicians);
+        var physician = await repository.GetById(id);
+        
+        if (physician is null){
+            return BadRequest();
+        }
+        
+        var result = Mapper.Map<PhysicianOutputDto>(physician);
 
         return Ok(ResponseDto.ApiSuccess(result));
     }

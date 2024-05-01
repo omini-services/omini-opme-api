@@ -30,8 +30,13 @@ public class ItemsController : MainController
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<ItemOutputDto>> GetById([FromServices] IItemRepository repository, Guid id)
     {
-        var items = await repository.GetById(id);
-        var result = Mapper.Map<ItemOutputDto>(items);
+        var item = await repository.GetById(id);
+
+        if (item is null){
+            return BadRequest();
+        }
+        
+        var result = Mapper.Map<ItemOutputDto>(item);
 
         return Ok(ResponseDto.ApiSuccess(result));
     }

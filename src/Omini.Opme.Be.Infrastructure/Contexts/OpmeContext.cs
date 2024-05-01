@@ -1,8 +1,7 @@
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Omini.Opme.Be.Application;
 using Omini.Opme.Be.Domain.Entities;
+using Omini.Opme.Be.Infrastructure.Extensions;
 using Omini.Opme.Be.Shared.Entities;
 using Omini.Opme.Be.Shared.Interfaces;
 
@@ -18,20 +17,19 @@ namespace Omini.Opme.Be.Infrastructure.Contexts
             this.ChangeTracker.LazyLoadingEnabled = false;
             _claimsProvider = claimsProvider;
         }
-        public DbSet<Hospital> Hospitals { get ; set ; }
+        public DbSet<Hospital> Hospitals { get; set; }
         public DbSet<IdentityOpmeUser> IdentityOpmeUsers { get; set; }
         public DbSet<Item> Items { get; set; }
-        public DbSet<InsuranceCompany> InsuranceCompanies { get ; set ; }
-        public DbSet<Patient> Patients { get; set ; }
-        public DbSet<Physician> Physicians { get; set ; }
+        public DbSet<InsuranceCompany> InsuranceCompanies { get; set; }
+        public DbSet<Patient> Patients { get; set; }
+        public DbSet<Physician> Physicians { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             //builder.Ignore<Notification>();
             builder.ApplyConfigurationsFromAssembly(typeof(OpmeContext).Assembly);
 
-            builder.Entity<Item>().HasQueryFilter(p => !p.IsDeleted);
-            //builder.Entity<ExpenseReport>().HasQueryFilter(p => p.CompanyId == _userService.GetCompanyId() && p.CreatedBy == _userService.UserId);
+            builder.EnableSoftDelete();
 
             base.OnModelCreating(builder);
         }
@@ -68,21 +66,21 @@ namespace Omini.Opme.Be.Infrastructure.Contexts
             entry.Property(nameof(Auditable.LastModifiedBy)).CurrentValue = userId;
             entry.Property(nameof(Auditable.LastModified)).CurrentValue = DateTime.UtcNow;
         }
-
-        // private void UpdateCompanyId(EntityEntry entry)
-        // {
-        //     if (ShouldUpdateCompanyId(entry))
-        //     {
-        //         if (entry.State == EntityState.Added)
-        //             entry.Property("CompanyId").CurrentValue = _userService.GetCompanyId();
-        //         else if (entry.State == EntityState.Modified)
-        //             entry.Property("CompanyId").IsModified = false;
-        //     }
-        // }
-
-        // private static bool ShouldUpdateCompanyId(EntityEntry entry)
-        // {
-        //     return entry.Entity.GetType().GetProperty("CompanyId") != null;
-        // }
     }
+    // private void UpdateCompanyId(EntityEntry entry)
+    // {
+    //     if (ShouldUpdateCompanyId(entry))
+    //     {
+    //         if (entry.State == EntityState.Added)
+    //             entry.Property("CompanyId").CurrentValue = _userService.GetCompanyId();
+    //         else if (entry.State == EntityState.Modified)
+    //             entry.Property("CompanyId").IsModified = false;
+    //     }
+    // }
+
+    // private static bool ShouldUpdateCompanyId(EntityEntry entry)
+    // {
+    //     return entry.Entity.GetType().GetProperty("CompanyId") != null;
+    // }
 }
+
