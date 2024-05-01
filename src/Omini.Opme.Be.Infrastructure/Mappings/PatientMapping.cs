@@ -23,6 +23,9 @@ internal class PatientMapping : IEntityTypeConfiguration<Patient>
             .HasColumnName("LastName")
             .IsRequired();
 
+        builder.Property(x=>x.Cpf)
+            .HasMaxLength(14);
+
         builder.ToTable("Patients");
     }
 }

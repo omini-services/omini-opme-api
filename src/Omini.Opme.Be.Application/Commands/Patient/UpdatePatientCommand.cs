@@ -5,6 +5,7 @@ using Omini.Opme.Be.Domain;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Transactions;
+using Omini.Opme.Be.Shared;
 using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
@@ -36,7 +37,7 @@ public record UpdatePatientCommand : IRequest<Result<Patient, ValidationExceptio
                 return new ValidationException([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
-            patient.Cpf = request.Cpf;
+            patient.Cpf = StringFormatter.FormatCpf(request.Cpf);
             patient.Name = new PersonName(request.FirstName, request.MiddleName, request.LastName);
             patient.Comments = request.Comments;
 

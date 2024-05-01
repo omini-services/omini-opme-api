@@ -4,6 +4,7 @@ using Omini.Opme.Be.Domain;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Transactions;
+using Omini.Opme.Be.Shared;
 using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
@@ -28,7 +29,7 @@ public record CreateHospitalCommand : IRequest<Result<Hospital, ValidationExcept
         public async Task<Result<Hospital, ValidationException>> Handle(CreateHospitalCommand request, CancellationToken cancellationToken)
         {
             var hospital = new Hospital(){
-                Cnpj = request.Cnpj,
+                Cnpj = StringFormatter.FormatCnpj(request.Cnpj),
                 Name = new CompanyName(request.LegalName, request.TradeName),
                 Comments = request.Comments
             };

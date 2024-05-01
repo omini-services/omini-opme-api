@@ -5,6 +5,7 @@ using Omini.Opme.Be.Domain;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Transactions;
+using Omini.Opme.Be.Shared;
 using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
@@ -35,7 +36,7 @@ public record UpdateHospitalCommand : IRequest<Result<Hospital, ValidationExcept
                 return new ValidationException([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
-            hospital.Cnpj = request.Cnpj;
+            hospital.Cnpj = StringFormatter.FormatCnpj(request.Cnpj);
             hospital.Name = new CompanyName(request.LegalName, request.TradeName);
             hospital.Comments = request.Comments;
 
