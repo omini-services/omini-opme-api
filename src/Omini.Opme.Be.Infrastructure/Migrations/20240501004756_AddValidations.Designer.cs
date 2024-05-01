@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Omini.Opme.Be.Infrastructure.Contexts;
@@ -11,9 +12,11 @@ using Omini.Opme.Be.Infrastructure.Contexts;
 namespace Omini.Opme.Be.Infrastructure.Migrations
 {
     [DbContext(typeof(OpmeContext))]
-    partial class OpmeContextModelSnapshot : ModelSnapshot
+    [Migration("20240501004756_AddValidations")]
+    partial class AddValidations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
