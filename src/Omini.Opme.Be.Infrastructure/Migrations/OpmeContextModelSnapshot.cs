@@ -30,8 +30,8 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
 
                     b.Property<string>("Cnpj")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(18)
+                        .HasColumnType("character varying(18)");
 
                     b.Property<string>("Comments")
                         .IsRequired()
@@ -88,8 +88,8 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
 
                     b.Property<string>("Cnpj")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(18)
+                        .HasColumnType("character varying(18)");
 
                     b.Property<string>("Comments")
                         .IsRequired()
@@ -245,8 +245,8 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
 
                     b.Property<string>("Cpf")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(14)
+                        .HasColumnType("character varying(14)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -380,17 +380,13 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HospitalId")
-                        .IsUnique();
+                    b.HasIndex("HospitalId");
 
-                    b.HasIndex("InsuranceCompanyId")
-                        .IsUnique();
+                    b.HasIndex("InsuranceCompanyId");
 
-                    b.HasIndex("PatientId")
-                        .IsUnique();
+                    b.HasIndex("PatientId");
 
-                    b.HasIndex("PhysicianId")
-                        .IsUnique();
+                    b.HasIndex("PhysicianId");
 
                     b.ToTable("Quotations", (string)null);
                 });
@@ -422,7 +418,7 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     b.Property<double>("ItemTotal")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("Order")
+                    b.Property<int?>("LineOrder")
                         .HasColumnType("integer");
 
                     b.Property<double>("Quantity")
@@ -433,8 +429,7 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
 
                     b.HasKey("QuotationId", "LineId");
 
-                    b.HasIndex("ItemId")
-                        .IsUnique();
+                    b.HasIndex("ItemId");
 
                     b.ToTable("QuotationItems", (string)null);
                 });
@@ -612,26 +607,26 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
             modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.Quotation", b =>
                 {
                     b.HasOne("Omini.Opme.Be.Domain.Entities.Hospital", null)
-                        .WithOne()
-                        .HasForeignKey("Omini.Opme.Be.Domain.Entities.Quotation", "HospitalId")
+                        .WithMany()
+                        .HasForeignKey("HospitalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Omini.Opme.Be.Domain.Entities.InsuranceCompany", null)
-                        .WithOne()
-                        .HasForeignKey("Omini.Opme.Be.Domain.Entities.Quotation", "InsuranceCompanyId")
+                        .WithMany()
+                        .HasForeignKey("InsuranceCompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Omini.Opme.Be.Domain.Entities.Patient", null)
-                        .WithOne()
-                        .HasForeignKey("Omini.Opme.Be.Domain.Entities.Quotation", "PatientId")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Omini.Opme.Be.Domain.Entities.Physician", null)
-                        .WithOne()
-                        .HasForeignKey("Omini.Opme.Be.Domain.Entities.Quotation", "PhysicianId")
+                        .WithMany()
+                        .HasForeignKey("PhysicianId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -639,8 +634,8 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
             modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.QuotationItem", b =>
                 {
                     b.HasOne("Omini.Opme.Be.Domain.Entities.Item", null)
-                        .WithOne()
-                        .HasForeignKey("Omini.Opme.Be.Domain.Entities.QuotationItem", "ItemId")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

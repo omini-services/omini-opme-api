@@ -18,6 +18,9 @@ internal class HospitalMapping : IEntityTypeConfiguration<Hospital>
             .HasColumnName("LegalName")
             .IsRequired();
 
+        builder.Property(x => x.Cnpj)
+            .HasMaxLength(18);
+
         builder.ToTable("Hospitals");
     }
 }

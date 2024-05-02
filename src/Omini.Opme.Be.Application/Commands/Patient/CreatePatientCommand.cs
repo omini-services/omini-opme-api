@@ -4,6 +4,7 @@ using Omini.Opme.Be.Domain;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Transactions;
+using Omini.Opme.Be.Shared;
 using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
@@ -29,7 +30,7 @@ public record CreatePatientCommand : IRequest<Result<Patient, ValidationExceptio
         public async Task<Result<Patient, ValidationException>> Handle(CreatePatientCommand request, CancellationToken cancellationToken)
         {
             var patient = new Patient(){
-                Cpf = request.Cpf,
+                Cpf = StringFormatter.FormatCpf(request.Cpf),
                 Name = new PersonName(request.FirstName, request.MiddleName, request.LastName),
                 Comments = request.Comments
             };

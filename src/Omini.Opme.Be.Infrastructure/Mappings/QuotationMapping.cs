@@ -23,26 +23,26 @@ internal class QuotationMapping : IEntityTypeConfiguration<Quotation>
             .IsRequired();
 
         builder.HasOne<Patient>()
-            .WithOne()
-            .HasForeignKey<Quotation>(x => x.PatientId)
+            .WithMany()
+            .HasForeignKey(x => x.PatientId)
             .IsRequired();
 
         builder.HasOne<Physician>()
-            .WithOne()
-            .HasForeignKey<Quotation>(x => x.PhysicianId)
+            .WithMany()
+            .HasForeignKey(x => x.PhysicianId)
             .IsRequired();
 
         builder.HasOne<Hospital>()
-            .WithOne()
-            .HasForeignKey<Quotation>(x => x.HospitalId)
+            .WithMany()
+            .HasForeignKey(x => x.HospitalId)
             .IsRequired();
 
         builder.HasOne<InsuranceCompany>()
-            .WithOne()
-            .HasForeignKey<Quotation>(x => x.InsuranceCompanyId)
+            .WithMany()
+            .HasForeignKey(x => x.InsuranceCompanyId)
             .IsRequired();
 
-//------
+        //------
         // builder.HasOne<Patient>()
         //     .WithOne()
         //     .HasForeignKey<Quotation>(x => x.PayingSourceId);
@@ -74,8 +74,8 @@ internal class QuotationItemMapping : IEntityTypeConfiguration<QuotationItem>
             .IsRequired();
 
         builder.HasOne<Item>()
-            .WithOne()
-            .HasForeignKey<QuotationItem>(x => x.ItemId)
+            .WithMany()
+            .HasForeignKey(x => x.ItemId)
             .IsRequired();
 
         builder.ToTable("QuotationItems");

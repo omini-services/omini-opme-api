@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Omini.Opme.Be.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddEntitiesForQuotation : Migration
+    public partial class InitialDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,7 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     LegalName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     TradeName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Cnpj = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Cnpj = table.Column<string>(type: "character varying(18)", maxLength: 18, nullable: false),
                     Comments = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -34,13 +34,25 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "IdentityOpmeUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IdentityOpmeUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "InsuranceCompanies",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     LegalName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     TradeName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Cnpj = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Cnpj = table.Column<string>(type: "character varying(18)", maxLength: 18, nullable: false),
                     Comments = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -77,6 +89,35 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Items",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    SalesName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Uom = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    AnvisaCode = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    AnvisaDueDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    SupplierCode = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Cst = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    SusCode = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    NcmCode = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Items", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Patients",
                 columns: table => new
                 {
@@ -84,7 +125,7 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     MiddleName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Cpf = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Cpf = table.Column<string>(type: "character varying(14)", maxLength: 14, nullable: false),
                     Comments = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -180,7 +221,7 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                 {
                     QuotationId = table.Column<Guid>(type: "uuid", nullable: false),
                     LineId = table.Column<int>(type: "integer", nullable: false),
-                    Order = table.Column<int>(type: "integer", nullable: false),
+                    LineOrder = table.Column<int>(type: "integer", nullable: true),
                     ItemId = table.Column<Guid>(type: "uuid", nullable: false),
                     ItemCode = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     AnvisaCode = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -209,42 +250,43 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_QuotationItems_ItemId",
                 table: "QuotationItems",
-                column: "ItemId",
-                unique: true);
+                column: "ItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Quotations_HospitalId",
                 table: "Quotations",
-                column: "HospitalId",
-                unique: true);
+                column: "HospitalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Quotations_InsuranceCompanyId",
                 table: "Quotations",
-                column: "InsuranceCompanyId",
-                unique: true);
+                column: "InsuranceCompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Quotations_PatientId",
                 table: "Quotations",
-                column: "PatientId",
-                unique: true);
+                column: "PatientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Quotations_PhysicianId",
                 table: "Quotations",
-                column: "PhysicianId",
-                unique: true);
+                column: "PhysicianId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "IdentityOpmeUsers");
+
+            migrationBuilder.DropTable(
                 name: "InternalSpecialists");
 
             migrationBuilder.DropTable(
                 name: "QuotationItems");
+
+            migrationBuilder.DropTable(
+                name: "Items");
 
             migrationBuilder.DropTable(
                 name: "Quotations");

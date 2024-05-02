@@ -19,12 +19,14 @@ public static class DependecyInjection
 
         services.AddTransient<IAuditableService, AuditableService>();
 
-        services.AddTransient<IHospitalRepository, HospitalRepository>();
         services.AddTransient<IIdentityOpmeUserRepository, IdentityOpmeUserRepository>();
+        
+        services.AddTransient<IHospitalRepository, HospitalRepository>();
         services.AddTransient<IItemRepository, ItemRepository>();
         services.AddTransient<IInsuranceCompanyRepository, InsuranceCompanyRepository>();
         services.AddTransient<IPatientRepository, PatientRepository>();
         services.AddTransient<IPhysicianRepository, PhysicianRepository>();
+        services.AddTransient<IQuotationRepository, QuotationRepository>();
 
         services.AddTransient<IUnitOfWork, UnitOfWork>();
         

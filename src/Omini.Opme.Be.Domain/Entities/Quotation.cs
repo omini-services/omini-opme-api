@@ -13,14 +13,14 @@ public class Quotation : Entity
     public Guid InsuranceCompanyId { get; set; }
     public Guid InternalSpecialistId { get; set; }
     public DateTime DueDate { get; set; }
-    public List<QuotationItem> Items { get; set; }
+    public ICollection<QuotationItem> Items { get; set; }
 }
 
 public class QuotationItem
 {
     public Guid QuotationId { get; set; }
     public int LineId { get; set; }
-    public int Order { get; set; }
+    public int? LineOrder { get; set; }
     public Guid ItemId { get; set; }
     public string ItemCode { get; set; }
     public string AnvisaCode { get; set; }

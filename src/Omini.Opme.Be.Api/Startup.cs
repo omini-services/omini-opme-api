@@ -1,5 +1,7 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Omini.Opme.Be.Api.Configuration;
 using Omini.Opme.Be.Api.Configuration.Models;
 using Omini.Opme.Be.Api.Middlewares;
@@ -28,7 +30,8 @@ internal class Startup
             options.Filters.Add(new AuthorizeFilter(policy));
         }).AddJsonOptions(options =>
         {
-            options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+            options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
 
         var apiConnectorsOptions = Configuration.GetSection("APIConnectors");
