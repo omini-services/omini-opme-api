@@ -1,10 +1,14 @@
 .DEFAULT_GOAL := help
+export enable_experimental_alter_column_type_general=1 
 
 createmigration:
 	dotnet ef migrations add $(name) --project ./src/Omini.Opme.Be.Infrastructure/Omini.Opme.Be.Infrastructure.csproj --startup-project ./src/Omini.Opme.Be.Api
 	
 migrate:
 	dotnet ef database update $(name) --project ./src/Omini.Opme.Be.Infrastructure/Omini.Opme.Be.Infrastructure.csproj --startup-project ./src/Omini.Opme.Be.Api
+
+build:
+	dotnet build ./src/Omini.Opme.Be.sln
 
 run:
 	go run -ldflags="-X 'main.version=v1.0.0' -X 'main.build=$(shell date +'%Y-%m-%d %H:%M:%S')'" cmd/main.go
