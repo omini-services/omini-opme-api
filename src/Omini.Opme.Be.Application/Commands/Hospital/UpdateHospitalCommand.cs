@@ -36,7 +36,7 @@ public record UpdateHospitalCommand : IRequest<Result<Hospital, ValidationExcept
                 return new ValidationException([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
-            hospital.Cnpj = StringFormatter.FormatCnpj(request.Cnpj);
+            hospital.Cnpj = Formatters.FormatCnpj(request.Cnpj);
             hospital.Name = new CompanyName(request.LegalName, request.TradeName);
             hospital.Comments = request.Comments;
 

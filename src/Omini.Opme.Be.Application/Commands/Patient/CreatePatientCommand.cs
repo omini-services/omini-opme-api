@@ -30,7 +30,7 @@ public record CreatePatientCommand : IRequest<Result<Patient, ValidationExceptio
         public async Task<Result<Patient, ValidationException>> Handle(CreatePatientCommand request, CancellationToken cancellationToken)
         {
             var patient = new Patient(){
-                Cpf = StringFormatter.FormatCpf(request.Cpf),
+                Cpf = Formatters.FormatCpf(request.Cpf),
                 Name = new PersonName(request.FirstName, request.MiddleName, request.LastName),
                 Comments = request.Comments
             };

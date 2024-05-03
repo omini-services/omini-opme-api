@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Omini.Opme.Be.Shared.Extensions;
 using Omini.Opme.Be.Shared.Interfaces;
 
 namespace Omini.Opme.Be.Api.Security;
@@ -6,22 +7,23 @@ namespace Omini.Opme.Be.Api.Security;
 internal class ClaimsService : IClaimsService
 {
     private readonly IHttpContextAccessor _accessor;
-    
+
     public ClaimsService(IHttpContextAccessor accessor)
     {
         _accessor = accessor;
     }
-    
-    public ClaimsPrincipal GetClaimsPrincipal()
+    public ClaimsPrincipal ClaimsPrincipal => _accessor.HttpContext.User;
+
+    public string? GetUserEmail()
     {
-        throw new NotImplementedException();
+        return IsAuthenticated() ? _accessor.HttpContext.User.GetUserEmail() : null;
     }
 
-    public Guid UserId => GetUserId();
+    public Guid? OpmeUserId => GetOpmeUserId();
 
-    private Guid GetUserId()
+    private Guid? GetOpmeUserId()
     {
-        return IsAuthenticated() ? new Guid() : Guid.Empty;// Guid.Parse(_accessor.HttpContext.User.GetUserId()) : Guid.Empty;
+        return IsAuthenticated() ? ClaimsPrincipal.GetOpmeUserId() : null;
     }
 
     private bool IsAuthenticated()

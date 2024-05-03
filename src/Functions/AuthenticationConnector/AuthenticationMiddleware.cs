@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Omini.Opme.Be.Shared;
 
-namespace BeforeSignUp;
+namespace AuthenticationConnector;
 
 internal sealed class AuthenticationMiddleware : IFunctionsWorkerMiddleware
 {
@@ -25,14 +25,64 @@ internal sealed class AuthenticationMiddleware : IFunctionsWorkerMiddleware
 
         if (GetRequiredHeaders(requestData.Headers))
         {
-            await next(context);
+            try
+            {
+                await next(context);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing invocation");
+
+                await CreateInternalErrorResult(context);
+            }
         }
         else
         {
+            await CreateUnauthorizedResult(context, requestData);
+        }
+    }
+
+    private async Task CreateInternalErrorResult(FunctionContext context)
+    {
+        var requestData = await context.GetHttpRequestDataAsync();
+
+        if (requestData != null)
+        {
             var newHttpResponse = requestData.CreateResponse(HttpStatusCode.Unauthorized);
-            await newHttpResponse.WriteAsJsonAsync(newHttpResponse.StatusCode);
+            await newHttpResponse.WriteAsJsonAsync(new { message = "Internal error" }, newHttpResponse.StatusCode);
 
             var invocationResult = context.GetInvocationResult();
+            invocationResult.Value = newHttpResponse;
+
+            var httpOutputBindingFromMultipleOutputBindings = context.GetOutputBindings<HttpResponseData>()
+                .FirstOrDefault(b => b.BindingType == "http" && b.Name != "$return");
+            if (httpOutputBindingFromMultipleOutputBindings is not null)
+            {
+                httpOutputBindingFromMultipleOutputBindings.Value = newHttpResponse;
+            }
+            else
+            {
+                invocationResult.Value = newHttpResponse;
+            }
+        }
+    }
+
+    private async Task CreateUnauthorizedResult(FunctionContext context, HttpRequestData requestData)
+    {
+        var newHttpResponse = requestData.CreateResponse(HttpStatusCode.Unauthorized);
+        await newHttpResponse.WriteAsJsonAsync(new { message = "Unauthorized" }, newHttpResponse.StatusCode);
+
+        var invocationResult = context.GetInvocationResult();
+        invocationResult.Value = newHttpResponse;
+
+        var httpOutputBindingFromMultipleOutputBindings = context.GetOutputBindings<HttpResponseData>()
+            .FirstOrDefault(b => b.BindingType == "http" && b.Name != "$return");
+        if (httpOutputBindingFromMultipleOutputBindings is not null)
+        {
+            httpOutputBindingFromMultipleOutputBindings.Value = newHttpResponse;
+        }
+        else
+        {
             invocationResult.Value = newHttpResponse;
         }
     }
@@ -52,7 +102,7 @@ internal sealed class AuthenticationMiddleware : IFunctionsWorkerMiddleware
 
         var auth = header.SingleOrDefault(p => p.Key == "Authorization").Value.FirstOrDefault();
 
-        if (authorization.StartsWith("Basic "))
+        if (!authorization.StartsWith("Basic "))
         {
             _logger.LogWarning("HTTP basic authentication header must start with 'Basic '.");
             return false;

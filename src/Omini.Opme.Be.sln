@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omini.Opme.Be.Shared", "Omi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{6CA9DCC6-6F3E-4BDB-9AAD-B18D4C4E9708}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeforeSignUp", "Functions\BeforeSignUp\BeforeSignUp.csproj", "{3BBC27D6-5F74-46CD-B35A-9EA73C61D8AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationConnector", "Functions\AuthenticationConnector\AuthenticationConnector.csproj", "{3BBC27D6-5F74-46CD-B35A-9EA73C61D8AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
