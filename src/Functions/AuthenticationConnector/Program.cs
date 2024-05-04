@@ -16,6 +16,7 @@ var host = new HostBuilder()
     {
         builder.AddJsonFile("local.settings.json");
         builder.AddConfiguration(hostContext.Configuration);
+        builder.AddEnvironmentVariables();
     })
     .ConfigureServices((hostContext, services) =>
     {
