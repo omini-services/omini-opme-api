@@ -13,9 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omini.Opme.Be.Infrastructur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omini.Opme.Be.Shared", "Omini.Opme.Be.Shared\Omini.Opme.Be.Shared.csproj", "{C8C6177D-8FF9-467F-A0B5-1E6E78E40EAE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{6CA9DCC6-6F3E-4BDB-9AAD-B18D4C4E9708}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{B293C83D-B88C-4658-9709-D672C46ADCD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationConnector", "Functions\AuthenticationConnector\AuthenticationConnector.csproj", "{3BBC27D6-5F74-46CD-B35A-9EA73C61D8AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationConnector", "Functions\AuthenticationConnector\AuthenticationConnector.csproj", "{EB15C24D-0AAF-49ED-8247-7DC3489B0A3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,12 +46,12 @@ Global
 		{C8C6177D-8FF9-467F-A0B5-1E6E78E40EAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8C6177D-8FF9-467F-A0B5-1E6E78E40EAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8C6177D-8FF9-467F-A0B5-1E6E78E40EAE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3BBC27D6-5F74-46CD-B35A-9EA73C61D8AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3BBC27D6-5F74-46CD-B35A-9EA73C61D8AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3BBC27D6-5F74-46CD-B35A-9EA73C61D8AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3BBC27D6-5F74-46CD-B35A-9EA73C61D8AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB15C24D-0AAF-49ED-8247-7DC3489B0A3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB15C24D-0AAF-49ED-8247-7DC3489B0A3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB15C24D-0AAF-49ED-8247-7DC3489B0A3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB15C24D-0AAF-49ED-8247-7DC3489B0A3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{3BBC27D6-5F74-46CD-B35A-9EA73C61D8AE} = {6CA9DCC6-6F3E-4BDB-9AAD-B18D4C4E9708}
+		{EB15C24D-0AAF-49ED-8247-7DC3489B0A3F} = {B293C83D-B88C-4658-9709-D672C46ADCD3}
 	EndGlobalSection
 EndGlobal
