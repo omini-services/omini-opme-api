@@ -16,6 +16,7 @@ public class ClaimsService : IClaimsService
         _apiConnector = apiConnectorOptions.Value;
     }
 
+
     public ClaimsPrincipal ClaimsPrincipal => GetClaimsPrincipal();
 
     public Guid? OpmeUserId => ClaimsPrincipal.GetOpmeUserId();
