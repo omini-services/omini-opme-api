@@ -38,13 +38,6 @@ jobs:
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
           dotnet build --configuration Release --output ./output
           popd
-      
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_64C88A7BB6F3429EA13D74BB8D699558 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C30B58AE521F45CAB7E77E52573BCC16 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_0A60FBBFF5124E59BE8711D9B72F2DD6 }}
 
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
@@ -53,4 +46,5 @@ jobs:
           app-name: 'omi-opme-auth-dev-useast-rg'
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPPAUTHENTICATOR_PUBLISH_PROFILE }}
           
