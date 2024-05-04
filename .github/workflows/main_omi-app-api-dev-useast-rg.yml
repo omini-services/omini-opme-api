@@ -25,10 +25,10 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build src/Omini.Opme.Be.Api/Omini.Opme.Api.csproj --configuration Release
+        run: dotnet build src/Omini.Opme.Be.Api/Omini.Opme.Be.Api.csproj --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish src/Omini.Opme.Be.Api/Omini.Opme.Api.csproj -c Release -o ./output
+        run: dotnet publish src/Omini.Opme.Be.Api/Omini.Opme.Be.Api.csproj -c Release -o ./output
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
