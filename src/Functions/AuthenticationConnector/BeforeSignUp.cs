@@ -6,9 +6,9 @@ using Microsoft.Extensions.Logging;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Transactions;
 
-namespace BeforeSignUp
+namespace AuthenticationConnector
 {
-    public class User
+    public class UserSignUpRequest
     {
         public string Email { get; set; }
         public List<Identity> Identities { get; set; }
@@ -37,20 +37,26 @@ namespace BeforeSignUp
         [Function("BeforeSignUp")]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            string request = await new StreamReader(req.Body).ReadToEndAsync();
+            _logger.LogInformation("C# HTTP trigger function beforeSignUp");
 
-            var data = await JsonSerializer.DeserializeAsync<User>(req.Body,
+            var data = await JsonSerializer.DeserializeAsync<UserSignUpRequest>(req.Body,
                 new JsonSerializerOptions()
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 });
 
-            await _identityOpmeUserRepository.Create(new Omini.Opme.Be.Domain.Entities.IdentityOpmeUser(){
+            _logger.LogInformation("Creating user mapping");
+
+            await _identityOpmeUserRepository.Create(new Omini.Opme.Be.Domain.Entities.IdentityOpmeUser()
+            {
                 Email = data.Email,
                 Id = new Guid()
             });
 
             await _unitOfWork.Commit();
+
+            _logger.LogInformation($"User created {data.Email}");
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             await response.WriteAsJsonAsync(new { version = "1.0.0", action = "Continue" });

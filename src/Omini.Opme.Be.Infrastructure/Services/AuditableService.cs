@@ -6,15 +6,15 @@ namespace Omini.Opme.Be.Infrastructure.Services;
 
 internal class AuditableService : IAuditableService
 {
-    private readonly IClaimsService _claimsProvider;
-    public AuditableService(IClaimsService claimsProvider)
+    private readonly IClaimsService _claimsService;
+    public AuditableService(IClaimsService claimsService)
     {
-        _claimsProvider = claimsProvider;
+        _claimsService = claimsService;
     }
     public void SoftDelete<T>(T entity) where T : Auditable
     {
         entity.IsDeleted = true;
-        entity.DeletedBy = _claimsProvider.UserId;
+        entity.DeletedBy = _claimsService.OpmeUserId;
         entity.DeletedAt = DateTime.UtcNow;
     }
 }

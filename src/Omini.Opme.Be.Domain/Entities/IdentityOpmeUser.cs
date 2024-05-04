@@ -1,7 +1,6 @@
 namespace Omini.Opme.Be.Domain.Entities;
 
-public class IdentityOpmeUser
+public class IdentityOpmeUser : Entity
 {
-    public Guid Id { get; set; }
     public string Email { get; set; }
 }

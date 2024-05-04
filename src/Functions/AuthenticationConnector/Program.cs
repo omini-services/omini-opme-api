@@ -1,8 +1,10 @@
+using AuthenticationConnector;
 using BeforeSignUp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Omini.Opme.Be.Infrastructure;
+using Omini.Opme.Be.Shared;
 using Omini.Opme.Be.Shared.Interfaces;
 
 var host = new HostBuilder()
@@ -17,6 +19,9 @@ var host = new HostBuilder()
     })
     .ConfigureServices((hostContext, services) =>
     {
+        var apiConnectorsOptions = hostContext.Configuration.GetSection("APIConnectors");
+        services.Configure<ApiConnector>(apiConnectorsOptions);
+
         services.AddInfrastructure(hostContext.Configuration);
         services.AddScoped<IClaimsService, ClaimsService>();
     })

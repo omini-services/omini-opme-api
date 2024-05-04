@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace Omini.Opme.Be.Shared;
 
-public static class StringFormatter
+public static class Formatters
 {
     public static string GetNumbersOnly(this string value)
     {

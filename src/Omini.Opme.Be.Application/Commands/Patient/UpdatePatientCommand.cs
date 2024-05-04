@@ -37,7 +37,7 @@ public record UpdatePatientCommand : IRequest<Result<Patient, ValidationExceptio
                 return new ValidationException([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
-            patient.Cpf = StringFormatter.FormatCpf(request.Cpf);
+            patient.Cpf = Formatters.FormatCpf(request.Cpf);
             patient.Name = new PersonName(request.FirstName, request.MiddleName, request.LastName);
             patient.Comments = request.Comments;
 

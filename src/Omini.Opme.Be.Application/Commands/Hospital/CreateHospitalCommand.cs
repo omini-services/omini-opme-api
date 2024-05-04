@@ -29,7 +29,7 @@ public record CreateHospitalCommand : IRequest<Result<Hospital, ValidationExcept
         public async Task<Result<Hospital, ValidationException>> Handle(CreateHospitalCommand request, CancellationToken cancellationToken)
         {
             var hospital = new Hospital(){
-                Cnpj = StringFormatter.FormatCnpj(request.Cnpj),
+                Cnpj = Formatters.FormatCnpj(request.Cnpj),
                 Name = new CompanyName(request.LegalName, request.TradeName),
                 Comments = request.Comments
             };

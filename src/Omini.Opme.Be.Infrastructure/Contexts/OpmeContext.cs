@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Omini.Opme.Be.Domain.Entities;
+using Omini.Opme.Be.Domain.Exceptions;
 using Omini.Opme.Be.Infrastructure.Extensions;
 using Omini.Opme.Be.Shared.Entities;
 using Omini.Opme.Be.Shared.Interfaces;
@@ -14,7 +15,6 @@ namespace Omini.Opme.Be.Infrastructure.Contexts
         public OpmeContext(DbContextOptions<OpmeContext> options, IClaimsService claimsProvider)
             : base(options)
         {
-            this.ChangeTracker.LazyLoadingEnabled = false;
             _claimsProvider = claimsProvider;
         }
         public DbSet<Hospital> Hospitals { get; set; }
@@ -45,11 +45,16 @@ namespace Omini.Opme.Be.Infrastructure.Contexts
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var userId = _claimsProvider.UserId;
+            var opmeUserId = _claimsProvider.OpmeUserId;
 
+            if (opmeUserId is null)
+            {
+                throw new InvalidUserException();
+            }
+            
             foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().BaseType == typeof(Auditable)))
             {
-                SetAuditable(userId, entry);
+                SetAuditable(opmeUserId.Value, entry);
             }
 
             return await base.SaveChangesAsync(cancellationToken);

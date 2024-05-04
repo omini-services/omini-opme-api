@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using DI.Shared.Constants;
 
 namespace Omini.Opme.Be.Shared.Extensions;
 
@@ -24,5 +25,22 @@ public static class ClaimsPrincipalExtensions
 
         var claim = principal.FindFirst(ClaimTypes.Email);
         return claim?.Value;
+    }
+
+    public static Guid? GetOpmeUserId(this ClaimsPrincipal principal)
+    {
+        if (principal == null)
+        {
+            throw new ArgumentException("Claim OpmeUserId not found", nameof(principal));
+        }
+
+        var claim = principal.FindFirst(OpmeKeyRegisteredClaimNames.OpmeUserId);        
+
+        if (Guid.TryParse(claim?.Value, out Guid result))
+        {
+            return result;
+        }
+
+        return null;
     }
 }
