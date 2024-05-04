@@ -111,6 +111,8 @@ internal sealed class AuthenticationMiddleware : IFunctionsWorkerMiddleware
         // Get the the HTTP basinc authorization credentials
         var cred = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(auth[6..])).Split(':');
 
+        _logger.LogInformation(cred[0] + cred[1]);
+
         return
             cred[0] == _apiConnector.SignInSignUpExtension.BasicAuthUsername
             && cred[1] == _apiConnector.SignInSignUpExtension.BasicAuthPassword;
