@@ -1,0 +1,18 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+        "WEBSITE_USE_PLACEHOLDER_DOTNETISOLATED": 0
+    },
+    "ConnectionStrings": {
+        "DefaultConnection": "Host=peppy-orc-7035.g8z.gcp-us-east1.cockroachlabs.cloud;Port=26257;Database=defaultdb;Username=dk;Password=rQjN27iNUWiqEBNosrrlqQ;SSL Mode=Require;Trust Server Certificate=true"
+    },
+    "APIConnectors": {
+        "ClientId": "93191413-db51-4cc8-bc58-cc80e180a551",
+        "SignInSignUpExtension": {
+            "BasicAuthUsername": "admin",
+            "BasicAuthPassword": "admin"
+        }
+    }
+}
