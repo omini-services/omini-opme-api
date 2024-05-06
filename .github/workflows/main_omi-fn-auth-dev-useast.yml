@@ -1,29 +1,21 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/azure/functions-action
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy dotnet core app to Azure Function App - omi-fn-auth-dev-useast
+name: Build and deploy dotnet core project to Azure Function App - omi-fn-auth-dev-useast
 
 on:
   push:
     branches:
       - main
-    paths:
-      - 'src/Functions/**'  
-      - 'src/Omini.Opme.Be.Application/**'
-      - 'src/Omini.Opme.Be.Infrastructure/**'
-      - 'src/Omini.Opme.Be.Domain/**'
-      - 'src/Omini.Opme.Be.Shared/**'
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: './src/Functions/AuthenticationConnector' # set this to the path to your web app project, defaults to the repository root
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '8.0.x' # set this to the dotnet version to use
 
 jobs:
   build-and-deploy:
-    runs-on: windows-latest
-    environment:
-      name: 'production'
+    runs-on: ubuntu-latest
     permissions:
       id-token: write #This is required for requesting the JWT
 
@@ -37,17 +29,24 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: 'Resolve Project Dependencies Using Dotnet'
-        shell: pwsh
+        shell: bash
         run: |
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
           dotnet build --configuration Release --output ./output
           popd
       
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_DE4185011D6F42E492A593477E7F09F3 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E9CE3D52A69A4EC9A0798D8101D65E8C }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E20F1D44F9E24C5EAA4CB82CE8285989 }}
+
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
         id: fa
         with:
-          app-name: omi-fn-auth-dev-useast
+          app-name: 'omi-fn-auth-dev-useast'
+          slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
           
