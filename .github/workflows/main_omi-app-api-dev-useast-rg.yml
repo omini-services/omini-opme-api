@@ -7,8 +7,12 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - 'src/Functions/**'
+    paths:
+      - 'src/Omini.Opme.Be.Api/**' 
+      - 'src/Omini.Opme.Be.Application/**'
+      - 'src/Omini.Opme.Be.Infrastructure/**'
+      - 'src/Omini.Opme.Be.Domain/**'
+      - 'src/Omini.Opme.Be.Shared/**'
   workflow_dispatch:
 
 jobs:

@@ -9,6 +9,10 @@ on:
       - main
     paths:
       - 'src/Functions/**'  
+      - 'src/Omini.Opme.Be.Application/**'
+      - 'src/Omini.Opme.Be.Infrastructure/**'
+      - 'src/Omini.Opme.Be.Domain/**'
+      - 'src/Omini.Opme.Be.Shared/**'
   workflow_dispatch:
 
 env:
