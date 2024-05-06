@@ -7,15 +7,23 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'src/Functions/AuthenticationConnector' 
+      - 'src/Omini.Opme.Be.Application/**'
+      - 'src/Omini.Opme.Be.Infrastructure/**'
+      - 'src/Omini.Opme.Be.Domain/**'
+      - 'src/Omini.Opme.Be.Shared/**'
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './src/Functions/AuthenticationConnector' # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '8.0.x' # set this to the dotnet version to use
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: 'production'
     permissions:
       id-token: write #This is required for requesting the JWT
 
