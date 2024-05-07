@@ -37,7 +37,6 @@ namespace AuthenticationConnector
         [Function("BeforeSignUp")]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
         {
-            string request = await new StreamReader(req.Body).ReadToEndAsync();
             _logger.LogInformation("C# HTTP trigger function beforeSignUp");
 
             var data = await JsonSerializer.DeserializeAsync<UserSignUpRequest>(req.Body,

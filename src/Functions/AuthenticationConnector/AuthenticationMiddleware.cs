@@ -107,8 +107,6 @@ internal sealed class AuthenticationMiddleware : IFunctionsWorkerMiddleware
             _logger.LogWarning("HTTP basic authentication header must start with 'Basic '.");
             return false;
         }
-        _logger.LogInformation(System.Environment.GetEnvironmentVariable("CUSTOMCONNSTR_DefaultConnection"));
-        _logger.LogInformation(_apiConnector.SignInSignUpExtension.BasicAuthUsername + _apiConnector.SignInSignUpExtension.BasicAuthPassword);
 
         // Get the the HTTP basinc authorization credentials
         var cred = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(auth[6..])).Split(':');
