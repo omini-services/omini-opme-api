@@ -8,7 +8,7 @@ on:
     branches:
       - main
     paths:
-      - 'src/Functions/AuthenticationConnector' 
+      - 'src/Functions/AuthenticationConnector/**' 
       - 'src/Omini.Opme.Be.Application/**'
       - 'src/Omini.Opme.Be.Infrastructure/**'
       - 'src/Omini.Opme.Be.Domain/**'
