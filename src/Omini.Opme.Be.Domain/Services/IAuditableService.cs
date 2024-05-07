@@ -1,5 +1,4 @@
-using System.Security.Claims;
-using Omini.Opme.Be.Shared.Entities;
+using Omini.Opme.Be.Domain.Entities;
 
 namespace Omini.Opme.Be.Domain.Services;
 
