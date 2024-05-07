@@ -1,5 +1,5 @@
+using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Services;
-using Omini.Opme.Be.Shared.Entities;
 using Omini.Opme.Be.Shared.Interfaces;
 
 namespace Omini.Opme.Be.Infrastructure.Services;

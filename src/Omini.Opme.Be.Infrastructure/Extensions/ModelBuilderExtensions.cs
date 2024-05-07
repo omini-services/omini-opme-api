@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Omini.Opme.Be.Shared.Entities;
-
+using Omini.Opme.Be.Domain.Entities;
 namespace Omini.Opme.Be.Infrastructure.Extensions;
 
 internal static class ModelBuilderExtensions
