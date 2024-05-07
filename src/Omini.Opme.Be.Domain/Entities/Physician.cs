@@ -1,6 +1,6 @@
 namespace Omini.Opme.Be.Domain.Entities;
 
-public class Physician : Entity
+public class Physician : Auditable
 {
     public PersonName Name { get; set; }
     public string Cro { get; set; }

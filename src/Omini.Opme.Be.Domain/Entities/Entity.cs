@@ -1,8 +1,6 @@
-using Omini.Opme.Be.Shared.Entities;
-
 namespace Omini.Opme.Be.Domain;
 
-public abstract class Entity : Auditable
+public abstract class Entity
 {
     public Guid Id { get; set; }
 }

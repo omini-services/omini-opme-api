@@ -1,6 +1,6 @@
 namespace Omini.Opme.Be.Domain.Entities;
 
-public class Item : Entity
+public class Item : Auditable
 {
     public string Code { get; set; }
     public string Name { get; set; }

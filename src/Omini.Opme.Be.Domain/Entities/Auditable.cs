@@ -1,6 +1,6 @@
-﻿namespace Omini.Opme.Be.Shared.Entities;
+﻿namespace Omini.Opme.Be.Domain.Entities;
 
-public abstract class Auditable
+public abstract class Auditable : Entity
 {
   public Auditable() { }
 
