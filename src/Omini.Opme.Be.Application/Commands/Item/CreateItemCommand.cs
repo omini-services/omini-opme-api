@@ -1,5 +1,5 @@
-using FluentValidation;
-using MediatR;
+using FluentValidation.Results;
+using Omini.Opme.Be.Application.Abstractions.Messaging;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Transactions;
@@ -7,7 +7,7 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record CreateItemCommand : IRequest<Result<Item, ValidationException>>
+public record CreateItemCommand : ICommand<Item>
 {
     public string Code { get; init; }
     public string Name { get; init; }
@@ -21,7 +21,7 @@ public record CreateItemCommand : IRequest<Result<Item, ValidationException>>
     public string SusCode { get; init; }
     public string NcmCode { get; init; }
 
-    public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, Result<Item, ValidationException>>
+    public class CreateItemCommandHandler : ICommandHandler<CreateItemCommand, Item>
     {
         // private readonly IValidator<CreateItemCommand> _validator;
         private readonly IUnitOfWork _unitOfWork;
@@ -33,7 +33,7 @@ public record CreateItemCommand : IRequest<Result<Item, ValidationException>>
             _itemRepository = itemRepository;
         }
 
-        public async Task<Result<Item, ValidationException>> Handle(CreateItemCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Item, ValidationResult>> Handle(CreateItemCommand request, CancellationToken cancellationToken)
         {
             //var validationResult = await _validator.ValidateAsync(request);
             //if (validationResult.IsValid)
@@ -41,7 +41,8 @@ public record CreateItemCommand : IRequest<Result<Item, ValidationException>>
             //    return new ValidationException(validationResult.Errors);
             //}
 
-            var item = new Item(){
+            var item = new Item()
+            {
                 AnvisaCode = request.AnvisaCode,
                 AnvisaDueDate = request.AnvisaDueDate,
                 Code = request.Code,
@@ -51,13 +52,13 @@ public record CreateItemCommand : IRequest<Result<Item, ValidationException>>
                 Name = request.Name,
                 NcmCode = request.NcmCode,
                 SalesName = request.SalesName,
-                SupplierCode= request.SupplierCode,
+                SupplierCode = request.SupplierCode,
                 SusCode = request.SusCode,
                 Uom = request.Uom
             };
 
-            await _itemRepository.Add(item);
-            await _unitOfWork.Commit();
+            await _itemRepository.Add(item, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return item;
         }

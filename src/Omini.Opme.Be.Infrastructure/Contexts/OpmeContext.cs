@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Exceptions;
 using Omini.Opme.Be.Infrastructure.Extensions;
-using Omini.Opme.Be.Shared.Entities;
 using Omini.Opme.Be.Shared.Interfaces;
 
 namespace Omini.Opme.Be.Infrastructure.Contexts

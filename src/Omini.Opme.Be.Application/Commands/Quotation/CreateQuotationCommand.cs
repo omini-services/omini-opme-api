@@ -1,6 +1,5 @@
-using FluentValidation;
 using FluentValidation.Results;
-using MediatR;
+using Omini.Opme.Be.Application.Abstractions.Messaging;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Enums;
 using Omini.Opme.Be.Domain.Repositories;
@@ -9,7 +8,7 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record CreateQuotationCommand : IRequest<Result<Quotation, ValidationException>>
+public record CreateQuotationCommand : ICommand<Quotation>
 {
     public string Number { get; set; }
     public Guid PatientId { get; set; }
@@ -34,7 +33,7 @@ public record CreateQuotationCommand : IRequest<Result<Quotation, ValidationExce
         public double Quantity { get; set; }
     }
 
-    public class CreateQuotationCommandHandler : IRequestHandler<CreateQuotationCommand, Result<Quotation, ValidationException>>
+    public class CreateQuotationCommandHandler : ICommandHandler<CreateQuotationCommand, Quotation>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHospitalRepository _hospitalRepository;
@@ -58,28 +57,28 @@ public record CreateQuotationCommand : IRequest<Result<Quotation, ValidationExce
             _quotationRepository = quotationRepository;
         }
 
-        public async Task<Result<Quotation, ValidationException>> Handle(CreateQuotationCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Quotation, ValidationResult>> Handle(CreateQuotationCommand request, CancellationToken cancellationToken)
         {
             var validationFailures = new List<ValidationFailure>();
-            var hospital = await _hospitalRepository.GetById(request.HospitalId);
+            var hospital = await _hospitalRepository.GetById(request.HospitalId, cancellationToken);
             if (hospital is null)
             {
                 validationFailures.Add(new ValidationFailure("Hospital Id", "Invalid Id"));
             }
 
-            var patient = await _patientRepository.GetById(request.PatientId);
+            var patient = await _patientRepository.GetById(request.PatientId, cancellationToken);
             if (patient is null)
             {
                 validationFailures.Add(new ValidationFailure("Patient Id", "Invalid Id"));
             }
 
-            var insuranceCompany = await _insuranceCompanyRepository.GetById(request.InsuranceCompanyId);
+            var insuranceCompany = await _insuranceCompanyRepository.GetById(request.InsuranceCompanyId, cancellationToken);
             if (insuranceCompany is null)
             {
                 validationFailures.Add(new ValidationFailure("InsuranceCompany Id", "Invalid Id"));
             }
 
-            var physician = await _physicianRepository.GetById(request.PhysicianId);
+            var physician = await _physicianRepository.GetById(request.PhysicianId, cancellationToken);
             if (physician is null)
             {
                 validationFailures.Add(new ValidationFailure("Physician Id", "Invalid Id"));
@@ -87,7 +86,7 @@ public record CreateQuotationCommand : IRequest<Result<Quotation, ValidationExce
 
             if (validationFailures.Any())
             {
-                return new ValidationException("Invalid quotation values", validationFailures);
+                return new ValidationResult(validationFailures);
             }
 
             var quotation = new Quotation()
@@ -115,8 +114,8 @@ public record CreateQuotationCommand : IRequest<Result<Quotation, ValidationExce
                 }).ToList()
             };
 
-            await _quotationRepository.Add(quotation);
-            await _unitOfWork.Commit();
+            await _quotationRepository.Add(quotation, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return quotation;
         }

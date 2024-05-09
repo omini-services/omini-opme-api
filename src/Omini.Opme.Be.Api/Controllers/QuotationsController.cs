@@ -1,5 +1,3 @@
-
-using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Omini.Opme.Be.Api.Dtos;
@@ -83,7 +81,7 @@ public class QuotationsController : MainController
     {
         if (quotationUpdateDto.Id != id)
         {
-            return ToBadRequest(new ValidationException("Invalid id", new List<ValidationFailure>() { new ValidationFailure("Id", "Invalid id") }));
+            return ToBadRequest(new ValidationResult([new ValidationFailure("Id", "Invalid id")]));
         }
 
         var command = new UpdateQuotationCommand()

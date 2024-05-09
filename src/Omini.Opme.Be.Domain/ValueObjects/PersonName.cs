@@ -1,7 +1,7 @@
 
 namespace Omini.Opme.Be.Domain;
 
-public class PersonName : BaseValueObject
+public class PersonName : ValueObject
 {
     public PersonName(string firstName, string middleName, string lastName)
     {
@@ -14,7 +14,7 @@ public class PersonName : BaseValueObject
     public string MiddleName { get; init; }
     public string LastName { get; init; }
 
-    protected override IEnumerable<object> GetEqualityComponents()
+    public override IEnumerable<object> GetAtomicValues()
     {
         yield return FirstName;
         yield return MiddleName;

@@ -1,6 +1,6 @@
-namespace Omini.Opme.Be.Shared.Entities;
+﻿namespace Omini.Opme.Be.Shared.Entities;
 
-public readonly struct Result<TValue, TError>
+public class Result<TValue, TError>
 {
     private readonly TValue? _value;
     private readonly TError? _error;

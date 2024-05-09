@@ -1,5 +1,5 @@
-using FluentValidation;
-using MediatR;
+using FluentValidation.Results;
+using Omini.Opme.Be.Application.Abstractions.Messaging;
 using Omini.Opme.Be.Domain;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
@@ -9,14 +9,14 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record CreateHospitalCommand : IRequest<Result<Hospital, ValidationException>>
+public sealed record CreateHospitalCommand : ICommand<Hospital>
 {
     public string LegalName { get; init; }
     public string TradeName { get; init; }
     public string Cnpj { get; set; }
     public string Comments { get; set; }
 
-    public class CreateHospitalCommandHandler : IRequestHandler<CreateHospitalCommand, Result<Hospital, ValidationException>>
+    internal sealed class CreateHospitalCommandHandler : ICommandHandler<CreateHospitalCommand, Hospital>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHospitalRepository _hospitalRepository;
@@ -26,7 +26,7 @@ public record CreateHospitalCommand : IRequest<Result<Hospital, ValidationExcept
             _hospitalRepository = hospitalRepository;
         }
 
-        public async Task<Result<Hospital, ValidationException>> Handle(CreateHospitalCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Hospital, ValidationResult>> Handle(CreateHospitalCommand request, CancellationToken cancellationToken)
         {
             var hospital = new Hospital(){
                 Cnpj = Formatters.FormatCnpj(request.Cnpj),
@@ -34,8 +34,8 @@ public record CreateHospitalCommand : IRequest<Result<Hospital, ValidationExcept
                 Comments = request.Comments
             };
 
-            await _hospitalRepository.Add(hospital);
-            await _unitOfWork.Commit();
+            await _hospitalRepository.Add(hospital, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return hospital;
         }

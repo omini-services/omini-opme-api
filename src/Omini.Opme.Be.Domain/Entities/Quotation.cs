@@ -2,7 +2,7 @@ using Omini.Opme.Be.Domain.Enums;
 
 namespace Omini.Opme.Be.Domain.Entities;
 
-public class Quotation : Auditable
+public sealed class Quotation : Auditable
 {
     public string Number { get; set; }
     public Guid PatientId { get; set; }
@@ -16,7 +16,7 @@ public class Quotation : Auditable
     public ICollection<QuotationItem> Items { get; set; }
 }
 
-public class QuotationItem
+public sealed class QuotationItem
 {
     public Guid QuotationId { get; set; }
     public int LineId { get; set; }

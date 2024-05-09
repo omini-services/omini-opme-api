@@ -1,5 +1,5 @@
-using FluentValidation;
-using MediatR;
+using FluentValidation.Results;
+using Omini.Opme.Be.Application.Abstractions.Messaging;
 using Omini.Opme.Be.Domain;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
@@ -9,7 +9,7 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record CreatePatientCommand : IRequest<Result<Patient, ValidationException>>
+public record CreatePatientCommand : ICommand<Patient>
 {
     public string FirstName { get; init; }
     public string MiddleName { get; init; }
@@ -17,7 +17,7 @@ public record CreatePatientCommand : IRequest<Result<Patient, ValidationExceptio
     public string Cpf { get; set; }
     public string Comments { get; set; }
 
-    public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand, Result<Patient, ValidationException>>
+    public class CreatePatientCommandHandler : ICommandHandler<CreatePatientCommand, Patient>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPatientRepository _patientRepository;
@@ -27,16 +27,17 @@ public record CreatePatientCommand : IRequest<Result<Patient, ValidationExceptio
             _patientRepository = patientRepository;
         }
 
-        public async Task<Result<Patient, ValidationException>> Handle(CreatePatientCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Patient, ValidationResult>> Handle(CreatePatientCommand request, CancellationToken cancellationToken)
         {
-            var patient = new Patient(){
+            var patient = new Patient()
+            {
                 Cpf = Formatters.FormatCpf(request.Cpf),
                 Name = new PersonName(request.FirstName, request.MiddleName, request.LastName),
                 Comments = request.Comments
             };
 
-            await _patientRepository.Add(patient);
-            await _unitOfWork.Commit();
+            await _patientRepository.Add(patient, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return patient;
         }

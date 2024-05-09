@@ -17,32 +17,32 @@ internal abstract class Repository<TEntity> : IRepository<TEntity> where TEntity
         DbSet = db.Set<TEntity>();
     }
 
-    public async Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> predicate)
+    public async Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
-        return await DbSet.AsNoTracking().Where(predicate).ToListAsync();
+        return await DbSet.AsNoTracking().Where(predicate).ToListAsync(cancellationToken);
     }
 
-    public virtual async Task<TEntity?> GetById(Guid id)
+    public virtual async Task<TEntity?> GetById(Guid id, CancellationToken cancellationToken = default)
     {
-        return await DbSet.FindAsync(id);
+        return await DbSet.FindAsync(id, cancellationToken);
     }
 
-    public virtual async Task<List<TEntity>> GetAll()
+    public virtual async Task<List<TEntity>> GetAll(CancellationToken cancellationToken = default)
     {
-        return await DbSet.AsNoTracking().ToListAsync();
+        return await DbSet.AsNoTracking().ToListAsync(cancellationToken);
     }
 
-    public virtual async Task Add(TEntity entity)
+    public virtual async Task Add(TEntity entity, CancellationToken cancellationToken = default)
     {
-        await DbSet.AddAsync(entity);
+        await DbSet.AddAsync(entity, cancellationToken);
     }
 
-    public virtual void Update(TEntity entity)
+    public virtual void Update(TEntity entity, CancellationToken cancellationToken = default)
     {
         DbSet.Update(entity);
     }
 
-    public virtual void Delete(Guid id)
+    public virtual void Delete(Guid id, CancellationToken cancellationToken = default)
     {
         DbSet.Remove(new TEntity { Id = id });
     }

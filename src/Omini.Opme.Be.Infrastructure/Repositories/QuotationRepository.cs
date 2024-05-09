@@ -13,16 +13,16 @@ internal class QuotationRepository : Repository<Quotation>, IQuotationRepository
     {
     }
 
-    public override async Task<List<Quotation>> GetAll()
+    public override async Task<List<Quotation>> GetAll(CancellationToken cancellationToken = default)
     {
         return await DbSet.AsNoTracking()
                           .Include(p => p.Items)
-                          .ToListAsync();
+                          .ToListAsync(cancellationToken);
     }
 
-    public override async Task<Quotation?> GetById(Guid id)
+    public override async Task<Quotation?> GetById(Guid id, CancellationToken cancellationToken = default)
     {
         return await DbSet.Include(p => p.Items)
-                          .SingleOrDefaultAsync(p => p.Id == id);
+                          .SingleOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 }

@@ -1,6 +1,5 @@
-using FluentValidation;
 using FluentValidation.Results;
-using MediatR;
+using Omini.Opme.Be.Application.Abstractions.Messaging;
 using Omini.Opme.Be.Domain;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
@@ -10,7 +9,7 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record UpdatePatientCommand : IRequest<Result<Patient, ValidationException>>
+public record UpdatePatientCommand : ICommand<Patient>
 {
     public Guid Id { get; init; }
     public string FirstName { get; init; }
@@ -19,7 +18,7 @@ public record UpdatePatientCommand : IRequest<Result<Patient, ValidationExceptio
     public string Cpf { get; set; }
     public string Comments { get; set; }
 
-    public class UpdatePatientCommandHandler : IRequestHandler<UpdatePatientCommand, Result<Patient, ValidationException>>
+    public class UpdatePatientCommandHandler : ICommandHandler<UpdatePatientCommand, Patient>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPatientRepository _patientRepository;
@@ -29,19 +28,19 @@ public record UpdatePatientCommand : IRequest<Result<Patient, ValidationExceptio
             _patientRepository = patientRepository;
         }
 
-        public async Task<Result<Patient, ValidationException>> Handle(UpdatePatientCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Patient, ValidationResult>> Handle(UpdatePatientCommand request, CancellationToken cancellationToken)
         {
-            var patient = await _patientRepository.GetById(request.Id);
+            var patient = await _patientRepository.GetById(request.Id, cancellationToken);
             if (patient is null)
             {
-                return new ValidationException([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
             patient.Cpf = Formatters.FormatCpf(request.Cpf);
             patient.Name = new PersonName(request.FirstName, request.MiddleName, request.LastName);
             patient.Comments = request.Comments;
 
-            await _unitOfWork.Commit();
+            await _unitOfWork.Commit(cancellationToken);
 
             return patient;
         }

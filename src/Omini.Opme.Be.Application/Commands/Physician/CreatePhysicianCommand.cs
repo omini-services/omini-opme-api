@@ -1,5 +1,5 @@
-using FluentValidation;
-using MediatR;
+using FluentValidation.Results;
+using Omini.Opme.Be.Application.Abstractions.Messaging;
 using Omini.Opme.Be.Domain;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
@@ -8,7 +8,7 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record CreatePhysicianCommand : IRequest<Result<Physician, ValidationException>>
+public record CreatePhysicianCommand : ICommand<Physician>
 {
     public string FirstName { get; init; }
     public string MiddleName { get; init; }
@@ -17,7 +17,7 @@ public record CreatePhysicianCommand : IRequest<Result<Physician, ValidationExce
     public string Crm { get; set; }
     public string Comments { get; set; }
 
-    public class CreatePhysicianCommandHandler : IRequestHandler<CreatePhysicianCommand, Result<Physician, ValidationException>>
+    public class CreatePhysicianCommandHandler : ICommandHandler<CreatePhysicianCommand, Physician>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPhysicianRepository _physicianRepository;
@@ -27,19 +27,20 @@ public record CreatePhysicianCommand : IRequest<Result<Physician, ValidationExce
             _physicianRepository = physicianRepository;
         }
 
-        public async Task<Result<Physician, ValidationException>> Handle(CreatePhysicianCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Physician, ValidationResult>> Handle(CreatePhysicianCommand request, CancellationToken cancellationToken)
         {
-            var Physician = new Physician(){
+            var physician = new Physician()
+            {
                 Cro = request.Cro,
                 Crm = request.Crm,
                 Name = new PersonName(request.FirstName, request.MiddleName, request.LastName),
                 Comments = request.Comments
             };
 
-            await _physicianRepository.Add(Physician);
-            await _unitOfWork.Commit();
+            await _physicianRepository.Add(physician, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
-            return Physician;
+            return physician;
         }
     }
 }

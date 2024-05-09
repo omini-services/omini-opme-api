@@ -1,6 +1,5 @@
-using FluentValidation;
 using FluentValidation.Results;
-using MediatR;
+using Omini.Opme.Be.Application.Abstractions.Messaging;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Services;
@@ -9,11 +8,11 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record DeleteItemCommand : IRequest<Result<Item, ValidationException>>
+public record DeleteItemCommand : ICommand<Item>
 {
     public Guid Id { get; init; }
 
-    public class DeleteItemCommandHandler : IRequestHandler<DeleteItemCommand, Result<Item, ValidationException>>
+    public class DeleteItemCommandHandler : ICommandHandler<DeleteItemCommand, Item>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IItemRepository _itemRepository;
@@ -28,18 +27,18 @@ public record DeleteItemCommand : IRequest<Result<Item, ValidationException>>
             _auditableService = auditableService;
         }
 
-        public async Task<Result<Item, ValidationException>> Handle(DeleteItemCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Item, ValidationResult>> Handle(DeleteItemCommand request, CancellationToken cancellationToken)
         {
-            var item = await _itemRepository.GetById(request.Id);
+            var item = await _itemRepository.GetById(request.Id, cancellationToken);
             if (item is null)
             {
-                return new ValidationException([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
             _auditableService.SoftDelete(item);
 
-            _itemRepository.Update(item);
-            await _unitOfWork.Commit();
+            _itemRepository.Update(item, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return item;
         }

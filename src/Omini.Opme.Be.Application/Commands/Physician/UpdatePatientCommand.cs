@@ -1,6 +1,5 @@
-using FluentValidation;
 using FluentValidation.Results;
-using MediatR;
+using Omini.Opme.Be.Application.Abstractions.Messaging;
 using Omini.Opme.Be.Domain;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
@@ -9,7 +8,7 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record UpdatePhysicianCommand : IRequest<Result<Physician, ValidationException>>
+public record UpdatePhysicianCommand : ICommand<Physician>
 {
     public Guid Id { get; init; }
     public string FirstName { get; init; }
@@ -20,7 +19,7 @@ public record UpdatePhysicianCommand : IRequest<Result<Physician, ValidationExce
     public string Comments { get; set; }
 
 
-    public class UpdatePhysicianCommandHandler : IRequestHandler<UpdatePhysicianCommand, Result<Physician, ValidationException>>
+    public class UpdatePhysicianCommandHandler : ICommandHandler<UpdatePhysicianCommand, Physician>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPhysicianRepository _physicianRepository;
@@ -30,12 +29,12 @@ public record UpdatePhysicianCommand : IRequest<Result<Physician, ValidationExce
             _physicianRepository = physicianRepository;
         }
 
-        public async Task<Result<Physician, ValidationException>> Handle(UpdatePhysicianCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Physician, ValidationResult>> Handle(UpdatePhysicianCommand request, CancellationToken cancellationToken)
         {
-            var physician = await _physicianRepository.GetById(request.Id);
+            var physician = await _physicianRepository.GetById(request.Id, cancellationToken);
             if (physician is null)
             {
-                return new ValidationException([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
             physician.Cro = request.Cro;
@@ -43,7 +42,7 @@ public record UpdatePhysicianCommand : IRequest<Result<Physician, ValidationExce
             physician.Name = new PersonName(request.FirstName, request.MiddleName, request.LastName);
             physician.Comments = request.Comments;
 
-            await _unitOfWork.Commit();
+            await _unitOfWork.Commit(cancellationToken);
 
             return physician;
         }

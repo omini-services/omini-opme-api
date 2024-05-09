@@ -1,6 +1,5 @@
-using FluentValidation;
 using FluentValidation.Results;
-using MediatR;
+using Omini.Opme.Be.Application.Abstractions.Messaging;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Services;
@@ -9,11 +8,11 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record DeleteInsuranceCompanyCommand : IRequest<Result<InsuranceCompany, ValidationException>>
+public record DeleteInsuranceCompanyCommand : ICommand<InsuranceCompany>
 {
     public Guid Id { get; init; }
 
-    public class DeleteInsuranceCompanyCommandHandler : IRequestHandler<DeleteInsuranceCompanyCommand, Result<InsuranceCompany, ValidationException>>
+    public class DeleteInsuranceCompanyCommandHandler : ICommandHandler<DeleteInsuranceCompanyCommand, InsuranceCompany>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IInsuranceCompanyRepository _insuranceCompanyRepository;
@@ -28,18 +27,18 @@ public record DeleteInsuranceCompanyCommand : IRequest<Result<InsuranceCompany, 
             _auditableService = auditableService;
         }
 
-        public async Task<Result<InsuranceCompany, ValidationException>> Handle(DeleteInsuranceCompanyCommand request, CancellationToken cancellationToken)
+        public async Task<Result<InsuranceCompany, ValidationResult>> Handle(DeleteInsuranceCompanyCommand request, CancellationToken cancellationToken)
         {
-            var insuranceCompany = await _insuranceCompanyRepository.GetById(request.Id);
+            var insuranceCompany = await _insuranceCompanyRepository.GetById(request.Id, cancellationToken);
             if (insuranceCompany is null)
             {
-                return new ValidationException([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
             _auditableService.SoftDelete(insuranceCompany);
 
-            _insuranceCompanyRepository.Update(insuranceCompany);
-            await _unitOfWork.Commit();
+            _insuranceCompanyRepository.Update(insuranceCompany, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return insuranceCompany;
         }

@@ -1,6 +1,5 @@
-using FluentValidation;
 using FluentValidation.Results;
-using MediatR;
+using Omini.Opme.Be.Application.Abstractions.Messaging;
 using Omini.Opme.Be.Domain;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
@@ -10,7 +9,7 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record UpdateHospitalCommand : IRequest<Result<Hospital, ValidationException>>
+public record UpdateHospitalCommand : ICommand<Hospital>
 {
     public Guid Id { get; init; }
     public string LegalName { get; init; }
@@ -18,7 +17,7 @@ public record UpdateHospitalCommand : IRequest<Result<Hospital, ValidationExcept
     public string Cnpj { get; set; }
     public string Comments { get; set; }
 
-    public class UpdateHospitalCommandHandler : IRequestHandler<UpdateHospitalCommand, Result<Hospital, ValidationException>>
+    public class UpdateHospitalCommandHandler : ICommandHandler<UpdateHospitalCommand, Hospital>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHospitalRepository _hospitalRepository;
@@ -28,19 +27,19 @@ public record UpdateHospitalCommand : IRequest<Result<Hospital, ValidationExcept
             _hospitalRepository = hospitalRepository;
         }
 
-        public async Task<Result<Hospital, ValidationException>> Handle(UpdateHospitalCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Hospital, ValidationResult>> Handle(UpdateHospitalCommand request, CancellationToken cancellationToken)
         {
-            var hospital = await _hospitalRepository.GetById(request.Id);
+            var hospital = await _hospitalRepository.GetById(request.Id, cancellationToken);
             if (hospital is null)
             {
-                return new ValidationException([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
             hospital.Cnpj = Formatters.FormatCnpj(request.Cnpj);
             hospital.Name = new CompanyName(request.LegalName, request.TradeName);
             hospital.Comments = request.Comments;
 
-            await _unitOfWork.Commit();
+            await _unitOfWork.Commit(cancellationToken);
 
             return hospital;
         }

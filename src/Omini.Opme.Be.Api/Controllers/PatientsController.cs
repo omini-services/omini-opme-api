@@ -1,5 +1,3 @@
-
-using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Omini.Opme.Be.Api.Dtos;
@@ -31,10 +29,11 @@ public class PatientsController : MainController
     public async Task<ActionResult<PatientOutputDto>> GetById([FromServices] IPatientRepository repository, Guid id)
     {
         var patient = await repository.GetById(id);
-    
-        if (patient is null){
+
+        if (patient is null)
+        {
             return BadRequest();
-        }        
+        }
 
         var result = Mapper.Map<PatientOutputDto>(patient);
 
@@ -64,7 +63,7 @@ public class PatientsController : MainController
     {
         if (patientUpdateDto.Id != id)
         {
-            return ToBadRequest(new ValidationException("Invalid id", new List<ValidationFailure>() { new ValidationFailure("Id", "Invalid id") }));
+            return ToBadRequest(new ValidationResult([new ValidationFailure("Id", "Invalid id")]));
         }
 
         var command = new UpdatePatientCommand()

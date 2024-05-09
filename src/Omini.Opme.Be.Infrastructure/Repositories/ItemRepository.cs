@@ -1,6 +1,3 @@
-
-
-using Microsoft.EntityFrameworkCore;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Infrastructure.Contexts;

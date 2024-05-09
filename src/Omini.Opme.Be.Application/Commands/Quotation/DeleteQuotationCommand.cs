@@ -1,6 +1,5 @@
-using FluentValidation;
 using FluentValidation.Results;
-using MediatR;
+using Omini.Opme.Be.Application.Abstractions.Messaging;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Services;
@@ -9,11 +8,11 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record DeleteQuotationCommand : IRequest<Result<Quotation, ValidationException>>
+public record DeleteQuotationCommand : ICommand<Quotation>
 {
     public Guid Id { get; init; }
 
-    public class DeleteQuotationCommandHandler : IRequestHandler<DeleteQuotationCommand, Result<Quotation, ValidationException>>
+    public class DeleteQuotationCommandHandler : ICommandHandler<DeleteQuotationCommand, Quotation>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IQuotationRepository _quotationRepository;
@@ -28,18 +27,18 @@ public record DeleteQuotationCommand : IRequest<Result<Quotation, ValidationExce
             _auditableService = auditableService;
         }
 
-        public async Task<Result<Quotation, ValidationException>> Handle(DeleteQuotationCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Quotation, ValidationResult>> Handle(DeleteQuotationCommand request, CancellationToken cancellationToken)
         {
-            var quotation = await _quotationRepository.GetById(request.Id);
+            var quotation = await _quotationRepository.GetById(request.Id, cancellationToken);
             if (quotation is null)
             {
-                return new ValidationException([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
             _auditableService.SoftDelete(quotation);
 
-            _quotationRepository.Update(quotation);
-            await _unitOfWork.Commit();
+            _quotationRepository.Update(quotation, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return quotation;
         }

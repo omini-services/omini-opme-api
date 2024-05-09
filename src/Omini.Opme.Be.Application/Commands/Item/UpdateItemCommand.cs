@@ -1,6 +1,5 @@
-using FluentValidation;
 using FluentValidation.Results;
-using MediatR;
+using Omini.Opme.Be.Application.Abstractions.Messaging;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Transactions;
@@ -8,7 +7,7 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record UpdateItemCommand : IRequest<Result<Item, ValidationException>>
+public record UpdateItemCommand : ICommand<Item>
 {
     public Guid Id { get; init; }
     public string Code { get; init; }
@@ -24,7 +23,7 @@ public record UpdateItemCommand : IRequest<Result<Item, ValidationException>>
     public string NcmCode { get; init; }
 
 
-    public class UpdateItemCommandHandler : IRequestHandler<UpdateItemCommand, Result<Item, ValidationException>>
+    public class UpdateItemCommandHandler : ICommandHandler<UpdateItemCommand, Item>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IItemRepository _itemRepository;
@@ -34,12 +33,12 @@ public record UpdateItemCommand : IRequest<Result<Item, ValidationException>>
             _itemRepository = itemRepository;
         }
 
-        public async Task<Result<Item, ValidationException>> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Item, ValidationResult>> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
         {
-            var item = await _itemRepository.GetById(request.Id);
+            var item = await _itemRepository.GetById(request.Id, cancellationToken);
             if (item is null)
             {
-                return new ValidationException([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
             item.AnvisaCode = request.AnvisaCode;
@@ -54,7 +53,7 @@ public record UpdateItemCommand : IRequest<Result<Item, ValidationException>>
             item.SusCode = request.SusCode;
             item.Uom = request.Uom;
 
-            await _unitOfWork.Commit();
+            await _unitOfWork.Commit(cancellationToken);
 
             return item;
         }

@@ -1,7 +1,7 @@
 
 namespace Omini.Opme.Be.Domain;
 
-public class CompanyName : BaseValueObject
+public class CompanyName : ValueObject
 {
     public CompanyName(string legalName, string tradeName)
     {
@@ -12,7 +12,7 @@ public class CompanyName : BaseValueObject
     public string LegalName { get; init; }
     public string TradeName { get; init; }
 
-    protected override IEnumerable<object> GetEqualityComponents()
+    public override IEnumerable<object> GetAtomicValues()
     {
         yield return LegalName;
         yield return TradeName;

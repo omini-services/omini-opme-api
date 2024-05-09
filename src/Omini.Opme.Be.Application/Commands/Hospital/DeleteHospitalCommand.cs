@@ -1,6 +1,5 @@
-using FluentValidation;
 using FluentValidation.Results;
-using MediatR;
+using Omini.Opme.Be.Application.Abstractions.Messaging;
 using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Services;
@@ -9,11 +8,11 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record DeleteHospitalCommand : IRequest<Result<Hospital, ValidationException>>
+public record DeleteHospitalCommand : ICommand<Hospital>
 {
     public Guid Id { get; init; }
 
-    public class DeleteHospitalCommandHandler : IRequestHandler<DeleteHospitalCommand, Result<Hospital, ValidationException>>
+    public class DeleteHospitalCommandHandler : ICommandHandler<DeleteHospitalCommand, Hospital>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHospitalRepository _hospitalRepository;
@@ -28,18 +27,18 @@ public record DeleteHospitalCommand : IRequest<Result<Hospital, ValidationExcept
             _auditableService = auditableService;
         }
 
-        public async Task<Result<Hospital, ValidationException>> Handle(DeleteHospitalCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Hospital, ValidationResult>> Handle(DeleteHospitalCommand request, CancellationToken cancellationToken)
         {
-            var hospital = await _hospitalRepository.GetById(request.Id);
+            var hospital = await _hospitalRepository.GetById(request.Id, cancellationToken);
             if (hospital is null)
             {
-                return new ValidationException([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
             _auditableService.SoftDelete(hospital);
 
-            _hospitalRepository.Update(hospital);
-            await _unitOfWork.Commit();
+            _hospitalRepository.Update(hospital, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return hospital;
         }

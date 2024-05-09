@@ -1,5 +1,6 @@
 using AutoMapper;
 using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Omini.Opme.Be.Api.Dtos;
@@ -18,27 +19,27 @@ public class MainController : ControllerBase
 
     protected IMapper Mapper => _mapper ??= HttpContext.RequestServices.GetService<IMapper>()!;
 
-    public IActionResult ToOk<TResult, TContract>(Result<TResult, ValidationException> result, Func<TResult, TContract> mapper){
+    public IActionResult ToOk<TResult, TContract>(Result<TResult, ValidationResult> result, Func<TResult, TContract> mapper){
         return result.Match(obj => {
             var response = mapper(obj);
             return Ok(ResponseDto.ApiSuccess(response));
         }, ToBadRequest);
     }
 
-    public IActionResult ToCreatedAtRoute<TResult, TContract>(Result<TResult, ValidationException> result, Func<TResult, TContract> mapper, string? controllerName, string? actionName, Func<TContract, object>? routeValues){
+    public IActionResult ToCreatedAtRoute<TResult, TContract>(Result<TResult, ValidationResult> result, Func<TResult, TContract> mapper, string? controllerName, string? actionName, Func<TContract, object>? routeValues){
         return result.Match(obj => {
             var response = mapper(obj);
             return CreatedAtAction(actionName, controllerName[..^10], routeValues is not null ? routeValues(response) : null, ResponseDto.ApiSuccess(response));            
         }, ToBadRequest);
     }
 
-    public IActionResult ToNoContent<TResult>(Result<TResult, ValidationException> result){
+    public IActionResult ToNoContent<TResult>(Result<TResult, ValidationResult> result){
         return result.Match(obj => {
             return NoContent();
         }, ToBadRequest);
     }
 
-    public IActionResult ToBadRequest(ValidationException validationException){
-        return new BadRequestObjectResult(validationException.ToProblemDetails());
+    public IActionResult ToBadRequest(ValidationResult validationResult){
+        return new BadRequestObjectResult(new ValidationException(validationResult.Errors).ToProblemDetails());
     }
 }

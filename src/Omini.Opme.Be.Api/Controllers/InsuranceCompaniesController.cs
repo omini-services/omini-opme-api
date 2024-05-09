@@ -1,5 +1,3 @@
-
-using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Omini.Opme.Be.Api.Dtos;
@@ -32,9 +30,10 @@ public class InsuranceCompaniesController : MainController
     {
         var insuranceCompany = await repository.GetById(id);
 
-        if (insuranceCompany is null){
+        if (insuranceCompany is null)
+        {
             return BadRequest();
-        }        
+        }
 
         var result = Mapper.Map<InsuranceCompanyOutputDto>(insuranceCompany);
 
@@ -63,7 +62,7 @@ public class InsuranceCompaniesController : MainController
     {
         if (insuranceCompanyUpdateDto.Id != id)
         {
-            return ToBadRequest(new ValidationException("Invalid id", new List<ValidationFailure>() { new ValidationFailure("Id", "Invalid id") }));
+            return ToBadRequest(new ValidationResult([new ValidationFailure("Id", "Invalid id")]));
         }
 
         var command = new UpdateInsuranceCompanyCommand()
