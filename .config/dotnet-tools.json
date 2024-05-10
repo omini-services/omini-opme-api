@@ -7,6 +7,12 @@
       "commands": [
         "dotnet-ef"
       ]
+    },
+    "questpdf.previewer": {
+      "version": "2024.3.1",
+      "commands": [
+        "questpdf-previewer"
+      ]
     }
   }
 }
