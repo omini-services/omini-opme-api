@@ -76,7 +76,7 @@ public class QuotationsController : MainController
         });
     }
 
-    [HttpPost("{guid:id}/items")]
+    [HttpPost("{id:guid}/items")]
     public async Task<IActionResult> CreateItem(Guid id,
      [FromBody] QuotationCreateItemDto quotationCreateItemDto)
     {
@@ -145,7 +145,7 @@ public class QuotationsController : MainController
         return ToNoContent(result);
     }
 
-    [HttpPut("{id:guid}/items/{int:lineId}")]
+    [HttpPut("{id:guid}/items/{lineId:int}")]
     public async Task<IActionResult> UpdateItem(Guid id, int lineId, [FromBody] QuotationUpdateItemDto quotationUpdateItemDto)
     {
         if (quotationUpdateItemDto.QuotationId != id)
@@ -190,7 +190,7 @@ public class QuotationsController : MainController
         return ToNoContent(result);
     }
 
-    [HttpDelete("{id:guid}/items/{int:lineId}")]
+    [HttpDelete("{id:guid}/items/{lineId:int}")]
     public async Task<IActionResult> DeleteItem(Guid id, int lineId)
     {
         var command = new DeleteQuotationItemCommand()

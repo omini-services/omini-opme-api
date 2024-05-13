@@ -1,22 +1,23 @@
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
+using Omini.Opme.Be.Api.Tests.Authentication;
 using Omini.Opme.Be.Infrastructure.Contexts;
 
 namespace Omini.Opme.Be.Api.Tests;
 
-internal class IntegrationTest
+public abstract class IntegrationTest
 {
     protected readonly HttpClient TestClient;
 
     public IntegrationTest()
     {
-        var appFactory = new WebApplicationFactory<Startup>()
+        var appFactory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureServices(services =>
@@ -26,32 +27,42 @@ internal class IntegrationTest
                     {
                         options.UseInMemoryDatabase("testDb");
                     });
-                    services.Configure<JwtBearerOptions>(
-                        JwtBearerDefaults.AuthenticationScheme,
-                    options =>
+
+                    services.AddAuthentication(options =>
+                    {
+                        options.DefaultAuthenticateScheme = "TestScheme";
+                        options.DefaultChallengeScheme = "TestScheme";
+                    }).AddJwtBearer("TestScheme", options =>
                     {
                         options.Configuration = new OpenIdConnectConfiguration
                         {
                             Issuer = JwtTokenProvider.Issuer,
                         };
-                        options.TokenValidationParameters.ValidIssuer = JwtTokenProvider.Issuer;
-                        options.TokenValidationParameters.ValidAudience = JwtTokenProvider.Issuer;
+                        options.TokenValidationParameters = new TokenValidationParameters()
+                        {
+                            ValidIssuer = JwtTokenProvider.Issuer,
+                            ValidAudience = JwtTokenProvider.Issuer
+                        };
                         options.Configuration.SigningKeys.Add(JwtTokenProvider.SecurityKey);
-                    }
-                    );
+                    });
                 });
             });
 
         TestClient = appFactory.CreateClient();
     }
 
-    protected async Task Authenticate()
+    protected void Authenticate(Func<string>? GetToken = null)
     {
-        TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, await GetJwt());
-    }
+        string bearer;
+        if (GetToken is null)
+        {
+            bearer = new TestJwtToken().WithOpme(Guid.NewGuid()).Build();
+        }
+        else
+        {
+            bearer = GetToken();
+        }
 
-    private async Task GetJwt()
-    {
-        var response = TestClient.PostAsJsonAsync()
+        TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, bearer);
     }
 }

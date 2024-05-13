@@ -3,15 +3,15 @@ using FluentAssertions;
 
 namespace Omini.Opme.Be.Api.Tests;
 
-internal class QuotationControllerTests : IntegrationTest
+public class QuotationControllerTests : IntegrationTest
 {
     [Fact]
     public async void Create_()
     {
-        //arrange
+        Authenticate();
 
         //act
-        var response = await TestClient.GetAsync("");
+        var response = await TestClient.GetAsync("/api/items");
 
         //assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
