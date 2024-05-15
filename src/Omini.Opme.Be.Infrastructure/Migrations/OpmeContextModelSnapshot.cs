@@ -527,17 +527,19 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                             b1.Property<string>("FirstName")
                                 .IsRequired()
                                 .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("FirstName");
 
                             b1.Property<string>("LastName")
                                 .IsRequired()
                                 .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("LastName");
 
                             b1.Property<string>("MiddleName")
-                                .IsRequired()
                                 .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("MiddleName");
 
                             b1.HasKey("InternalSpecialistId");
 
@@ -571,7 +573,6 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                                 .HasColumnName("LastName");
 
                             b1.Property<string>("MiddleName")
-                                .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)")
                                 .HasColumnName("MiddleName");
@@ -608,7 +609,6 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                                 .HasColumnName("LastName");
 
                             b1.Property<string>("MiddleName")
-                                .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)")
                                 .HasColumnName("MiddleName");

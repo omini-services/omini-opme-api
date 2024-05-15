@@ -13,8 +13,8 @@ public record UpdatePatientCommand : ICommand<Patient>
 {
     public Guid Id { get; init; }
     public string FirstName { get; init; }
-    public string MiddleName { get; init; }
     public string LastName { get; set; }
+    public string? MiddleName { get; init; }
     public string Cpf { get; set; }
     public string Comments { get; set; }
 
@@ -37,7 +37,7 @@ public record UpdatePatientCommand : ICommand<Patient>
             }
 
             patient.Cpf = Formatters.FormatCpf(request.Cpf);
-            patient.Name = new PersonName(request.FirstName, request.MiddleName, request.LastName);
+            patient.Name = new PersonName(request.FirstName, request.LastName, request.MiddleName);
             patient.Comments = request.Comments;
 
             await _unitOfWork.Commit(cancellationToken);

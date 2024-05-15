@@ -1,12 +1,10 @@
-using System.Text.RegularExpressions;
-
 namespace Omini.Opme.Be.Shared;
 
 public static class Formatters
 {
     public static string GetNumbersOnly(this string value)
     {
-        return Regex.Match(value, @"\d+").Value;
+        return string.Concat(value.Where(Char.IsDigit));
     }
 
     public static string FormatCpf(string cpf)
@@ -23,7 +21,7 @@ public static class Formatters
             throw new FormatException("Invalid cpf size");
         }
 
-        return $"{cpf[..3]}.{cpf[3..6]}.{cpf[6..9]}-{cpf[9..11]}";
+        return $"{cleanCpf[..3]}.{cleanCpf[3..6]}.{cleanCpf[6..9]}-{cleanCpf[9..11]}";
     }
 
     public static string FormatCnpj(string cnpj)
@@ -40,6 +38,6 @@ public static class Formatters
             throw new FormatException("Invalid cpf size");
         }
 
-        return $"{cnpj[..2]}.{cnpj[2..5]}.{cnpj[5..8]}/{cnpj[8..12]}-{cnpj[12..14]}";
+        return $"{cleanCpf[..2]}.{cleanCpf[2..5]}.{cleanCpf[5..8]}/{cleanCpf[8..12]}-{cleanCpf[12..14]}";
     }
 }

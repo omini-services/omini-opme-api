@@ -11,8 +11,8 @@ namespace Omini.Opme.Be.Application.Commands;
 public record CreatePhysicianCommand : ICommand<Physician>
 {
     public string FirstName { get; init; }
-    public string MiddleName { get; init; }
     public string LastName { get; set; }
+    public string? MiddleName { get; init; }
     public string Cro { get; set; }
     public string Crm { get; set; }
     public string Comments { get; set; }
@@ -33,7 +33,7 @@ public record CreatePhysicianCommand : ICommand<Physician>
             {
                 Cro = request.Cro,
                 Crm = request.Crm,
-                Name = new PersonName(request.FirstName, request.MiddleName, request.LastName),
+                Name = new PersonName(request.FirstName, request.LastName, request.MiddleName),
                 Comments = request.Comments
             };
 

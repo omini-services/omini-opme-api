@@ -29,7 +29,6 @@ public record CreateQuotationCommand : ICommand<Quotation>
         public string AnvisaCode { get; set; }
         public DateTime AnvisaDueDate { get; set; }
         public double UnitPrice { get; set; }
-        public double ItemTotal { get; set; }
         public double Quantity { get; set; }
     }
 
@@ -109,7 +108,7 @@ public record CreateQuotationCommand : ICommand<Quotation>
                     AnvisaCode = item.AnvisaCode,
                     AnvisaDueDate = item.AnvisaDueDate,
                     UnitPrice = item.UnitPrice,
-                    ItemTotal = item.ItemTotal,
+                    ItemTotal = item.Quantity * item.UnitPrice,
                     Quantity = item.Quantity,
                 }).ToList()
             };

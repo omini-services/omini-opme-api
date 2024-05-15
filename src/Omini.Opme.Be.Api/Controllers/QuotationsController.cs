@@ -63,7 +63,6 @@ public class QuotationsController : MainController
                 AnvisaCode = item.AnvisaCode,
                 AnvisaDueDate = item.AnvisaDueDate,
                 UnitPrice = item.UnitPrice,
-                ItemTotal = item.ItemTotal,
                 Quantity = item.Quantity,
             })
         };
@@ -94,7 +93,6 @@ public class QuotationsController : MainController
             AnvisaCode = quotationCreateItemDto.AnvisaCode,
             AnvisaDueDate = quotationCreateItemDto.AnvisaDueDate,
             UnitPrice = quotationCreateItemDto.UnitPrice,
-            ItemTotal = quotationCreateItemDto.ItemTotal,
             Quantity = quotationCreateItemDto.Quantity,
         };
 
@@ -135,7 +133,6 @@ public class QuotationsController : MainController
                 AnvisaCode = item.AnvisaCode,
                 AnvisaDueDate = item.AnvisaDueDate,
                 UnitPrice = item.UnitPrice,
-                ItemTotal = item.ItemTotal,
                 Quantity = item.Quantity,
             })
         };

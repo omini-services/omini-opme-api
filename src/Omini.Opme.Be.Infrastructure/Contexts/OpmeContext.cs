@@ -6,7 +6,8 @@ using Omini.Opme.Be.Infrastructure.Extensions;
 using Omini.Opme.Be.Shared.Interfaces;
 
 namespace Omini.Opme.Be.Infrastructure.Contexts;
-internal class OpmeContext : DbContext
+
+internal sealed class OpmeContext : DbContext
 {
     private readonly IClaimsService _claimsProvider;
 

@@ -15,8 +15,7 @@ internal class PatientMapping : IEntityTypeConfiguration<Patient>
 
         builder.OwnsOne(x => x.Name)
             .Property(x => x.MiddleName)
-            .HasColumnName("MiddleName")
-            .IsRequired();
+            .HasColumnName("MiddleName");
 
         builder.OwnsOne(x => x.Name)
             .Property(x => x.LastName)

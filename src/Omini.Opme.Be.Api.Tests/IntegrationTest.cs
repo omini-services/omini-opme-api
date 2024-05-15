@@ -1,5 +1,7 @@
-using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Flurl.Http;
+using Flurl.Http.Configuration;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +15,7 @@ namespace Omini.Opme.Be.Api.Tests;
 
 public abstract class IntegrationTest
 {
-    protected readonly HttpClient TestClient;
+    protected readonly FlurlClient TestClient;
 
     public IntegrationTest()
     {
@@ -48,21 +50,15 @@ public abstract class IntegrationTest
                 });
             });
 
-        TestClient = appFactory.CreateClient();
-    }
-
-    protected void Authenticate(Func<string>? GetToken = null)
-    {
-        string bearer;
-        if (GetToken is null)
+        TestClient = new FlurlClient(appFactory.CreateClient()).WithSettings(settings =>
         {
-            bearer = new TestJwtToken().WithOpme(Guid.NewGuid()).Build();
-        }
-        else
-        {
-            bearer = GetToken();
-        }
-
-        TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, bearer);
+            var jsonOptions = new JsonSerializerOptions()
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            };
+            jsonOptions.Converters.Add(new JsonStringEnumConverter());
+            settings.JsonSerializer = new DefaultJsonSerializer(jsonOptions);
+        });
     }
 }

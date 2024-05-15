@@ -12,8 +12,8 @@ public record UpdatePhysicianCommand : ICommand<Physician>
 {
     public Guid Id { get; init; }
     public string FirstName { get; init; }
-    public string MiddleName { get; init; }
     public string LastName { get; set; }
+    public string? MiddleName { get; init; }
     public string Cro { get; set; }
     public string Crm { get; set; }
     public string Comments { get; set; }
@@ -39,7 +39,7 @@ public record UpdatePhysicianCommand : ICommand<Physician>
 
             physician.Cro = request.Cro;
             physician.Crm = request.Crm;
-            physician.Name = new PersonName(request.FirstName, request.MiddleName, request.LastName);
+            physician.Name = new PersonName(request.FirstName, request.LastName, request.MiddleName);
             physician.Comments = request.Comments;
 
             await _unitOfWork.Commit(cancellationToken);

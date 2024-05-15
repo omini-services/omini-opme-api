@@ -13,7 +13,7 @@ public sealed record QuotationCreateDto
     public Guid InsuranceCompanyId { get; set; }
     public Guid InternalSpecialistId { get; set; }
     public DateTime DueDate { get; set; }
-    public List<QuotationCreateItemDto> Items { get; set; }
+    public List<QuotationCreateItemDto> Items { get; set; } = new();
 
     public sealed record QuotationCreateItemDto
     {
@@ -23,7 +23,6 @@ public sealed record QuotationCreateDto
         public string AnvisaCode { get; set; }
         public DateTime AnvisaDueDate { get; set; }
         public double UnitPrice { get; set; }
-        public double ItemTotal { get; set; }
         public double Quantity { get; set; }
     }
 }
@@ -37,7 +36,6 @@ public sealed record QuotationCreateItemDto
     public string AnvisaCode { get; set; }
     public DateTime AnvisaDueDate { get; set; }
     public double UnitPrice { get; set; }
-    public double ItemTotal { get; set; }
     public double Quantity { get; set; }
 }
 
@@ -53,7 +51,7 @@ public sealed record QuotationUpdateDto
     public Guid InsuranceCompanyId { get; set; }
     public Guid InternalSpecialistId { get; set; }
     public DateTime DueDate { get; set; }
-    public List<QuotationUpdateItemDto> Items { get; set; }
+    public List<QuotationUpdateItemDto> Items { get; set; } = new();
 
     public sealed record QuotationUpdateItemDto
     {
