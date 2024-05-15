@@ -17,7 +17,7 @@ public class QuotationControllerTests : IntegrationTest
     private List<ResponseDto<ItemOutputDto>> itemsOutputDto = new();
 
     [Fact]
-    public async void Create_Quotation()
+    public async void Should_CreateQuotation_WithoutError()
     {
         //arrange
         await Seed();
