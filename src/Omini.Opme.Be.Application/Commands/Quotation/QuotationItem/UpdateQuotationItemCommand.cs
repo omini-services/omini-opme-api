@@ -66,10 +66,10 @@ public record UpdateQuotationItemCommand : ICommand<Quotation>
             quotationItem.ItemId = request.ItemId;
             quotationItem.ItemCode = request.ItemCode;
             quotationItem.AnvisaCode = request.AnvisaCode;
-            quotationItem.AnvisaDueDate = request.AnvisaDueDate;
+            quotationItem.AnvisaDueDate = request.AnvisaDueDate.ToUniversalTime();
             quotationItem.UnitPrice = request.UnitPrice;
-            quotationItem.ItemTotal = request.ItemTotal;
             quotationItem.Quantity = request.Quantity;
+            quotationItem.ItemTotal = request.Quantity * request.UnitPrice;
 
             _quotationRepository.Update(quotation, cancellationToken);
             await _unitOfWork.Commit(cancellationToken);

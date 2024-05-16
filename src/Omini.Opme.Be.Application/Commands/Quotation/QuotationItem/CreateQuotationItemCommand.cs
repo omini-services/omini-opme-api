@@ -7,7 +7,7 @@ using Omini.Opme.Be.Shared.Entities;
 
 namespace Omini.Opme.Be.Application.Commands;
 
-public record CreateQuotationItemCommand : ICommand<QuotationItem>
+public record CreateQuotationItemCommand : ICommand<Quotation>
 {
     public Guid QuotationId { get; set; }
     public int? LineOrder { get; set; }
@@ -19,7 +19,7 @@ public record CreateQuotationItemCommand : ICommand<QuotationItem>
     public double ItemTotal { get; set; }
     public double Quantity { get; set; }
 
-    public class CreateQuotationItemCommandHandler : ICommandHandler<CreateQuotationItemCommand, QuotationItem>
+    public class CreateQuotationItemCommandHandler : ICommandHandler<CreateQuotationItemCommand, Quotation>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IItemRepository _itemRepository;
@@ -34,7 +34,7 @@ public record CreateQuotationItemCommand : ICommand<QuotationItem>
             _quotationRepository = quotationRepository;
         }
 
-        public async Task<Result<QuotationItem, ValidationResult>> Handle(CreateQuotationItemCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Quotation, ValidationResult>> Handle(CreateQuotationItemCommand request, CancellationToken cancellationToken)
         {
             var validationFailures = new List<ValidationFailure>();
             var quotation = await _quotationRepository.GetById(request.QuotationId, cancellationToken);
@@ -64,10 +64,10 @@ public record CreateQuotationItemCommand : ICommand<QuotationItem>
                 ItemId = request.ItemId,
                 ItemCode = request.ItemCode,
                 AnvisaCode = request.AnvisaCode,
-                AnvisaDueDate = request.AnvisaDueDate,
+                AnvisaDueDate = request.AnvisaDueDate.ToUniversalTime(),
                 UnitPrice = request.UnitPrice,
-                ItemTotal = request.ItemTotal,
                 Quantity = request.Quantity,
+                ItemTotal = request.Quantity * request.UnitPrice,
             };
 
             items.Add(newItem);
@@ -75,7 +75,7 @@ public record CreateQuotationItemCommand : ICommand<QuotationItem>
             _quotationRepository.Update(quotation, cancellationToken);
             await _unitOfWork.Commit(cancellationToken);
 
-            return newItem;
+            return quotation;
         }
     }
 }

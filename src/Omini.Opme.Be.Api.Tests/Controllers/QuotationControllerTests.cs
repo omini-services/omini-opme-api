@@ -1,6 +1,5 @@
 using Bogus;
 using FluentAssertions;
-using FluentAssertions.Extensions;
 using Flurl.Http;
 using Microsoft.AspNetCore.Http;
 using Omini.Opme.Be.Api.Dtos;
@@ -14,7 +13,7 @@ public class QuotationControllerTests : IntegrationTest
     private ResponseDto<PatientOutputDto> patientOutputDto;
     private ResponseDto<InsuranceCompanyOutputDto> insuranceCompanyOutputDto;
     private ResponseDto<PhysicianOutputDto> physicianOutputDto;
-    private List<ResponseDto<ItemOutputDto>> itemsOutputDto = new();
+    private List<ResponseDto<ItemOutputDto>> itemOutputDtos = new();
 
     [Fact]
     public async void Should_CreateQuotation_When_ValidDataProvided()
@@ -24,31 +23,14 @@ public class QuotationControllerTests : IntegrationTest
 
         var faker = new Faker();
 
-        var quotationCreateDto = new QuotationCreateDto()
-        {
-            DueDate = faker.Date.Future().AsUtc(),
-            HospitalId = hospitalOutputDto.Data.Id,
-            InsuranceCompanyId = insuranceCompanyOutputDto.Data.Id,
-            PhysicianId = physicianOutputDto.Data.Id,
-            InternalSpecialistId = Guid.NewGuid(),
-            Number = faker.Random.AlphaNumeric(5),
-            PatientId = patientOutputDto.Data.Id,
-            PayingSourceType = Domain.Enums.PayingSourceType.Hospital,
-            PayingSourceId = hospitalOutputDto.Data.Id,
-        };
-
-        foreach (var item in itemsOutputDto)
-        {
-            quotationCreateDto.Items.Add(new QuotationCreateDto.QuotationCreateItemDto()
-            {
-                ItemId = item.Data.Id,
-                ItemCode = item.Data.Code,
-                AnvisaCode = item.Data.AnvisaCode,
-                AnvisaDueDate = item.Data.AnvisaDueDate,
-                Quantity = faker.Random.Number(1, 100),
-                UnitPrice = faker.Random.Double(max: 1000.0)
-            });
-        }
+        var quotationCreateDto = QuotationFaker.GetFakeQuotationCreateDto(itemOutputDtos);
+        quotationCreateDto.HospitalId = hospitalOutputDto.Data.Id;
+        quotationCreateDto.InsuranceCompanyId = insuranceCompanyOutputDto.Data.Id;
+        quotationCreateDto.PhysicianId = physicianOutputDto.Data.Id;
+        quotationCreateDto.InternalSpecialistId = Guid.NewGuid();
+        quotationCreateDto.PatientId = patientOutputDto.Data.Id;
+        quotationCreateDto.PayingSourceType = Domain.Enums.PayingSourceType.Hospital;
+        quotationCreateDto.PayingSourceId = hospitalOutputDto.Data.Id;
 
         //act
         var response = await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateDto);
@@ -70,18 +52,162 @@ public class QuotationControllerTests : IntegrationTest
 
 
         quotationOutputDto.Data.Items.Should()
-                                     .OnlyHaveUniqueItems(p => p.LineOrder).And
+                                     .OnlyHaveUniqueItems(p => p.LineId).And
                                      .OnlyHaveUniqueItems(p => p.LineOrder).And
                                      .AllSatisfy(p => p.ItemTotal.Should().BeGreaterThanOrEqualTo(0));
     }
 
+    [Fact]
+    public async void Should_CreateQuotationItem_When_ValidDataProvided()
+    {
+        //arrange
+        await Seed();
+
+        var quotationCreateDto = QuotationFaker.GetFakeQuotationCreateDto(itemOutputDtos);
+        quotationCreateDto.HospitalId = hospitalOutputDto.Data.Id;
+        quotationCreateDto.InsuranceCompanyId = insuranceCompanyOutputDto.Data.Id;
+        quotationCreateDto.PhysicianId = physicianOutputDto.Data.Id;
+        quotationCreateDto.InternalSpecialistId = Guid.NewGuid();
+        quotationCreateDto.PatientId = patientOutputDto.Data.Id;
+        quotationCreateDto.PayingSourceType = Domain.Enums.PayingSourceType.Hospital;
+        quotationCreateDto.PayingSourceId = hospitalOutputDto.Data.Id;
+
+        var quotation = (await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateDto).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
+
+        var fakeItem = ItemFaker.GetFakerItem().Generate();
+        var newItem = (await TestClient.Request("/api/items").AsAuthenticated().PostJsonAsync(fakeItem).ReceiveJson<ResponseDto<ItemOutputDto>>()).Data;
+
+        //act        
+        var faker = new Faker();
+        var quotationCreateItemDto = new QuotationCreateItemDto()
+        {
+            QuotationId = quotation.Id,
+            AnvisaCode = newItem.AnvisaCode,
+            AnvisaDueDate = newItem.AnvisaDueDate,
+            ItemCode = newItem.Code,
+            ItemId = newItem.Id,
+            Quantity = faker.Random.Number(0, 100),
+            UnitPrice = faker.Random.Double(0, 100),
+        };
+
+        var updateQuotationResponse = await TestClient.Request($"/api/quotations/{quotation.Id}/items").AsAuthenticated().PostJsonAsync(quotationCreateItemDto);
+        var quotationAfterUpdateResponse = await TestClient.Request($"/api/quotations/{quotation.Id}").AsAuthenticated().GetJsonAsync<ResponseDto<QuotationOutputDto>>();
+        var quotationAfterUpdate = quotationAfterUpdateResponse.Data;
+
+        //assert
+        updateQuotationResponse.StatusCode.Should().Be(StatusCodes.Status201Created);
+
+        quotationAfterUpdate.Items.Should().HaveCount(quotation.Items.Count + 1);
+
+        quotationAfterUpdate.Items.Should()
+                                     .OnlyHaveUniqueItems(p => p.LineId).And
+                                     .OnlyHaveUniqueItems(p => p.LineOrder).And
+                                     .AllSatisfy(p => p.ItemTotal.Should().BeGreaterThanOrEqualTo(0));
+
+        var addedItem = quotationAfterUpdate.Items.Last();
+        quotationAfterUpdate.Items.Should().ContainEquivalentOf(addedItem,
+            options =>
+                options.ExcludingMissingMembers()
+                    .Excluding(p => p.AnvisaDueDate)
+        );
+    }
+
+    [Fact]
+    public async void Should_UpdateQuotationItem_When_ValidDataProvided()
+    {
+        //arrange
+        await Seed();
+
+        var quotationCreateDto = QuotationFaker.GetFakeQuotationCreateDto(itemOutputDtos);
+        quotationCreateDto.HospitalId = hospitalOutputDto.Data.Id;
+        quotationCreateDto.InsuranceCompanyId = insuranceCompanyOutputDto.Data.Id;
+        quotationCreateDto.PhysicianId = physicianOutputDto.Data.Id;
+        quotationCreateDto.InternalSpecialistId = Guid.NewGuid();
+        quotationCreateDto.PatientId = patientOutputDto.Data.Id;
+        quotationCreateDto.PayingSourceType = Domain.Enums.PayingSourceType.Hospital;
+        quotationCreateDto.PayingSourceId = hospitalOutputDto.Data.Id;
+
+        var quotation = (await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateDto).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
+        var lineIdToUpdate = quotation.Items[0].LineId;
+
+        //act        
+        var quotationUpdateItemDto = new QuotationUpdateItemDto()
+        {
+            QuotationId = quotation.Id,
+            LineId = lineIdToUpdate,
+            LineOrder = quotation.Items[0].LineOrder,
+            AnvisaCode = quotation.Items[1].AnvisaCode,
+            AnvisaDueDate = quotation.Items[1].AnvisaDueDate,
+            ItemCode = quotation.Items[1].ItemCode,
+            ItemId = quotation.Items[1].ItemId,
+            Quantity = quotation.Items[1].Quantity,
+            UnitPrice = quotation.Items[1].UnitPrice,
+        };
+
+        var updateQuotationResponse = await TestClient.Request($"/api/quotations/{quotation.Id}/items/{quotation.Items[0].LineId}").AsAuthenticated().PutJsonAsync(quotationUpdateItemDto);
+        var quotationAfterUpdateResponse = await TestClient.Request($"/api/quotations/{quotation.Id}").AsAuthenticated().GetJsonAsync<ResponseDto<QuotationOutputDto>>();
+        var quotationAfterUpdate = quotationAfterUpdateResponse.Data;
+
+        //assert
+        updateQuotationResponse.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+
+        var updatedItem = quotationAfterUpdate.Items.Single(p => p.LineId == lineIdToUpdate);
+        quotationUpdateItemDto.Should().BeEquivalentTo(updatedItem,
+            options =>
+                options.ExcludingMissingMembers()
+                    .Excluding(p => p.AnvisaDueDate)
+        );
+
+        quotationAfterUpdate.Items.Should()
+                                     .OnlyHaveUniqueItems(p => p.LineId).And
+                                     .OnlyHaveUniqueItems(p => p.LineOrder).And
+                                     .AllSatisfy(p => p.ItemTotal.Should().BeGreaterThanOrEqualTo(0));
+    }
+
+    [Fact]
+    public async void Should_DeleteQuotationItem_When_ValidDataProvided()
+    {
+        //arrange
+        await Seed();
+
+        var quotationCreateDto = QuotationFaker.GetFakeQuotationCreateDto(itemOutputDtos);
+        quotationCreateDto.HospitalId = hospitalOutputDto.Data.Id;
+        quotationCreateDto.InsuranceCompanyId = insuranceCompanyOutputDto.Data.Id;
+        quotationCreateDto.PhysicianId = physicianOutputDto.Data.Id;
+        quotationCreateDto.InternalSpecialistId = Guid.NewGuid();
+        quotationCreateDto.PatientId = patientOutputDto.Data.Id;
+        quotationCreateDto.PayingSourceType = Domain.Enums.PayingSourceType.Hospital;
+        quotationCreateDto.PayingSourceId = hospitalOutputDto.Data.Id;
+
+        var quotation = (await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateDto).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
+
+        //act
+
+        var updateQuotationResponse = await TestClient.Request($"/api/quotations/{quotation.Id}/items/{quotation.Items[0].LineId}").AsAuthenticated().DeleteAsync();
+        var quotationAfterUpdateResponse = await TestClient.Request($"/api/quotations/{quotation.Id}").AsAuthenticated().GetJsonAsync<ResponseDto<QuotationOutputDto>>();
+        var quotationAfterUpdate = quotationAfterUpdateResponse.Data;
+
+        //assert
+        updateQuotationResponse.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+
+        quotationAfterUpdate.Items.Should().HaveCount(quotation.Items.Count - 1);
+
+        quotationAfterUpdate.Items.Should()
+                                     .OnlyHaveUniqueItems(p => p.LineId).And
+                                     .OnlyHaveUniqueItems(p => p.LineOrder).And
+                                     .AllSatisfy(p => p.ItemTotal.Should().BeGreaterThanOrEqualTo(0));
+
+        quotationAfterUpdate.Items.Should().NotContain(quotation.Items[0]);                                     
+    }
+
     private async Task Seed()
     {
-        ItemFaker.GetFakerItem().Generate(5).ForEach(async (i) =>
+        var fakeItems = ItemFaker.GetFakerItem().Generate(5);
+        foreach (var fakeItem in fakeItems)
         {
-            var response = await TestClient.Request("/api/items").AsAuthenticated().PostJsonAsync(i).ReceiveJson<ResponseDto<ItemOutputDto>>();
-            itemsOutputDto.Add(response);
-        });
+            var response = await TestClient.Request("/api/items").AsAuthenticated().PostJsonAsync(fakeItem).ReceiveJson<ResponseDto<ItemOutputDto>>();
+            itemOutputDtos.Add(response);
+        }
 
         var fakeHospital = HospitalFaker.GetFakeHospital();
         hospitalOutputDto = await TestClient.Request("/api/hospitals").AsAuthenticated().PostJsonAsync(fakeHospital).ReceiveJson<ResponseDto<HospitalOutputDto>>();

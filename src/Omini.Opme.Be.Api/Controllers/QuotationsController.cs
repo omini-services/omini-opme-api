@@ -104,43 +104,43 @@ public class QuotationsController : MainController
         });
     }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] QuotationUpdateDto quotationUpdateDto)
-    {
-        if (quotationUpdateDto.Id != id)
-        {
-            return ToBadRequest(new ValidationResult([new ValidationFailure("Id", "Invalid id")]));
-        }
+    // [HttpPut("{id:guid}")]
+    // public async Task<IActionResult> Update(Guid id, [FromBody] QuotationUpdateDto quotationUpdateDto)
+    // {
+    //     if (quotationUpdateDto.Id != id)
+    //     {
+    //         return ToBadRequest(new ValidationResult([new ValidationFailure("Id", "Invalid id")]));
+    //     }
 
-        var command = new UpdateQuotationCommand()
-        {
-            Id = quotationUpdateDto.Id,
-            Number = quotationUpdateDto.Number,
-            PatientId = quotationUpdateDto.PatientId,
-            PhysicianId = quotationUpdateDto.PhysicianId,
-            PayingSourceType = quotationUpdateDto.PayingSourceType,
-            PayingSourceId = quotationUpdateDto.PayingSourceId,
-            HospitalId = quotationUpdateDto.HospitalId,
-            InsuranceCompanyId = quotationUpdateDto.InsuranceCompanyId,
-            InternalSpecialistId = quotationUpdateDto.InternalSpecialistId,
-            DueDate = quotationUpdateDto.DueDate,
-            Items = quotationUpdateDto.Items.Select((item, index) => new UpdateQuotationCommand.UpdateQuotationItemCommand()
-            {
-                LineId = item.LineId,
-                LineOrder = item.LineOrder,
-                ItemId = item.ItemId,
-                ItemCode = item.ItemCode,
-                AnvisaCode = item.AnvisaCode,
-                AnvisaDueDate = item.AnvisaDueDate,
-                UnitPrice = item.UnitPrice,
-                Quantity = item.Quantity,
-            })
-        };
+    //     var command = new UpdateQuotationCommand()
+    //     {
+    //         Id = quotationUpdateDto.Id,
+    //         Number = quotationUpdateDto.Number,
+    //         PatientId = quotationUpdateDto.PatientId,
+    //         PhysicianId = quotationUpdateDto.PhysicianId,
+    //         PayingSourceType = quotationUpdateDto.PayingSourceType,
+    //         PayingSourceId = quotationUpdateDto.PayingSourceId,
+    //         HospitalId = quotationUpdateDto.HospitalId,
+    //         InsuranceCompanyId = quotationUpdateDto.InsuranceCompanyId,
+    //         InternalSpecialistId = quotationUpdateDto.InternalSpecialistId,
+    //         DueDate = quotationUpdateDto.DueDate,
+    //         Items = quotationUpdateDto.Items.Select((item, index) => new UpdateQuotationCommand.UpdateQuotationItemCommand()
+    //         {
+    //             LineId = item.LineId,
+    //             LineOrder = item.LineOrder,
+    //             ItemId = item.ItemId,
+    //             ItemCode = item.ItemCode,
+    //             AnvisaCode = item.AnvisaCode,
+    //             AnvisaDueDate = item.AnvisaDueDate,
+    //             UnitPrice = item.UnitPrice,
+    //             Quantity = item.Quantity,
+    //         })
+    //     };
 
-        var result = await Mediator.Send(command);
+    //     var result = await Mediator.Send(command);
 
-        return ToNoContent(result);
-    }
+    //     return ToNoContent(result);
+    // }
 
     [HttpPut("{id:guid}/items/{lineId:int}")]
     public async Task<IActionResult> UpdateItem(Guid id, int lineId, [FromBody] QuotationUpdateItemDto quotationUpdateItemDto)
@@ -165,7 +165,6 @@ public class QuotationsController : MainController
             AnvisaCode = quotationUpdateItemDto.AnvisaCode,
             AnvisaDueDate = quotationUpdateItemDto.AnvisaDueDate,
             UnitPrice = quotationUpdateItemDto.UnitPrice,
-            ItemTotal = quotationUpdateItemDto.ItemTotal,
             Quantity = quotationUpdateItemDto.Quantity,
         };
 

@@ -62,7 +62,6 @@ public sealed record QuotationUpdateDto
         public string AnvisaCode { get; set; }
         public DateTime AnvisaDueDate { get; set; }
         public double UnitPrice { get; set; }
-        public double ItemTotal { get; set; }
         public double Quantity { get; set; }
     }
 }
@@ -77,7 +76,6 @@ public sealed record QuotationUpdateItemDto
     public string AnvisaCode { get; set; }
     public DateTime AnvisaDueDate { get; set; }
     public double UnitPrice { get; set; }
-    public double ItemTotal { get; set; }
     public double Quantity { get; set; }
 }
 
