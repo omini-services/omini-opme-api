@@ -77,7 +77,7 @@ public class QuotationsController : MainController
 
     [HttpPost("{id:guid}/items")]
     public async Task<IActionResult> CreateItem(Guid id,
-     [FromBody] QuotationCreateItemDto quotationCreateItemDto)
+     [FromBody] QuotationCreateLineItemDto quotationCreateItemDto)
     {
         if (quotationCreateItemDto.QuotationId != id)
         {
@@ -143,7 +143,7 @@ public class QuotationsController : MainController
     // }
 
     [HttpPut("{id:guid}/items/{lineId:int}")]
-    public async Task<IActionResult> UpdateItem(Guid id, int lineId, [FromBody] QuotationUpdateItemDto quotationUpdateItemDto)
+    public async Task<IActionResult> UpdateItem(Guid id, int lineId, [FromBody] QuotationUpdateLineItemDto quotationUpdateItemDto)
     {
         if (quotationUpdateItemDto.QuotationId != id)
         {

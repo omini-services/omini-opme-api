@@ -27,7 +27,7 @@ public sealed record QuotationCreateDto
     }
 }
 
-public sealed record QuotationCreateItemDto
+public sealed record QuotationCreateLineItemDto
 {
     public Guid QuotationId { get; set; }
     public int? LineOrder { get; set; }
@@ -66,7 +66,7 @@ public sealed record QuotationUpdateDto
     }
 }
 
-public sealed record QuotationUpdateItemDto
+public sealed record QuotationUpdateLineItemDto
 {
     public Guid QuotationId { get; set; }
     public int LineId { get; set; }

@@ -19,27 +19,27 @@ public class MainController : ControllerBase
 
     protected IMapper Mapper => _mapper ??= HttpContext.RequestServices.GetService<IMapper>()!;
 
-    public IActionResult ToOk<TResult, TContract>(Result<TResult, ValidationResult> result, Func<TResult, TContract> mapper){
+    protected IActionResult ToOk<TResult, TContract>(Result<TResult, ValidationResult> result, Func<TResult, TContract> mapper){
         return result.Match(obj => {
             var response = mapper(obj);
             return Ok(ResponseDto.ApiSuccess(response));
         }, ToBadRequest);
     }
 
-    public IActionResult ToCreatedAtRoute<TResult, TContract>(Result<TResult, ValidationResult> result, Func<TResult, TContract> mapper, string? controllerName, string? actionName, Func<TContract, object>? routeValues){
+    protected IActionResult ToCreatedAtRoute<TResult, TContract>(Result<TResult, ValidationResult> result, Func<TResult, TContract> mapper, string? controllerName, string? actionName, Func<TContract, object>? routeValues){
         return result.Match(obj => {
             var response = mapper(obj);
             return CreatedAtAction(actionName, controllerName[..^10], routeValues is not null ? routeValues(response) : null, ResponseDto.ApiSuccess(response));            
         }, ToBadRequest);
     }
 
-    public IActionResult ToNoContent<TResult>(Result<TResult, ValidationResult> result){
+    protected IActionResult ToNoContent<TResult>(Result<TResult, ValidationResult> result){
         return result.Match(obj => {
             return NoContent();
         }, ToBadRequest);
     }
 
-    public IActionResult ToBadRequest(ValidationResult validationResult){
+    protected IActionResult ToBadRequest(ValidationResult validationResult){
         return new BadRequestObjectResult(new ValidationException(validationResult.Errors).ToProblemDetails());
     }
 }

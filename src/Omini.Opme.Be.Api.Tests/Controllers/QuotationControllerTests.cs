@@ -79,7 +79,7 @@ public class QuotationControllerTests : IntegrationTest
 
         //act        
         var faker = new Faker();
-        var quotationCreateItemDto = new QuotationCreateItemDto()
+        var quotationCreateItemDto = new QuotationCreateLineItemDto()
         {
             QuotationId = quotation.Id,
             AnvisaCode = newItem.AnvisaCode,
@@ -131,7 +131,7 @@ public class QuotationControllerTests : IntegrationTest
         var lineIdToUpdate = quotation.Items[0].LineId;
 
         //act        
-        var quotationUpdateItemDto = new QuotationUpdateItemDto()
+        var quotationUpdateItemDto = new QuotationUpdateLineItemDto()
         {
             QuotationId = quotation.Id,
             LineId = lineIdToUpdate,

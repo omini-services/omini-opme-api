@@ -33,8 +33,8 @@ internal class Startup
         });
 
         services.AddScoped<IClaimsService, ClaimsService>();
-        // services.AddEndpointsApiExplorer();
-        // services.AddSwaggerGen();
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
         services.AddAuthenticationConfiguration(Configuration);
         services.AddInfrastructure(Configuration);
 
@@ -49,8 +49,8 @@ internal class Startup
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-            // app.UseSwagger();
-            // app.UseSwaggerUI();
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
 
         //app.UseHttpsRedirection();
