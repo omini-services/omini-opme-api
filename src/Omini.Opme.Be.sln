@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationConnector", "Functions\AuthenticationConnector\AuthenticationConnector.csproj", "{EB15C24D-0AAF-49ED-8247-7DC3489B0A3F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omini.Opme.Be.Api.Tests", "Omini.Opme.Be.Api.Tests\Omini.Opme.Be.Api.Tests.csproj", "{F3147441-BA76-4EC7-B257-EBE257AF4BAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{EB15C24D-0AAF-49ED-8247-7DC3489B0A3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB15C24D-0AAF-49ED-8247-7DC3489B0A3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB15C24D-0AAF-49ED-8247-7DC3489B0A3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3147441-BA76-4EC7-B257-EBE257AF4BAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3147441-BA76-4EC7-B257-EBE257AF4BAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3147441-BA76-4EC7-B257-EBE257AF4BAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3147441-BA76-4EC7-B257-EBE257AF4BAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EB15C24D-0AAF-49ED-8247-7DC3489B0A3F} = {B293C83D-B88C-4658-9709-D672C46ADCD3}

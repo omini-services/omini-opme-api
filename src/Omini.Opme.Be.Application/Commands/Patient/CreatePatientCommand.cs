@@ -12,8 +12,8 @@ namespace Omini.Opme.Be.Application.Commands;
 public record CreatePatientCommand : ICommand<Patient>
 {
     public string FirstName { get; init; }
-    public string MiddleName { get; init; }
     public string LastName { get; set; }
+    public string? MiddleName { get; init; }
     public string Cpf { get; set; }
     public string Comments { get; set; }
 
@@ -32,7 +32,7 @@ public record CreatePatientCommand : ICommand<Patient>
             var patient = new Patient()
             {
                 Cpf = Formatters.FormatCpf(request.Cpf),
-                Name = new PersonName(request.FirstName, request.MiddleName, request.LastName),
+                Name = new PersonName(request.FirstName, request.LastName, request.MiddleName),
                 Comments = request.Comments
             };
 

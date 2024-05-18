@@ -29,7 +29,6 @@ public record CreateQuotationCommand : ICommand<Quotation>
         public string AnvisaCode { get; set; }
         public DateTime AnvisaDueDate { get; set; }
         public double UnitPrice { get; set; }
-        public double ItemTotal { get; set; }
         public double Quantity { get; set; }
     }
 
@@ -99,7 +98,7 @@ public record CreateQuotationCommand : ICommand<Quotation>
                 HospitalId = request.HospitalId,
                 InsuranceCompanyId = request.InsuranceCompanyId,
                 InternalSpecialistId = request.InternalSpecialistId,
-                DueDate = request.DueDate,
+                DueDate = request.DueDate.ToUniversalTime(),
                 Items = request.Items.Select((item, index) => new QuotationItem
                 {
                     LineId = index,
@@ -107,10 +106,10 @@ public record CreateQuotationCommand : ICommand<Quotation>
                     ItemId = item.ItemId,
                     ItemCode = item.ItemCode,
                     AnvisaCode = item.AnvisaCode,
-                    AnvisaDueDate = item.AnvisaDueDate,
+                    AnvisaDueDate = item.AnvisaDueDate.ToUniversalTime(),
                     UnitPrice = item.UnitPrice,
-                    ItemTotal = item.ItemTotal,
                     Quantity = item.Quantity,
+                    ItemTotal = item.Quantity * item.UnitPrice,
                 }).ToList()
             };
 

@@ -13,18 +13,29 @@ public sealed record QuotationCreateDto
     public Guid InsuranceCompanyId { get; set; }
     public Guid InternalSpecialistId { get; set; }
     public DateTime DueDate { get; set; }
-    public List<QuotationCreateItemDto> Items { get; set; }
+    public List<QuotationCreateItemDto> Items { get; set; } = new();
+
+    public sealed record QuotationCreateItemDto
+    {
+        public int? LineOrder { get; set; }
+        public Guid ItemId { get; set; }
+        public string ItemCode { get; set; }
+        public string AnvisaCode { get; set; }
+        public DateTime AnvisaDueDate { get; set; }
+        public double UnitPrice { get; set; }
+        public double Quantity { get; set; }
+    }
 }
 
-public sealed record QuotationCreateItemDto
+public sealed record QuotationCreateLineItemDto
 {
+    public Guid QuotationId { get; set; }
     public int? LineOrder { get; set; }
     public Guid ItemId { get; set; }
     public string ItemCode { get; set; }
     public string AnvisaCode { get; set; }
     public DateTime AnvisaDueDate { get; set; }
     public double UnitPrice { get; set; }
-    public double ItemTotal { get; set; }
     public double Quantity { get; set; }
 }
 
@@ -40,11 +51,24 @@ public sealed record QuotationUpdateDto
     public Guid InsuranceCompanyId { get; set; }
     public Guid InternalSpecialistId { get; set; }
     public DateTime DueDate { get; set; }
-    public List<QuotationUpdateItemDto> Items { get; set; }
+    public List<QuotationUpdateItemDto> Items { get; set; } = new();
+
+    public sealed record QuotationUpdateItemDto
+    {
+        public int LineId { get; set; }
+        public int? LineOrder { get; set; }
+        public Guid ItemId { get; set; }
+        public string ItemCode { get; set; }
+        public string AnvisaCode { get; set; }
+        public DateTime AnvisaDueDate { get; set; }
+        public double UnitPrice { get; set; }
+        public double Quantity { get; set; }
+    }
 }
 
-public sealed record QuotationUpdateItemDto
+public sealed record QuotationUpdateLineItemDto
 {
+    public Guid QuotationId { get; set; }
     public int LineId { get; set; }
     public int? LineOrder { get; set; }
     public Guid ItemId { get; set; }
@@ -52,7 +76,6 @@ public sealed record QuotationUpdateItemDto
     public string AnvisaCode { get; set; }
     public DateTime AnvisaDueDate { get; set; }
     public double UnitPrice { get; set; }
-    public double ItemTotal { get; set; }
     public double Quantity { get; set; }
 }
 
@@ -69,17 +92,17 @@ public sealed record QuotationOutputDto
     public Guid InternalSpecialistId { get; set; }
     public DateTime DueDate { get; set; }
     public List<QuotationOutputItemDto> Items { get; set; }
-}
 
-public sealed record QuotationOutputItemDto
-{
-    public int LineId { get; set; }
-    public int LineOrder { get; set; }
-    public Guid ItemId { get; set; }
-    public string ItemCode { get; set; }
-    public string AnvisaCode { get; set; }
-    public DateTime AnvisaDueDate { get; set; }
-    public double UnitPrice { get; set; }
-    public double ItemTotal { get; set; }
-    public double Quantity { get; set; }
+    public sealed record QuotationOutputItemDto
+    {
+        public int LineId { get; set; }
+        public int LineOrder { get; set; }
+        public Guid ItemId { get; set; }
+        public string ItemCode { get; set; }
+        public string AnvisaCode { get; set; }
+        public DateTime AnvisaDueDate { get; set; }
+        public double UnitPrice { get; set; }
+        public double ItemTotal { get; set; }
+        public double Quantity { get; set; }
+    }
 }

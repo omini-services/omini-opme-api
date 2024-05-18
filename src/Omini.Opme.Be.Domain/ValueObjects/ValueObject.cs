@@ -2,7 +2,7 @@ namespace Omini.Opme.Be.Domain;
 
 public abstract class ValueObject : IEquatable<ValueObject>
 {
-    public abstract IEnumerable<object> GetAtomicValues();
+    public abstract IEnumerable<object?> GetAtomicValues();
 
     public override bool Equals(object? obj)
     {

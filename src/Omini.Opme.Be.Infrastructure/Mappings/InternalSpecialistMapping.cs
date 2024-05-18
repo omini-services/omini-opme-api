@@ -10,10 +10,16 @@ internal class InternalSpecialistMapping : IEntityTypeConfiguration<InternalSpec
 
         builder.OwnsOne(x => x.Name)
             .Property(x => x.FirstName)
+            .HasColumnName("FirstName")
             .IsRequired();
 
         builder.OwnsOne(x => x.Name)
+            .Property(x => x.MiddleName)
+            .HasColumnName("MiddleName");
+
+        builder.OwnsOne(x => x.Name)
             .Property(x => x.LastName)
+            .HasColumnName("LastName")
             .IsRequired();
 
         builder.ToTable("InternalSpecialists");

@@ -31,7 +31,6 @@ public record UpdateQuotationCommand : ICommand<Quotation>
         public string AnvisaCode { get; set; }
         public DateTime AnvisaDueDate { get; set; }
         public double UnitPrice { get; set; }
-        public double ItemTotal { get; set; }
         public double Quantity { get; set; }
     }
 
@@ -106,7 +105,7 @@ public record UpdateQuotationCommand : ICommand<Quotation>
             quotation.HospitalId = request.HospitalId;
             quotation.InsuranceCompanyId = request.InsuranceCompanyId;
             quotation.InternalSpecialistId = request.InternalSpecialistId;
-            quotation.DueDate = request.DueDate;
+            quotation.DueDate = request.DueDate.ToUniversalTime();
             quotation.Items = request.Items.Select((item, index) => new QuotationItem
             {
                 QuotationId = quotation.Id,
@@ -115,10 +114,10 @@ public record UpdateQuotationCommand : ICommand<Quotation>
                 ItemId = item.ItemId,
                 ItemCode = item.ItemCode,
                 AnvisaCode = item.AnvisaCode,
-                AnvisaDueDate = item.AnvisaDueDate,
+                AnvisaDueDate = item.AnvisaDueDate.ToUniversalTime(),
                 UnitPrice = item.UnitPrice,
-                ItemTotal = item.ItemTotal,
                 Quantity = item.Quantity,
+                ItemTotal = item.Quantity * item.UnitPrice,
             }).ToList();
 
             await _unitOfWork.Commit(cancellationToken);

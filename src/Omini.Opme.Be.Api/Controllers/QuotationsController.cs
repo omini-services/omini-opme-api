@@ -63,7 +63,6 @@ public class QuotationsController : MainController
                 AnvisaCode = item.AnvisaCode,
                 AnvisaDueDate = item.AnvisaDueDate,
                 UnitPrice = item.UnitPrice,
-                ItemTotal = item.ItemTotal,
                 Quantity = item.Quantity,
             })
         };
@@ -76,38 +75,97 @@ public class QuotationsController : MainController
         });
     }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] QuotationUpdateDto quotationUpdateDto)
+    [HttpPost("{id:guid}/items")]
+    public async Task<IActionResult> CreateItem(Guid id,
+     [FromBody] QuotationCreateLineItemDto quotationCreateItemDto)
     {
-        if (quotationUpdateDto.Id != id)
+        if (quotationCreateItemDto.QuotationId != id)
         {
             return ToBadRequest(new ValidationResult([new ValidationFailure("Id", "Invalid id")]));
         }
 
-        var command = new UpdateQuotationCommand()
+        var command = new CreateQuotationItemCommand()
         {
-            Id = quotationUpdateDto.Id,
-            Number = quotationUpdateDto.Number,
-            PatientId = quotationUpdateDto.PatientId,
-            PhysicianId = quotationUpdateDto.PhysicianId,
-            PayingSourceType = quotationUpdateDto.PayingSourceType,
-            PayingSourceId = quotationUpdateDto.PayingSourceId,
-            HospitalId = quotationUpdateDto.HospitalId,
-            InsuranceCompanyId = quotationUpdateDto.InsuranceCompanyId,
-            InternalSpecialistId = quotationUpdateDto.InternalSpecialistId,
-            DueDate = quotationUpdateDto.DueDate,
-            Items = quotationUpdateDto.Items.Select((item, index) => new UpdateQuotationCommand.UpdateQuotationItemCommand()
-            {
-                LineId = item.LineId,
-                LineOrder = item.LineOrder,
-                ItemId = item.ItemId,
-                ItemCode = item.ItemCode,
-                AnvisaCode = item.AnvisaCode,
-                AnvisaDueDate = item.AnvisaDueDate,
-                UnitPrice = item.UnitPrice,
-                ItemTotal = item.ItemTotal,
-                Quantity = item.Quantity,
-            })
+            QuotationId = quotationCreateItemDto.QuotationId,
+            LineOrder = quotationCreateItemDto.LineOrder,
+            ItemId = quotationCreateItemDto.ItemId,
+            ItemCode = quotationCreateItemDto.ItemCode,
+            AnvisaCode = quotationCreateItemDto.AnvisaCode,
+            AnvisaDueDate = quotationCreateItemDto.AnvisaDueDate,
+            UnitPrice = quotationCreateItemDto.UnitPrice,
+            Quantity = quotationCreateItemDto.Quantity,
+        };
+
+        var result = await Mediator.Send(command);
+
+        return ToCreatedAtRoute(result, Mapper.Map<QuotationOutputDto>, nameof(QuotationsController), nameof(this.GetById), (mapped) => new
+        {
+            id = mapped.Id
+        });
+    }
+
+    // [HttpPut("{id:guid}")]
+    // public async Task<IActionResult> Update(Guid id, [FromBody] QuotationUpdateDto quotationUpdateDto)
+    // {
+    //     if (quotationUpdateDto.Id != id)
+    //     {
+    //         return ToBadRequest(new ValidationResult([new ValidationFailure("Id", "Invalid id")]));
+    //     }
+
+    //     var command = new UpdateQuotationCommand()
+    //     {
+    //         Id = quotationUpdateDto.Id,
+    //         Number = quotationUpdateDto.Number,
+    //         PatientId = quotationUpdateDto.PatientId,
+    //         PhysicianId = quotationUpdateDto.PhysicianId,
+    //         PayingSourceType = quotationUpdateDto.PayingSourceType,
+    //         PayingSourceId = quotationUpdateDto.PayingSourceId,
+    //         HospitalId = quotationUpdateDto.HospitalId,
+    //         InsuranceCompanyId = quotationUpdateDto.InsuranceCompanyId,
+    //         InternalSpecialistId = quotationUpdateDto.InternalSpecialistId,
+    //         DueDate = quotationUpdateDto.DueDate,
+    //         Items = quotationUpdateDto.Items.Select((item, index) => new UpdateQuotationCommand.UpdateQuotationItemCommand()
+    //         {
+    //             LineId = item.LineId,
+    //             LineOrder = item.LineOrder,
+    //             ItemId = item.ItemId,
+    //             ItemCode = item.ItemCode,
+    //             AnvisaCode = item.AnvisaCode,
+    //             AnvisaDueDate = item.AnvisaDueDate,
+    //             UnitPrice = item.UnitPrice,
+    //             Quantity = item.Quantity,
+    //         })
+    //     };
+
+    //     var result = await Mediator.Send(command);
+
+    //     return ToNoContent(result);
+    // }
+
+    [HttpPut("{id:guid}/items/{lineId:int}")]
+    public async Task<IActionResult> UpdateItem(Guid id, int lineId, [FromBody] QuotationUpdateLineItemDto quotationUpdateItemDto)
+    {
+        if (quotationUpdateItemDto.QuotationId != id)
+        {
+            return ToBadRequest(new ValidationResult([new ValidationFailure("Id", "Invalid id")]));
+        }
+
+        if (quotationUpdateItemDto.LineId != lineId)
+        {
+            return ToBadRequest(new ValidationResult([new ValidationFailure("LineId", "Invalid id")]));
+        }
+
+        var command = new UpdateQuotationItemCommand()
+        {
+            QuotationId = id,
+            LineId = quotationUpdateItemDto.LineId,
+            LineOrder = quotationUpdateItemDto.LineOrder,
+            ItemId = quotationUpdateItemDto.ItemId,
+            ItemCode = quotationUpdateItemDto.ItemCode,
+            AnvisaCode = quotationUpdateItemDto.AnvisaCode,
+            AnvisaDueDate = quotationUpdateItemDto.AnvisaDueDate,
+            UnitPrice = quotationUpdateItemDto.UnitPrice,
+            Quantity = quotationUpdateItemDto.Quantity,
         };
 
         var result = await Mediator.Send(command);
@@ -121,6 +179,20 @@ public class QuotationsController : MainController
         var command = new DeleteQuotationCommand()
         {
             Id = id
+        };
+
+        var result = await Mediator.Send(command);
+
+        return ToNoContent(result);
+    }
+
+    [HttpDelete("{id:guid}/items/{lineId:int}")]
+    public async Task<IActionResult> DeleteItem(Guid id, int lineId)
+    {
+        var command = new DeleteQuotationItemCommand()
+        {
+            QuotationId = id,
+            LineId = lineId
         };
 
         var result = await Mediator.Send(command);
