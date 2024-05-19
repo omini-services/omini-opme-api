@@ -1,10 +1,10 @@
 using QuestPDF.Drawing;
 
-namespace Omini.Opme.Be.Application.QuestPdf.Extensions;
+namespace Omini.Opme.Be.Infrastructure;
 
-public static class FontManagerExtensions
+public static class QuestPdfGenerator
 {
-    public static void RegisterFromPath(string path)
+    public static void RegisterFontsFromPath(string path)
     {
         var fontPaths = Directory.GetFiles(path);
 

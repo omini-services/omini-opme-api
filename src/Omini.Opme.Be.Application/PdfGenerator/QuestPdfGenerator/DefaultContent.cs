@@ -2,9 +2,9 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
-namespace Omini.Opme.Be.Application.QuestPdf.Default;
+namespace Omini.Opme.Be.Application.PdfGenerator.QuestPdfGenerator;
 
-public static class Contents
+public static class DefaultContent
 {
     public static void LGPD(this IContainer container)
     {

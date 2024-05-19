@@ -1,6 +1,5 @@
 using System.Reflection;
-using Omini.Opme.Be.Application.QuestPdf.Default;
-using Omini.Opme.Be.Application.QuestPdf.Extensions;
+using Omini.Opme.Be.Application.PdfGenerator.QuestPdfGenerator;
 using Omini.Opme.Be.Domain.Services;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -13,20 +12,17 @@ public sealed class QuotationPdfGenerator : IPdfGenerator
 {
     const string DefaultFont = "Noto Sans";
     private readonly string _basePath;
-    private readonly string _fontsPath;
     private readonly string _imagesPath;
     private readonly string _pdfLogoFullPath;
 
     public QuotationPdfGenerator()
     {
         _basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
-        _fontsPath = Path.Combine(_basePath, "Fonts");
         _imagesPath = Path.Combine(_basePath, "Images");
         _pdfLogoFullPath = Path.Combine(_imagesPath, "pdf-logo.png");
     }
     public void GenerateDocument()
     {
-        FontManagerExtensions.RegisterFromPath(_fontsPath);
         Document.Create(container =>
         {
             container.Page(page =>
@@ -108,7 +104,7 @@ public sealed class QuotationPdfGenerator : IPdfGenerator
                     .Element(QuotationPdfStyles.LGPDStyle)
                     .Column(col =>
                     {
-                        col.Item().Element(Contents.LGPD);
+                        col.Item().Element(DefaultContent.LGPD);
                     });
             });
         });
@@ -199,7 +195,7 @@ public sealed class QuotationPdfGenerator : IPdfGenerator
             });
 
             col.Item().ShowIf(ctx => ctx.PageNumber == ctx.TotalPages)
-                      .Element(Contents.CompanyFooterInfo);
+                      .Element(DefaultContent.CompanyFooterInfo);
         });
     }
 }
