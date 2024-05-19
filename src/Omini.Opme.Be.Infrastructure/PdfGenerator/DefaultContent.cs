@@ -2,7 +2,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
-namespace Omini.Opme.Be.Application.PdfGenerator.QuestPdfGenerator;
+namespace Omini.Opme.Be.Infrastructure.PdfGenerator;
 
 public static class DefaultContent
 {
@@ -47,7 +47,6 @@ public static class DefaultContent
 
 public static class QuestPdfContentStyles
 {
-
     public static IContainer FooterCompanyNameStyle(IContainer container)
     {
         return container

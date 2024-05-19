@@ -1,12 +1,11 @@
 using System.Reflection;
-using Omini.Opme.Be.Application.PdfGenerator.QuestPdfGenerator;
 using Omini.Opme.Be.Domain.Services;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using QuestPDF.Previewer;
 
-namespace Omini.Opme.Be.Application.Services;
+namespace Omini.Opme.Be.Infrastructure.PdfGenerator.QuestPdf;
 
 public sealed class QuotationPdfGenerator : IPdfGenerator
 {
@@ -116,20 +115,20 @@ public sealed class QuotationPdfGenerator : IPdfGenerator
             .DefaultTextStyle(TextStyle.Default.FontSize(10))
             .Column(col =>
             {
-                col.Item().AddRowWithTitle("Paciente:", "JOAO");
-                col.Item().WithHorizontalLine();
+                col.Item().Element(e => LabelAndContent(e, "Paciente:", "JOAO"));
+                col.Item().Element(WithHorizontalLine);
 
-                col.Item().AddRowWithTitle("Cirurgiã(o):", "JOAO");
-                col.Item().WithHorizontalLine();
+                col.Item().Element(e => LabelAndContent(e, "Cirurgiã(o):", "JOAO"));
+                col.Item().Element(WithHorizontalLine);
 
-                col.Item().AddRowWithTitle("Hospital:", "JOAO");
-                col.Item().WithHorizontalLine();
+                col.Item().Element(e => LabelAndContent(e, "Hospital:", "JOAO"));
+                col.Item().Element(WithHorizontalLine);
 
-                col.Item().AddRowWithTitle("Convênio:", "JOAO");
-                col.Item().WithHorizontalLine();
+                col.Item().Element(e => LabelAndContent(e, "Convênio:", "JOAO"));
+                col.Item().Element(WithHorizontalLine);
 
-                col.Item().AddRowWithTitle("Fonte Pagadora:", "JOAO");
-                col.Item().WithHorizontalLine();
+                col.Item().Element(e => LabelAndContent(e, "Fonte Pagadora:", "JOAO"));
+                col.Item().Element(WithHorizontalLine);
 
                 col.Item().PaddingTop(20).Row(row =>
                 {
@@ -161,7 +160,7 @@ public sealed class QuotationPdfGenerator : IPdfGenerator
 
                                 for (var i = 0; i <= 100; i++)
                                 {
-                                    t.AddItemRow();
+                                    AddRow(t);
                                 }
 
                                 t.Footer(footer =>
@@ -198,11 +197,8 @@ public sealed class QuotationPdfGenerator : IPdfGenerator
                       .Element(DefaultContent.CompanyFooterInfo);
         });
     }
-}
 
-public static class QuotationPdfExtensions
-{
-    public static IContainer AddRowWithTitle(this IContainer container, string title, string content)
+    private IContainer LabelAndContent(IContainer container, string title, string content)
     {
         container.Row(row =>
             {
@@ -218,13 +214,13 @@ public static class QuotationPdfExtensions
         return container;
     }
 
-    public static IContainer WithHorizontalLine(this IContainer container)
+    private static IContainer WithHorizontalLine(IContainer container)
     {
         container.PaddingVertical(2).LineHorizontal(1).LineColor(Colors.Grey.Lighten3);
         return container;
     }
 
-    public static void AddItemRow(this TableDescriptor container)
+    private static void AddRow(TableDescriptor container)
     {
         container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text("1");
         container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).Text("PLACA ZIGOMÁTICA 6 FUROS");
@@ -232,91 +228,5 @@ public static class QuotationPdfExtensions
         container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).Text("00000000000");
         container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text("R$ 10.000,00");
         container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text("R$ 10.000,00");
-    }
-}
-
-public static class QuotationPdfStyles
-{
-    public static IContainer HeaderTableTitleStyle(IContainer container)
-    {
-        return container
-            .Border(1)
-            .BorderColor(Colors.Grey.Lighten1)
-            .Background(Colors.Grey.Lighten1)
-            .AlignCenter()
-            .AlignMiddle()
-            .PaddingHorizontal(4)
-            .PaddingVertical(3)
-            .DefaultTextStyle(TextStyle.Default.Bold());
-    }
-
-    public static IContainer HeaderTableCellStyle(IContainer container)
-    {
-        return container
-            .Background(Colors.Grey.Lighten2)
-            .AlignCenter()
-            .AlignMiddle();
-    }
-
-    public static IContainer LGPDStyle(IContainer container)
-    {
-        return container
-            .DefaultTextStyle(TextStyle.Default.FontSize(9));
-    }
-
-    public static IContainer LabelTitleStyle(IContainer container)
-    {
-        return container
-            .DefaultTextStyle(TextStyle.Default.FontColor(Colors.Grey.Medium));
-    }
-
-    public static IContainer TextContentStyle(IContainer container)
-    {
-        return container
-            .DefaultTextStyle(TextStyle.Default.FontColor(Colors.Black).Bold());
-    }
-
-    public static IContainer ContentTableTitleStyle(IContainer container)
-    {
-        return container
-            .Background(Colors.Grey.Lighten2)
-            .Background(Colors.Grey.Lighten2)
-            .AlignMiddle()
-            .PaddingHorizontal(4)
-            .PaddingVertical(3)
-            .DefaultTextStyle(TextStyle.Default.Bold());
-    }
-
-    public static IContainer ContentTableCellStyle(IContainer container)
-    {
-        return container
-            .BorderBottom(1)
-            .BorderColor(Colors.Grey.Lighten1)
-            .Background(Colors.White)
-            .AlignMiddle()
-            .PaddingHorizontal(4)
-            .PaddingVertical(0.1f);
-    }
-
-    public static IContainer ContentTableFooterStyle(IContainer container)
-    {
-        return container
-            .BorderTop(1)
-            .BorderBottom(1)
-            .BorderColor(Colors.Grey.Lighten1)
-            .Background(Colors.Grey.Lighten2)
-            .AlignMiddle();
-    }
-
-    public static IContainer ContentTableFooterTotalStyle(IContainer container)
-    {
-        return container
-            .BorderTop(1)
-            .BorderBottom(1)
-            .BorderColor(Colors.Grey.Lighten1)
-            .Background(Colors.White)
-            .AlignMiddle()
-            .PaddingHorizontal(4)
-            .PaddingVertical(0.1f);
     }
 }

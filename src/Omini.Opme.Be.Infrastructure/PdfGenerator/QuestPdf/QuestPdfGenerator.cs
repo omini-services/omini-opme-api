@@ -1,6 +1,6 @@
 using QuestPDF.Drawing;
 
-namespace Omini.Opme.Be.Infrastructure;
+namespace Omini.Opme.Be.Infrastructure.PdfGenerator.QuestPdf;
 
 public static class QuestPdfGenerator
 {
