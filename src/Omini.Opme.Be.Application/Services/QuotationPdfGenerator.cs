@@ -1,4 +1,6 @@
 using System.Reflection;
+using Omini.Opme.Be.Application.QuestPdf.Default;
+using Omini.Opme.Be.Application.QuestPdf.Extensions;
 using Omini.Opme.Be.Domain.Services;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -9,14 +11,30 @@ namespace Omini.Opme.Be.Application.Services;
 
 public sealed class QuotationPdfGenerator : IPdfGenerator
 {
+    const string DefaultFont = "Noto Sans";
+    private readonly string _basePath;
+    private readonly string _fontsPath;
+    private readonly string _imagesPath;
+    private readonly string _pdfLogoFullPath;
+
+    public QuotationPdfGenerator()
+    {
+        _basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+        _fontsPath = Path.Combine(_basePath, "Fonts");
+        _imagesPath = Path.Combine(_basePath, "Images");
+        _pdfLogoFullPath = Path.Combine(_imagesPath, "pdf-logo.png");
+    }
     public void GenerateDocument()
     {
+        FontManagerExtensions.RegisterFromPath(_fontsPath);
         Document.Create(container =>
         {
             container.Page(page =>
             {
-                page.Size(PageSizes.A4.Landscape());
-                page.Margin(1, QuestPDF.Infrastructure.Unit.Centimetre);
+                page.DefaultTextStyle(TextStyle.Default.FontFamily(DefaultFont));
+                page.Size(PageSizes.A4);
+
+                page.Margin(25);
 
                 page.Header().Element(ComposeHeader);
 
@@ -27,229 +45,282 @@ public sealed class QuotationPdfGenerator : IPdfGenerator
         }).ShowInPreviewer();
     }
 
-    void ComposeFooter(IContainer container)
+    private void ComposeHeader(IContainer container)
     {
-        container.Column(col =>
+        container.ShowIf(ctx => ctx.PageNumber == 1).Column(col =>
         {
-            col.Item().Row(r =>
+            col.Item().Row(row =>
             {
-                r.RelativeItem().AlignRight().Text(text => {
-                    text.CurrentPageNumber();
-                    text.Span(" / ");
-                    text.TotalPages();
-                });
-            });
-            col.Item().Row(r =>
-            {
-                r.RelativeItem().AlignCenter().Text("FRATER MEDICAL COMÉRCIO DE MATERIAS CIRÚRGICOS LTDA");
-            });
-            col.Item().Row(r =>
-            {
-                r.RelativeItem().AlignCenter().Text("CNPJ: 44.729.842/0001-54");
-            });
-            col.Item().Row(r =>
-            {
-                r.RelativeItem().AlignCenter().Text("ALAMEDA OLGA, 288 - BARRA FUNDA / SÃO PAULO - SP");
-            });
-        });
-    }
+                row.ConstantItem(200).Image(_pdfLogoFullPath);
 
-    void ComposeHeader(IContainer container)
-    {
-        var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-        container.Column(col =>
-        {
-            col.Item()
-                .AlignCenter()
-                .MaxWidth(15, Unit.Centimetre)
-                .Image(Path.Combine(basePath!, "Images", "pdf-logo.png"));
-
-            col.Spacing(1, Unit.Centimetre);
-
-            col.Item().Row(r =>
-            {
-                r.RelativeItem().Row(i =>
-                {
-                    i.AutoItem()
-                        .Text("Paciente:")
-                        .FontColor(Colors.Grey.Darken2)
-                        .LetterSpacing(0.15f);
-                    i.Spacing(2, Unit.Centimetre);
-                    i.AutoItem()
-                        .Text("Paciente")
-                        .FontColor(Colors.Black)
-                        .Bold()
-                        .LetterSpacing(0.15f);
-                });
-
-                r.RelativeItem()
-                    .AlignRight()
-                    .Row(i =>
+                row.RelativeItem()
+                    .Column(col =>
                     {
-                        i.AutoItem()
-                            .Text("Data:")
-                            .FontColor(Colors.Grey.Darken2);
-                        i.Spacing(2, Unit.Centimetre);
-                        i.AutoItem()
-                            .Text("Paciente")
-                            .Bold();
+                        col.Item().AlignRight()
+                            .Text("Orçamento Nº: 000000").FontSize(14).Bold();
+                        col.Item()
+                            .AlignRight()
+                            .DefaultTextStyle(TextStyle.Default.FontColor(Colors.Grey.Medium).FontSize(9))
+                            .Text(text =>
+                            {
+                                text.Span("Gerado em: ");
+                                text.Span($"15/05/2024");
+                                // text.Span($"{Model.IssueDate:d}");
+                            });
                     });
             });
 
-            // col.RelativeItem().Column(column =>
-            // {
-            //     column
-            //         .Item().Text($"Invoice #")
-            //         .FontSize(20).SemiBold().FontColor(Colors.Blue.Medium);
+            col.Item().PaddingTop(20).Row(row =>
+            {
+                row.RelativeItem()
+                    .DefaultTextStyle(TextStyle.Default.FontSize(10))
+                    .Column(col =>
+                    {
+                        col.Item().Table(t =>
+                        {
+                            t.ColumnsDefinition(def =>
+                            {
+                                def.ConstantColumn(80);
+                                def.ConstantColumn(160);
+                                def.ConstantColumn(100);
+                                def.RelativeColumn();
+                            });
 
-            //     column.Item().Text(text =>
-            //     {
-            //         text.Span("Issue date: ").SemiBold();
-            //         text.Span($"");
-            //     });
+                            t.Header(header =>
+                            {
+                                header.Cell().Element(QuotationPdfStyles.HeaderTableTitleStyle).Text("Setor");
+                                header.Cell().Element(QuotationPdfStyles.HeaderTableTitleStyle).Text("Responsável Frater");
+                                header.Cell().Element(QuotationPdfStyles.HeaderTableTitleStyle).Text("Telefone");
+                                header.Cell().Element(QuotationPdfStyles.HeaderTableTitleStyle).Text("E-mail");
+                            });
 
-            //     column.Item().Text(text =>
-            //     {
-            //         text.Span("Due date: ").SemiBold();
-            //         text.Span($"");
-            //     });
-            // });
+                            t.Cell().Element(QuotationPdfStyles.HeaderTableCellStyle).Text("Pré / Pós");
+                            t.Cell().Element(QuotationPdfStyles.HeaderTableCellStyle).Text("Nathália Camelo");
+                            t.Cell().Element(QuotationPdfStyles.HeaderTableCellStyle).Text("(11) 95947-0779");
+                            t.Cell().Element(QuotationPdfStyles.HeaderTableCellStyle).Text("comercial@fratermedical.com.br");
+                        });
+                    });
+            });
+
+            col.Item().PaddingTop(15).Row(row =>
+            {
+                row.RelativeItem()
+                    .Element(QuotationPdfStyles.LGPDStyle)
+                    .Column(col =>
+                    {
+                        col.Item().Element(Contents.LGPD);
+                    });
+            });
         });
     }
 
-    private IContainer DefaultHeaderFooterCellStyle(IContainer container, TextStyle textStyle, Color backgroundColor)
+    private void ComposeContent(IContainer container)
+    {
+        container.PaddingVertical(20)
+            .DefaultTextStyle(TextStyle.Default.FontSize(10))
+            .Column(col =>
+            {
+                col.Item().AddRowWithTitle("Paciente:", "JOAO");
+                col.Item().WithHorizontalLine();
+
+                col.Item().AddRowWithTitle("Cirurgiã(o):", "JOAO");
+                col.Item().WithHorizontalLine();
+
+                col.Item().AddRowWithTitle("Hospital:", "JOAO");
+                col.Item().WithHorizontalLine();
+
+                col.Item().AddRowWithTitle("Convênio:", "JOAO");
+                col.Item().WithHorizontalLine();
+
+                col.Item().AddRowWithTitle("Fonte Pagadora:", "JOAO");
+                col.Item().WithHorizontalLine();
+
+                col.Item().PaddingTop(20).Row(row =>
+                {
+                    row.RelativeItem()
+                        .DefaultTextStyle(TextStyle.Default.FontSize(10))
+                        .Column(col =>
+                        {
+                            col.Item().Table(t =>
+                            {
+                                t.ColumnsDefinition(def =>
+                                {
+                                    def.ConstantColumn(35);
+                                    def.RelativeColumn();
+                                    def.ConstantColumn(80);
+                                    def.ConstantColumn(75);
+                                    def.ConstantColumn(85);
+                                    def.ConstantColumn(85);
+                                });
+
+                                t.Header(header =>
+                                {
+                                    header.Cell().Element(QuotationPdfStyles.ContentTableTitleStyle).Text("Qtd.");
+                                    header.Cell().Element(QuotationPdfStyles.ContentTableTitleStyle).Text("Descrição do item");
+                                    header.Cell().Element(QuotationPdfStyles.ContentTableTitleStyle).Text("Cód / Ref");
+                                    header.Cell().Element(QuotationPdfStyles.ContentTableTitleStyle).Text("Anvisa");
+                                    header.Cell().Element(QuotationPdfStyles.ContentTableTitleStyle).Text("Valor unitário");
+                                    header.Cell().Element(QuotationPdfStyles.ContentTableTitleStyle).Text("Valor total");
+                                });
+
+                                for (var i = 0; i <= 100; i++)
+                                {
+                                    t.AddItemRow();
+                                }
+
+                                t.Footer(footer =>
+                                {
+                                    footer.Cell().ColumnSpan(6)
+                                        .ShowIf(ctx => ctx.PageNumber == ctx.TotalPages).Row(tr =>
+                                        {
+                                            tr.RelativeItem().Element(QuotationPdfStyles.ContentTableFooterStyle);
+                                            tr.AutoItem().Element(QuotationPdfStyles.ContentTableFooterTotalStyle).Text("R$ 112.100,00").Bold().FontSize(14).AlignRight();
+                                        });
+                                });
+                            });
+                        });
+                });
+            });
+    }
+
+    private void ComposeFooter(IContainer container)
+    {
+        container.Column(col =>
+        {
+            col.Item().Row(r =>
+            {
+                r.RelativeItem().AlignRight().Text(text =>
+                {
+                    text.Span("Página ");
+                    text.CurrentPageNumber();
+                    text.Span(" de ");
+                    text.TotalPages();
+                });
+            });
+
+            col.Item().ShowIf(ctx => ctx.PageNumber == ctx.TotalPages)
+                      .Element(Contents.CompanyFooterInfo);
+        });
+    }
+}
+
+public static class QuotationPdfExtensions
+{
+    public static IContainer AddRowWithTitle(this IContainer container, string title, string content)
+    {
+        container.Row(row =>
+            {
+                row.ConstantItem(100)
+                    .Element(QuotationPdfStyles.LabelTitleStyle)
+                    .Text(title);
+
+                row.RelativeItem(60)
+                    .Element(QuotationPdfStyles.TextContentStyle)
+                    .Text(content);
+            });
+
+        return container;
+    }
+
+    public static IContainer WithHorizontalLine(this IContainer container)
+    {
+        container.PaddingVertical(2).LineHorizontal(1).LineColor(Colors.Grey.Lighten3);
+        return container;
+    }
+
+    public static void AddItemRow(this TableDescriptor container)
+    {
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text("1");
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).Text("PLACA ZIGOMÁTICA 6 FUROS");
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).Text("PA.02.03.0048");
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).Text("00000000000");
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text("R$ 10.000,00");
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text("R$ 10.000,00");
+    }
+}
+
+public static class QuotationPdfStyles
+{
+    public static IContainer HeaderTableTitleStyle(IContainer container)
     {
         return container
             .Border(1)
-            .Background(backgroundColor)
-            .PaddingVertical(5)
-            .PaddingHorizontal(2)
+            .BorderColor(Colors.Grey.Lighten1)
+            .Background(Colors.Grey.Lighten1)
             .AlignCenter()
             .AlignMiddle()
-            .DefaultTextStyle(textStyle);
+            .PaddingHorizontal(4)
+            .PaddingVertical(3)
+            .DefaultTextStyle(TextStyle.Default.Bold());
     }
 
-    private IContainer DefaultCellStyle(IContainer container, TextStyle textStyle, Color backgroundColor)
+    public static IContainer HeaderTableCellStyle(IContainer container)
     {
         return container
-            .Border(1)
-            .Background(backgroundColor)
-            .PaddingVertical(5)
-            .PaddingHorizontal(2)
+            .Background(Colors.Grey.Lighten2)
+            .AlignCenter()
+            .AlignMiddle();
+    }
+
+    public static IContainer LGPDStyle(IContainer container)
+    {
+        return container
+            .DefaultTextStyle(TextStyle.Default.FontSize(9));
+    }
+
+    public static IContainer LabelTitleStyle(IContainer container)
+    {
+        return container
+            .DefaultTextStyle(TextStyle.Default.FontColor(Colors.Grey.Medium));
+    }
+
+    public static IContainer TextContentStyle(IContainer container)
+    {
+        return container
+            .DefaultTextStyle(TextStyle.Default.FontColor(Colors.Black).Bold());
+    }
+
+    public static IContainer ContentTableTitleStyle(IContainer container)
+    {
+        return container
+            .Background(Colors.Grey.Lighten2)
+            .Background(Colors.Grey.Lighten2)
             .AlignMiddle()
-            .DefaultTextStyle(textStyle);
+            .PaddingHorizontal(4)
+            .PaddingVertical(3)
+            .DefaultTextStyle(TextStyle.Default.Bold());
     }
 
-    void ComposeContent(IContainer container)
+    public static IContainer ContentTableCellStyle(IContainer container)
     {
-        container.PaddingVertical(40).Column(column =>
-        {
-            column.Item().Table(t =>
-            {
-                t.ColumnsDefinition(def =>
-                {
-                    def.ConstantColumn(3, Unit.Centimetre);
-                    def.ConstantColumn(10, Unit.Centimetre);
-                    def.ConstantColumn(3, Unit.Centimetre);
-                    def.RelativeColumn();
-                });
-
-                t.Header(header =>
-                {
-                    header.Cell().Element(CellStyle).Text("Setor Frater");
-                    header.Cell().Element(CellStyle).Text("Especialista Frater");
-                    header.Cell().Element(CellStyle).Text("Telefone");
-                    header.Cell().Element(CellStyle).Text("E-mail");
-
-                    IContainer CellStyle(IContainer container) => DefaultHeaderFooterCellStyle(container, TextStyle.Default.Black().Bold(), Colors.Grey.Lighten3);
-                });
-
-                t.Cell().Element(CellStyle).Text("PRÉVIA / PÓS");
-                t.Cell().Element(CellStyle).Text("NATHÁLIA CAMELO");
-                t.Cell().Element(CellStyle).Text("(11) 95947-0779");
-                t.Cell().Element(CellStyle).Text("COMERCIAL@FRATERMEDICAL.COM.BR");
-
-                IContainer CellStyle(IContainer container) => DefaultHeaderFooterCellStyle(container, TextStyle.Default.Black().FontSize(10).NormalWeight(), Colors.White);
-            });
-
-            column.Spacing(20);
-
-            // column.Item().Row(row =>
-            // {
-            //     //row.RelativeItem().Component(new AddressComponent("From", Model.SellerAddress));
-            //     row.ConstantItem(50);
-            //    // row.RelativeItem().Component(new AddressComponent("For", Model.CustomerAddress));
-            // });
-
-            column.Item().Element(ComposeTable);
-
-            // var totalPrice = Model.Items.Sum(x => x.Price * x.Quantity);
-            // column.Item().PaddingRight(5).AlignRight().Text($"Grand total: {totalPrice:C}").SemiBold();
-
-            //if (!string.IsNullOrWhiteSpace(Model.Comments))
-            //    column.Item().PaddingTop(25).Element(ComposeComments);
-        });
+        return container
+            .BorderBottom(1)
+            .BorderColor(Colors.Grey.Lighten1)
+            .Background(Colors.White)
+            .AlignMiddle()
+            .PaddingHorizontal(4)
+            .PaddingVertical(0.1f);
     }
 
-    void ComposeTable(IContainer container)
+    public static IContainer ContentTableFooterStyle(IContainer container)
     {
-        container.Table(t =>
-        {
-            t.ColumnsDefinition(def =>
-            {
-                def.ConstantColumn(3, Unit.Centimetre);
-                def.ConstantColumn(10, Unit.Centimetre);
-                def.ConstantColumn(3, Unit.Centimetre);
-                def.ConstantColumn(3, Unit.Centimetre);
-                def.ConstantColumn(2.5f, Unit.Centimetre);
-                def.ConstantColumn(3, Unit.Centimetre);
-                def.RelativeColumn();
-            });
+        return container
+            .BorderTop(1)
+            .BorderBottom(1)
+            .BorderColor(Colors.Grey.Lighten1)
+            .Background(Colors.Grey.Lighten2)
+            .AlignMiddle();
+    }
 
-            t.Header(header =>
-            {
-                header.Cell().Element(CellStyle).Text("Quantidade");
-                header.Cell().Element(CellStyle).Text("Descrição do Item");
-                header.Cell().Element(CellStyle).Text("Cód. / Ref.");
-                header.Cell().Element(CellStyle).Text("Anvisa");
-                header.Cell().Element(CellStyle).Text("Val. Anvisa");
-                header.Cell().Element(CellStyle).Text("Valor Unitário");
-                header.Cell().Element(CellStyle).Text("Valor Total");
-
-                IContainer CellStyle(IContainer container) => DefaultHeaderFooterCellStyle(container, TextStyle.Default.Black().Bold(), Colors.Grey.Lighten3);
-            });
-
-            t.Cell().Element(CellStyle).Text("1").AlignCenter();
-            t.Cell().Element(CellStyle).Text("DISSECTOR PEQUENO");
-            t.Cell().Element(CellStyle).Text("PA02030007").AlignCenter();
-            t.Cell().Element(CellStyle).Text("80455630023").AlignCenter();
-            t.Cell().Element(CellStyle).Text("VIGENTE").AlignCenter();
-            t.Cell().Element(CellStyle).Row(tr =>
-            {
-                tr.RelativeItem().Text("R$");
-                tr.RelativeItem().Text("2.100,00");
-            });
-            t.Cell().Element(CellStyle).Row(tr =>
-            {
-                tr.RelativeItem().Text("R$");
-                tr.RelativeItem().Text("2.100,00");
-            });
-
-            IContainer CellStyle(IContainer container) => DefaultCellStyle(container, TextStyle.Default.Black().FontSize(10).NormalWeight(), Colors.White);
-
-            t.Footer(footer =>
-            {
-                footer.Cell().ColumnSpan(6).Element(FooterNoContentStyle);
-                footer.Cell().Element(FooterTotalStyle).Row(tr =>
-                {
-                    tr.RelativeItem().Text("R$");
-                    tr.RelativeItem().Text("2.100,00");
-                });
-
-                IContainer FooterNoContentStyle(IContainer container) => DefaultHeaderFooterCellStyle(container, TextStyle.Default.Black().Bold(), Colors.Grey.Lighten3);
-                IContainer FooterTotalStyle(IContainer container) => DefaultCellStyle(container, TextStyle.Default.Black().FontSize(10).NormalWeight(), Colors.White);
-            });
-        });
+    public static IContainer ContentTableFooterTotalStyle(IContainer container)
+    {
+        return container
+            .BorderTop(1)
+            .BorderBottom(1)
+            .BorderColor(Colors.Grey.Lighten1)
+            .Background(Colors.White)
+            .AlignMiddle()
+            .PaddingHorizontal(4)
+            .PaddingVertical(0.1f);
     }
 }
