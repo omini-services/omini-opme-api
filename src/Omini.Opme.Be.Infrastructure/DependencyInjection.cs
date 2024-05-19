@@ -5,6 +5,7 @@ using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Services;
 using Omini.Opme.Be.Domain.Transactions;
 using Omini.Opme.Be.Infrastructure.Contexts;
+using Omini.Opme.Be.Infrastructure.PdfGenerator.QuestPdf;
 using Omini.Opme.Be.Infrastructure.Repositories;
 using Omini.Opme.Be.Infrastructure.Services;
 using Omini.Opme.Be.Infrastructure.Transaction;
@@ -20,7 +21,7 @@ public static class DependecyInjection
         services.AddTransient<IAuditableService, AuditableService>();
 
         services.AddTransient<IIdentityOpmeUserRepository, IdentityOpmeUserRepository>();
-        
+
         services.AddTransient<IHospitalRepository, HospitalRepository>();
         services.AddTransient<IItemRepository, ItemRepository>();
         services.AddTransient<IInsuranceCompanyRepository, InsuranceCompanyRepository>();
@@ -29,7 +30,19 @@ public static class DependecyInjection
         services.AddTransient<IQuotationRepository, QuotationRepository>();
 
         services.AddTransient<IUnitOfWork, UnitOfWork>();
-        
+
+        return services;
+    }
+
+    public static IServiceCollection AddQuestPdfGenerator(this IServiceCollection services, string fontsPath)
+    {
+        if (fontsPath is not null)
+        {
+            QuestPdfGenerator.RegisterFontsFromPath(fontsPath);
+        }
+
+        services.AddTransient<IPdfGenerator, QuotationPdfGenerator>();
+
         return services;
     }
 }

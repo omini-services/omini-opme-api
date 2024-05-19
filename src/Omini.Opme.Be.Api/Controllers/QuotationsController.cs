@@ -40,6 +40,28 @@ public class QuotationsController : MainController
         return Ok(ResponseDto.ApiSuccess(result));
     }
 
+    // [HttpGet("{id:guid}/preview")]
+    // public async Task<ActionResult<QuotationOutputDto>> PreviewById([FromServices] IQuotationRepository repository, Guid id)
+    // {
+    //     var quotation = await repository.GetById(id);
+
+    //     if (quotation is null)
+    //     {
+    //         return BadRequest();
+    //     }
+
+    //     var previewQuotationByIdCommand = new PreviewQuotationByIdCommand(){
+    //         Id = id
+    //     };
+
+    //     var result = await Mediator.Send(previewQuotationByIdCommand);
+
+    //     // var result = Mapper.Map<QuotationOutputDto>(quotation);
+
+    //     return Ok(ResponseDto.ApiSuccess(result));
+    // }
+
+
     [HttpPost]
     public async Task<IActionResult> Create(
         [FromBody] QuotationCreateDto quotationCreateDto)
