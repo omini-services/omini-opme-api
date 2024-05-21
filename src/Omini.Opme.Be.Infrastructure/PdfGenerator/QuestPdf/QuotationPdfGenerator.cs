@@ -4,6 +4,7 @@ using Omini.Opme.Be.Domain.Services;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using QuestPDF.Previewer;
 
 namespace Omini.Opme.Be.Infrastructure.PdfGenerator.QuestPdf;
 
@@ -26,7 +27,7 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
 
     public byte[] GenerateBytes(Quotation quotation)
     {
-        return Document.Create(container =>
+        Document.Create(container =>
         {
             container.Page(page =>
             {
@@ -41,7 +42,9 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
 
                 page.Footer().Element(e => ComposeFooter(e));
             });
-        }).GeneratePdf();
+        }).ShowInPreviewer();
+
+        return new byte[0];
     }
 
     private void ComposeHeader(IContainer container, Quotation quotation)
@@ -120,20 +123,20 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
             .DefaultTextStyle(TextStyle.Default.FontSize(10))
             .Column(col =>
             {
-                col.Item().Element(e => LabelAndContent(e, "Paciente:", quotation.Patient.Name.FullName));
-                col.Item().Element(WithHorizontalLine);
+                AddLabelAndContent(col, "Paciente:", quotation.Patient.Name.FullName);
+                AddHorizontalLine(col);
 
-                col.Item().Element(e => LabelAndContent(e, "Cirurgiã(o):", quotation.Physician.Name.FullName));
-                col.Item().Element(WithHorizontalLine);
+                AddLabelAndContent(col, "Cirurgiã(o):", quotation.Physician.Name.FullName);
+                AddHorizontalLine(col);
 
-                col.Item().Element(e => LabelAndContent(e, "Hospital:", quotation.Hospital.Name.TradeName));
-                col.Item().Element(WithHorizontalLine);
+                AddLabelAndContent(col, "Hospital:", quotation.Hospital.Name.TradeName);
+                AddHorizontalLine(col);
 
-                col.Item().Element(e => LabelAndContent(e, "Convênio:", quotation.InsuranceCompany.Name.TradeName));
-                col.Item().Element(WithHorizontalLine);
+                AddLabelAndContent(col, "Convênio:", quotation.InsuranceCompany.Name.TradeName);
+                AddHorizontalLine(col);
 
-                col.Item().Element(e => LabelAndContent(e, "Fonte Pagadora:", quotation.PayingSource.Name));
-                col.Item().Element(WithHorizontalLine);
+                AddLabelAndContent(col, "Fonte Pagadora:", quotation.PayingSource.Name);
+                AddHorizontalLine(col);
 
                 col.Item().PaddingTop(20).Row(row =>
                 {
@@ -174,7 +177,7 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
                                         .ShowIf(ctx => ctx.PageNumber == ctx.TotalPages).Row(tr =>
                                         {
                                             tr.RelativeItem().Element(QuotationPdfStyles.ContentTableFooterStyle);
-                                            tr.AutoItem().Element(QuotationPdfStyles.ContentTableFooterTotalStyle).Text($"R$ {quotation.Total:F2}").Bold().FontSize(14).AlignRight();
+                                            tr.AutoItem().Element(QuotationPdfStyles.ContentTableFooterTotalStyle).Text($"R$ {quotation.Total:N2}").Bold().FontSize(14).AlignRight();
                                         });
                                 });
                             });
@@ -203,9 +206,9 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
         });
     }
 
-    private IContainer LabelAndContent(IContainer container, string title, string content)
+    private static void AddLabelAndContent(ColumnDescriptor column, string title, string content)
     {
-        container.Row(row =>
+        column.Item().Row(row =>
             {
                 row.ConstantItem(100)
                     .Element(QuotationPdfStyles.LabelTitleStyle)
@@ -215,14 +218,11 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
                     .Element(QuotationPdfStyles.TextContentStyle)
                     .Text(content);
             });
-
-        return container;
     }
 
-    private static IContainer WithHorizontalLine(IContainer container)
+    private static void AddHorizontalLine(ColumnDescriptor column)
     {
-        container.PaddingVertical(2).LineHorizontal(1).LineColor(Colors.Grey.Lighten3);
-        return container;
+        column.Item().PaddingVertical(2).LineHorizontal(1).LineColor(Colors.Grey.Lighten3);
     }
 
     private static void AddRow(TableDescriptor container, QuotationItem quotationItem)

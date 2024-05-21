@@ -57,7 +57,10 @@ internal class Startup
         app.UseLoggingMiddleware();
         app.UseExceptionMiddleware();
 
-        app.UseQuestPdfFonts(() => Path.Combine(Assembly.GetExecutingAssembly().Location, "fonts"));
+        app.UseQuestPdf((options) =>
+        {
+            options.FontsPath = Path.Combine(Assembly.GetExecutingAssembly().Location, "fonts");
+        });
 
         app.UseAuthentication();
         app.UseAuthorization();

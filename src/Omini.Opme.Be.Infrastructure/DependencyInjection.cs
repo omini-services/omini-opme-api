@@ -11,6 +11,7 @@ using Omini.Opme.Be.Infrastructure.PdfGenerator.QuestPdf;
 using Omini.Opme.Be.Infrastructure.Repositories;
 using Omini.Opme.Be.Infrastructure.Services;
 using Omini.Opme.Be.Infrastructure.Transaction;
+using QuestPDF.Infrastructure;
 
 namespace Omini.Opme.Be.Infrastructure;
 
@@ -39,13 +40,18 @@ public static class DependecyInjection
         return services;
     }
 
-    public static IApplicationBuilder UseQuestPdfFonts(this IApplicationBuilder app, Func<string> options)
+    public static IApplicationBuilder UseQuestPdf(this IApplicationBuilder app, Action<QuestPdfBuilder> options)
     {
         var logger = app.ApplicationServices.GetRequiredService<ILogger<IApplicationBuilder>>();
-        var path = options();
-        if (path is not null)
+
+        QuestPDF.Settings.License = LicenseType.Community;
+        var questPdfBuilder = new QuestPdfBuilder();
+
+        options(questPdfBuilder);
+        
+        if (questPdfBuilder.FontsPath is not null)
         {
-            QuestPdfConfiguration.RegisterFontsFromPath(path, logger);
+            QuestPdfConfiguration.RegisterFontsFromPath(questPdfBuilder.FontsPath, logger);
         }
 
         return app;
