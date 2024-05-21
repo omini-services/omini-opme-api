@@ -27,7 +27,7 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
 
     public byte[] GenerateBytes(Quotation quotation)
     {
-        Document.Create(container =>
+        return Document.Create(container =>
         {
             container.Page(page =>
             {
@@ -42,9 +42,7 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
 
                 page.Footer().Element(e => ComposeFooter(e));
             });
-        }).ShowInPreviewer();
-
-        return new byte[0];
+        }).GeneratePdf();
     }
 
     private void ComposeHeader(IContainer container, Quotation quotation)
