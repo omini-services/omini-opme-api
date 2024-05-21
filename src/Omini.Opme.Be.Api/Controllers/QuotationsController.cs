@@ -40,26 +40,26 @@ public class QuotationsController : MainController
         return Ok(ResponseDto.ApiSuccess(result));
     }
 
-    // [HttpGet("{id:guid}/preview")]
-    // public async Task<ActionResult<QuotationOutputDto>> PreviewById([FromServices] IQuotationRepository repository, Guid id)
-    // {
-    //     var quotation = await repository.GetById(id);
 
-    //     if (quotation is null)
-    //     {
-    //         return BadRequest();
-    //     }
+    [HttpGet("{id:guid}/preview")]
+    public async Task<ActionResult<QuotationOutputDto>> PreviewById([FromServices] IQuotationRepository repository, Guid id)
+    {
+        var quotation = await repository.GetById(id);
 
-    //     var previewQuotationByIdCommand = new PreviewQuotationByIdCommand(){
-    //         Id = id
-    //     };
+        if (quotation is null)
+        {
+            return BadRequest();
+        }
 
-    //     var result = await Mediator.Send(previewQuotationByIdCommand);
+        var previewQuotationByIdCommand = new PreviewQuotationCommand()
+        {
+            Id = id
+        };
 
-    //     // var result = Mapper.Map<QuotationOutputDto>(quotation);
+        var result = await Mediator.Send(previewQuotationByIdCommand);
 
-    //     return Ok(ResponseDto.ApiSuccess(result));
-    // }
+        return File(result.Response, "application/pdf");
+    }
 
 
     [HttpPost]
@@ -80,10 +80,7 @@ public class QuotationsController : MainController
             Items = quotationCreateDto.Items.Select((item, index) => new CreateQuotationCommand.CreateQuotationItemCommand()
             {
                 LineOrder = item.LineOrder,
-                ItemId = item.ItemId,
                 ItemCode = item.ItemCode,
-                AnvisaCode = item.AnvisaCode,
-                AnvisaDueDate = item.AnvisaDueDate,
                 UnitPrice = item.UnitPrice,
                 Quantity = item.Quantity,
             })
@@ -110,10 +107,7 @@ public class QuotationsController : MainController
         {
             QuotationId = quotationCreateItemDto.QuotationId,
             LineOrder = quotationCreateItemDto.LineOrder,
-            ItemId = quotationCreateItemDto.ItemId,
             ItemCode = quotationCreateItemDto.ItemCode,
-            AnvisaCode = quotationCreateItemDto.AnvisaCode,
-            AnvisaDueDate = quotationCreateItemDto.AnvisaDueDate,
             UnitPrice = quotationCreateItemDto.UnitPrice,
             Quantity = quotationCreateItemDto.Quantity,
         };
@@ -182,10 +176,7 @@ public class QuotationsController : MainController
             QuotationId = id,
             LineId = quotationUpdateItemDto.LineId,
             LineOrder = quotationUpdateItemDto.LineOrder,
-            ItemId = quotationUpdateItemDto.ItemId,
             ItemCode = quotationUpdateItemDto.ItemCode,
-            AnvisaCode = quotationUpdateItemDto.AnvisaCode,
-            AnvisaDueDate = quotationUpdateItemDto.AnvisaDueDate,
             UnitPrice = quotationUpdateItemDto.UnitPrice,
             Quantity = quotationUpdateItemDto.Quantity,
         };

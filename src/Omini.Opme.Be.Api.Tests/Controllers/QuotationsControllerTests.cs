@@ -38,7 +38,7 @@ public class QuotationsControllerTests : IntegrationTest
 
         //assert
         response.StatusCode.Should().Be(StatusCodes.Status201Created);
-       
+
         quotationCreateDto.Should().BeEquivalentTo(quotationOutputDto,
             options =>
                 options.Excluding(p => p.Id)
@@ -48,13 +48,17 @@ public class QuotationsControllerTests : IntegrationTest
                     .Exclude(p => p.LineId)
                     .For(p => p.Items)
                     .Exclude(p => p.LineOrder)
+                    .ExcludingMissingMembers()
         );
-
 
         quotationOutputDto.Items.Should()
                                      .OnlyHaveUniqueItems(p => p.LineId).And
                                      .OnlyHaveUniqueItems(p => p.LineOrder).And
                                      .AllSatisfy(p => p.ItemTotal.Should().BeGreaterThanOrEqualTo(0));
+
+        var total = quotationCreateDto.Items.Sum(p => p.UnitPrice * p.Quantity);
+        quotationOutputDto.Total.Should().Be(total);
+        quotationOutputDto.Items.Should().Contain(p => p.ItemName == itemOutputDtos[0].Data.Name);
     }
 
     [Fact]
@@ -110,10 +114,7 @@ public class QuotationsControllerTests : IntegrationTest
         var quotationCreateItemDto = new QuotationCreateLineItemDto()
         {
             QuotationId = quotation.Id,
-            AnvisaCode = newItem.AnvisaCode,
-            AnvisaDueDate = newItem.AnvisaDueDate,
             ItemCode = newItem.Code,
-            ItemId = newItem.Id,
             Quantity = faker.Random.Number(0, 100),
             UnitPrice = faker.Random.Double(0, 100),
         };
@@ -132,11 +133,11 @@ public class QuotationsControllerTests : IntegrationTest
                                      .AllSatisfy(p => p.ItemTotal.Should().BeGreaterThanOrEqualTo(0));
 
         var addedItem = quotationAfterUpdate.Items.Last();
-        quotationAfterUpdate.Items.Should().ContainEquivalentOf(addedItem,
-            options =>
-                options.ExcludingMissingMembers()
-                    .Excluding(p => p.AnvisaDueDate)
-        );
+        quotationAfterUpdate.Items.Should().ContainEquivalentOf(addedItem);
+
+        var total = quotationCreateDto.Items.Sum(p => p.UnitPrice * p.Quantity);
+        quotationAfterUpdate.Total.Should().Be(total);
+        quotationAfterUpdate.Items.Should().Contain(p => p.ItemName == newItem.Name);
     }
 
     [Fact]
@@ -157,16 +158,15 @@ public class QuotationsControllerTests : IntegrationTest
         var quotation = (await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateDto).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
         var lineIdToUpdate = quotation.Items[0].LineId;
 
+        var totalCreate = quotationCreateDto.Items.Sum(p => p.UnitPrice * p.Quantity);
+
         //act        
         var quotationUpdateItemDto = new QuotationUpdateLineItemDto()
         {
             QuotationId = quotation.Id,
             LineId = lineIdToUpdate,
             LineOrder = quotation.Items[0].LineOrder,
-            AnvisaCode = quotation.Items[1].AnvisaCode,
-            AnvisaDueDate = quotation.Items[1].AnvisaDueDate,
             ItemCode = quotation.Items[1].ItemCode,
-            ItemId = quotation.Items[1].ItemId,
             Quantity = quotation.Items[1].Quantity,
             UnitPrice = quotation.Items[1].UnitPrice,
         };
@@ -178,16 +178,15 @@ public class QuotationsControllerTests : IntegrationTest
         updateQuotationResponse.StatusCode.Should().Be(StatusCodes.Status204NoContent);
 
         var updatedItem = quotationAfterUpdate.Items.Single(p => p.LineId == lineIdToUpdate);
-        quotationUpdateItemDto.Should().BeEquivalentTo(updatedItem,
-            options =>
-                options.ExcludingMissingMembers()
-                    .Excluding(p => p.AnvisaDueDate)
-        );
 
         quotationAfterUpdate.Items.Should()
                                      .OnlyHaveUniqueItems(p => p.LineId).And
                                      .OnlyHaveUniqueItems(p => p.LineOrder).And
                                      .AllSatisfy(p => p.ItemTotal.Should().BeGreaterThanOrEqualTo(0));
+
+        var total = totalCreate - (quotation.Items[0].Quantity * quotation.Items[0].UnitPrice) + (quotation.Items[1].Quantity * quotation.Items[1].UnitPrice);
+        quotationAfterUpdate.Total.Should().Be(total);
+        updatedItem.ItemName.Should().Be(itemOutputDtos[1].Data.Name);
     }
 
     [Fact]
@@ -223,7 +222,7 @@ public class QuotationsControllerTests : IntegrationTest
                                      .OnlyHaveUniqueItems(p => p.LineOrder).And
                                      .AllSatisfy(p => p.ItemTotal.Should().BeGreaterThanOrEqualTo(0));
 
-        quotationAfterUpdate.Items.Should().NotContain(quotation.Items[0]);                                     
+        quotationAfterUpdate.Items.Should().NotContain(quotation.Items[0]);
     }
 
     private async Task Seed()

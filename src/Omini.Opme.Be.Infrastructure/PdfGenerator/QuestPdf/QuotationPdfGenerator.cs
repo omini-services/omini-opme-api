@@ -1,28 +1,32 @@
 using System.Reflection;
+using Omini.Opme.Be.Domain.Entities;
 using Omini.Opme.Be.Domain.Services;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using QuestPDF.Previewer;
 
 namespace Omini.Opme.Be.Infrastructure.PdfGenerator.QuestPdf;
 
-public sealed class QuotationPdfGenerator : IPdfGenerator
+public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
 {
     const string DefaultFont = "Noto Sans";
     private readonly string _basePath;
     private readonly string _imagesPath;
     private readonly string _pdfLogoFullPath;
+    private readonly IDateTimeService _dateTimeService;
 
-    public QuotationPdfGenerator()
+    public QuotationPdfGenerator(IDateTimeService dateTimeService)
     {
         _basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
         _imagesPath = Path.Combine(_basePath, "Images");
         _pdfLogoFullPath = Path.Combine(_imagesPath, "pdf-logo.png");
+
+        _dateTimeService = dateTimeService;
     }
-    public void GenerateDocument()
+
+    public byte[] GenerateBytes(Quotation quotation)
     {
-        Document.Create(container =>
+        return Document.Create(container =>
         {
             container.Page(page =>
             {
@@ -31,17 +35,19 @@ public sealed class QuotationPdfGenerator : IPdfGenerator
 
                 page.Margin(25);
 
-                page.Header().Element(ComposeHeader);
+                page.Header().Element(e => ComposeHeader(e, quotation));
 
-                page.Content().Element(ComposeContent);
+                page.Content().Element(e => ComposeContent(e, quotation));
 
-                page.Footer().Element(ComposeFooter);
+                page.Footer().Element(e => ComposeFooter(e));
             });
-        }).ShowInPreviewer();
+        }).GeneratePdf();
     }
 
-    private void ComposeHeader(IContainer container)
+    private void ComposeHeader(IContainer container, Quotation quotation)
     {
+        var dateNow = _dateTimeService.Now();
+
         container.ShowIf(ctx => ctx.PageNumber == 1).Column(col =>
         {
             col.Item().Row(row =>
@@ -52,15 +58,14 @@ public sealed class QuotationPdfGenerator : IPdfGenerator
                     .Column(col =>
                     {
                         col.Item().AlignRight()
-                            .Text("Orçamento Nº: 000000").FontSize(14).Bold();
+                            .Text($"Orçamento Nº: {quotation.Number}").FontSize(14).Bold();
                         col.Item()
                             .AlignRight()
                             .DefaultTextStyle(TextStyle.Default.FontColor(Colors.Grey.Medium).FontSize(9))
                             .Text(text =>
                             {
                                 text.Span("Gerado em: ");
-                                text.Span($"15/05/2024");
-                                // text.Span($"{Model.IssueDate:d}");
+                                text.Span($"{dateNow:dd/MM/yyyy}");
                             });
                     });
             });
@@ -109,25 +114,25 @@ public sealed class QuotationPdfGenerator : IPdfGenerator
         });
     }
 
-    private void ComposeContent(IContainer container)
+    private void ComposeContent(IContainer container, Quotation quotation)
     {
         container.PaddingVertical(20)
             .DefaultTextStyle(TextStyle.Default.FontSize(10))
             .Column(col =>
             {
-                col.Item().Element(e => LabelAndContent(e, "Paciente:", "JOAO"));
+                col.Item().Element(e => LabelAndContent(e, "Paciente:", quotation.Patient.Name.FullName));
                 col.Item().Element(WithHorizontalLine);
 
-                col.Item().Element(e => LabelAndContent(e, "Cirurgiã(o):", "JOAO"));
+                col.Item().Element(e => LabelAndContent(e, "Cirurgiã(o):", quotation.Physician.Name.FullName));
                 col.Item().Element(WithHorizontalLine);
 
-                col.Item().Element(e => LabelAndContent(e, "Hospital:", "JOAO"));
+                col.Item().Element(e => LabelAndContent(e, "Hospital:", quotation.Hospital.Name.TradeName));
                 col.Item().Element(WithHorizontalLine);
 
-                col.Item().Element(e => LabelAndContent(e, "Convênio:", "JOAO"));
+                col.Item().Element(e => LabelAndContent(e, "Convênio:", quotation.InsuranceCompany.Name.TradeName));
                 col.Item().Element(WithHorizontalLine);
 
-                col.Item().Element(e => LabelAndContent(e, "Fonte Pagadora:", "JOAO"));
+                col.Item().Element(e => LabelAndContent(e, "Fonte Pagadora:", quotation.PayingSource.Name));
                 col.Item().Element(WithHorizontalLine);
 
                 col.Item().PaddingTop(20).Row(row =>
@@ -158,9 +163,9 @@ public sealed class QuotationPdfGenerator : IPdfGenerator
                                     header.Cell().Element(QuotationPdfStyles.ContentTableTitleStyle).Text("Valor total");
                                 });
 
-                                for (var i = 0; i <= 100; i++)
+                                foreach (var quotationItem in quotation.Items)
                                 {
-                                    AddRow(t);
+                                    AddRow(t, quotationItem);
                                 }
 
                                 t.Footer(footer =>
@@ -169,7 +174,7 @@ public sealed class QuotationPdfGenerator : IPdfGenerator
                                         .ShowIf(ctx => ctx.PageNumber == ctx.TotalPages).Row(tr =>
                                         {
                                             tr.RelativeItem().Element(QuotationPdfStyles.ContentTableFooterStyle);
-                                            tr.AutoItem().Element(QuotationPdfStyles.ContentTableFooterTotalStyle).Text("R$ 112.100,00").Bold().FontSize(14).AlignRight();
+                                            tr.AutoItem().Element(QuotationPdfStyles.ContentTableFooterTotalStyle).Text($"R$ {quotation.Total:F2}").Bold().FontSize(14).AlignRight();
                                         });
                                 });
                             });
@@ -220,13 +225,13 @@ public sealed class QuotationPdfGenerator : IPdfGenerator
         return container;
     }
 
-    private static void AddRow(TableDescriptor container)
+    private static void AddRow(TableDescriptor container, QuotationItem quotationItem)
     {
-        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text("1");
-        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).Text("PLACA ZIGOMÁTICA 6 FUROS");
-        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).Text("PA.02.03.0048");
-        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).Text("00000000000");
-        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text("R$ 10.000,00");
-        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text("R$ 10.000,00");
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text(quotationItem.Quantity.ToString("F0"));
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).Text(quotationItem.ItemName);
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).Text(quotationItem.ReferenceCode);
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).Text(quotationItem.AnvisaCode);
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text($"R$ {quotationItem.UnitPrice:F2}");
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text($"R$ {quotationItem.ItemTotal:F2}");
     }
 }

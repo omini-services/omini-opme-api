@@ -19,45 +19,33 @@ internal class QuotationMapping : IEntityTypeConfiguration<Quotation>
                 v => (PayingSourceType)Enum.Parse(typeof(PayingSourceType), v))
             .IsRequired();
 
+        builder.Ignore(p => p.PayingSource);
+
         builder.Property(x => x.PayingSourceId)
             .IsRequired();
 
-        builder.HasOne<Patient>()
+        builder.HasOne(x => x.Patient)
             .WithMany()
             .HasForeignKey(x => x.PatientId)
             .IsRequired();
 
-        builder.HasOne<Physician>()
+        builder.HasOne(x => x.Physician)
             .WithMany()
             .HasForeignKey(x => x.PhysicianId)
             .IsRequired();
 
-        builder.HasOne<Hospital>()
+        builder.HasOne(x => x.Hospital)
             .WithMany()
             .HasForeignKey(x => x.HospitalId)
             .IsRequired();
 
-        builder.HasOne<InsuranceCompany>()
+        builder.HasOne(x => x.InsuranceCompany)
             .WithMany()
             .HasForeignKey(x => x.InsuranceCompanyId)
             .IsRequired();
 
-        //------
-        // builder.HasOne<Patient>()
-        //     .WithOne()
-        //     .HasForeignKey<Quotation>(x => x.PayingSourceId);
+        builder.Ignore(p => p.InternalSpecialistId);
 
-        // builder.HasOne<InsuranceCompany>()
-        //     .WithOne()
-        //     .HasForeignKey<Quotation>(x => x.PayingSourceId);
-
-        // builder.HasOne<Physician>()
-        //     .WithOne()
-        //     .HasForeignKey<Quotation>(x => x.PayingSourceId);
-
-        // builder.HasOne<Hospital>()
-        //     .WithOne()
-        //     .HasForeignKey<Quotation>(x => x.PayingSourceId);
         builder.ToTable("Quotations");
     }
 }

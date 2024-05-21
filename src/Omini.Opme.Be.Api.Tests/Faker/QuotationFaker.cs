@@ -19,10 +19,7 @@ public static class QuotationFaker
         {
             quotationCreateDto.Items.Add(new QuotationCreateDto.QuotationCreateItemDto()
             {
-                ItemId = item.Data.Id,
                 ItemCode = item.Data.Code,
-                AnvisaCode = item.Data.AnvisaCode,
-                AnvisaDueDate = item.Data.AnvisaDueDate,
                 Quantity = faker.Random.Number(1, 100),
                 UnitPrice = faker.Random.Double(max: 1000.0)
             });

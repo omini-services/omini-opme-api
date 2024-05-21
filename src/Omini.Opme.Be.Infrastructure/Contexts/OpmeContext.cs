@@ -16,12 +16,15 @@ internal sealed class OpmeContext : DbContext
     {
         _claimsProvider = claimsProvider;
     }
-    public DbSet<Hospital> Hospitals { get; set; }
     public DbSet<IdentityOpmeUser> IdentityOpmeUsers { get; set; }
     public DbSet<Item> Items { get; set; }
+    public DbSet<Hospital> Hospitals { get; set; }
     public DbSet<InsuranceCompany> InsuranceCompanies { get; set; }
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Physician> Physicians { get; set; }
+    public DbSet<InternalSpecialist> InternalSpecialists { get; set; }
+    public DbSet<Quotation> Quotations { get; set; }
+    public DbSet<QuotationItem> QuotationItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

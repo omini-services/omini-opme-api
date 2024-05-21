@@ -14,6 +14,19 @@ public class PersonName : ValueObject
     public string LastName { get; init; }
     public string? MiddleName { get; init; }
 
+    public string FullName
+    {
+        get
+        {
+            if (MiddleName is null)
+            {
+                return $"{FirstName} {LastName}";
+            }
+
+            return $"{FirstName} {MiddleName} {LastName}";
+        }
+    }
+
     public override IEnumerable<object?> GetAtomicValues()
     {
         yield return FirstName;

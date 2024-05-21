@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -40,8 +41,6 @@ internal class Startup
 
         services.AddApplication();
 
-
-
         services.AddAutoMapper(typeof(Startup));
     }
     public void Configure(WebApplication app, IWebHostEnvironment env)
@@ -57,6 +56,8 @@ internal class Startup
 
         app.UseLoggingMiddleware();
         app.UseExceptionMiddleware();
+
+        app.UseQuestPdfFonts(() => Path.Combine(Assembly.GetExecutingAssembly().Location, "fonts"));
 
         app.UseAuthentication();
         app.UseAuthorization();

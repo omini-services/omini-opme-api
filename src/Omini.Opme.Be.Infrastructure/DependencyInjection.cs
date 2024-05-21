@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Omini.Opme.Be.Domain.Repositories;
 using Omini.Opme.Be.Domain.Services;
 using Omini.Opme.Be.Domain.Transactions;
@@ -19,6 +21,7 @@ public static class DependecyInjection
         services.AddDbContext<OpmeContext>(opt => opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddTransient<IAuditableService, AuditableService>();
+        services.AddTransient<IDateTimeService, DateTimeService>();
 
         services.AddTransient<IIdentityOpmeUserRepository, IdentityOpmeUserRepository>();
 
@@ -29,20 +32,22 @@ public static class DependecyInjection
         services.AddTransient<IPhysicianRepository, PhysicianRepository>();
         services.AddTransient<IQuotationRepository, QuotationRepository>();
 
+        services.AddTransient<IQuotationPdfGenerator, QuotationPdfGenerator>();
+
         services.AddTransient<IUnitOfWork, UnitOfWork>();
 
         return services;
     }
 
-    public static IServiceCollection AddQuestPdfGenerator(this IServiceCollection services, string fontsPath)
+    public static IApplicationBuilder UseQuestPdfFonts(this IApplicationBuilder app, Func<string> options)
     {
-        if (fontsPath is not null)
+        var logger = app.ApplicationServices.GetRequiredService<ILogger<IApplicationBuilder>>();
+        var path = options();
+        if (path is not null)
         {
-            QuestPdfGenerator.RegisterFontsFromPath(fontsPath);
+            QuestPdfConfiguration.RegisterFontsFromPath(path, logger);
         }
 
-        services.AddTransient<IPdfGenerator, QuotationPdfGenerator>();
-
-        return services;
+        return app;
     }
 }

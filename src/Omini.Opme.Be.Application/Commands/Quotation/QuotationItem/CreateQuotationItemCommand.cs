@@ -11,10 +11,7 @@ public record CreateQuotationItemCommand : ICommand<Quotation>
 {
     public Guid QuotationId { get; set; }
     public int? LineOrder { get; set; }
-    public Guid ItemId { get; set; }
     public string ItemCode { get; set; }
-    public string AnvisaCode { get; set; }
-    public DateTime AnvisaDueDate { get; set; }
     public double UnitPrice { get; set; }
     public double ItemTotal { get; set; }
     public double Quantity { get; set; }
@@ -43,10 +40,10 @@ public record CreateQuotationItemCommand : ICommand<Quotation>
                 validationFailures.Add(new ValidationFailure(nameof(request.QuotationId), "Invalid Id"));
             }
 
-            var item = await _itemRepository.GetById(request.ItemId);
+            var item = await _itemRepository.GetByCode(request.ItemCode, cancellationToken);
             if (item is null)
             {
-                validationFailures.Add(new ValidationFailure(nameof(request.ItemId), "Invalid Id"));
+                validationFailures.Add(new ValidationFailure(nameof(request.ItemCode), "Invalid ItemCode"));
             }
 
             if (validationFailures.Any())
@@ -61,14 +58,18 @@ public record CreateQuotationItemCommand : ICommand<Quotation>
             {
                 LineId = newLineId,
                 LineOrder = request.LineOrder ?? newLineId,
-                ItemId = request.ItemId,
+                ItemId = item.Id,
                 ItemCode = request.ItemCode,
-                AnvisaCode = request.AnvisaCode,
-                AnvisaDueDate = request.AnvisaDueDate.ToUniversalTime(),
+                ItemName = item.Name,
+                ReferenceCode = "ref",
+                AnvisaCode = item.AnvisaCode ?? string.Empty,
+                AnvisaDueDate = item.AnvisaDueDate?.ToUniversalTime() ?? DateTime.Now.ToUniversalTime(),
                 UnitPrice = request.UnitPrice,
                 Quantity = request.Quantity,
                 ItemTotal = request.Quantity * request.UnitPrice,
             };
+
+            quotation.Total = quotation.Items.Sum(p => p.ItemTotal);
 
             items.Add(newItem);
 

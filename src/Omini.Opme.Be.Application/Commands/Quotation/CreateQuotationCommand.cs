@@ -24,10 +24,7 @@ public record CreateQuotationCommand : ICommand<Quotation>
     public class CreateQuotationItemCommand
     {
         public int? LineOrder { get; set; }
-        public Guid ItemId { get; set; }
         public string ItemCode { get; set; }
-        public string AnvisaCode { get; set; }
-        public DateTime AnvisaDueDate { get; set; }
         public double UnitPrice { get; set; }
         public double Quantity { get; set; }
     }
@@ -39,6 +36,7 @@ public record CreateQuotationCommand : ICommand<Quotation>
         private readonly IPatientRepository _patientRepository;
         private readonly IInsuranceCompanyRepository _insuranceCompanyRepository;
         private readonly IPhysicianRepository _physicianRepository;
+        private readonly IItemRepository _itemRepository;
         private readonly IQuotationRepository _quotationRepository;
 
         public CreateQuotationCommandHandler(IUnitOfWork unitOfWork,
@@ -46,6 +44,7 @@ public record CreateQuotationCommand : ICommand<Quotation>
                                              IPatientRepository patientRepository,
                                              IInsuranceCompanyRepository insuranceCompanyRepository,
                                              IPhysicianRepository physicianRepository,
+                                             IItemRepository itemRepository,
                                              IQuotationRepository quotationRepository)
         {
             _unitOfWork = unitOfWork;
@@ -53,6 +52,7 @@ public record CreateQuotationCommand : ICommand<Quotation>
             _patientRepository = patientRepository;
             _insuranceCompanyRepository = insuranceCompanyRepository;
             _physicianRepository = physicianRepository;
+            _itemRepository = itemRepository;
             _quotationRepository = quotationRepository;
         }
 
@@ -83,10 +83,7 @@ public record CreateQuotationCommand : ICommand<Quotation>
                 validationFailures.Add(new ValidationFailure("Physician Id", "Invalid Id"));
             }
 
-            if (validationFailures.Any())
-            {
-                return new ValidationResult(validationFailures);
-            }
+            var items = await _itemRepository.Get(p => request.Items.Select(x => x.ItemCode).Contains(p.Code));
 
             var quotation = new Quotation()
             {
@@ -99,19 +96,40 @@ public record CreateQuotationCommand : ICommand<Quotation>
                 InsuranceCompanyId = request.InsuranceCompanyId,
                 InternalSpecialistId = request.InternalSpecialistId,
                 DueDate = request.DueDate.ToUniversalTime(),
-                Items = request.Items.Select((item, index) => new QuotationItem
+                Items = new List<QuotationItem>()
+            };
+
+            foreach (var (requestItem, index) in request.Items.Select((i, index) => (i, index)))
+            {
+                var item = items.SingleOrDefault(p => p.Code == requestItem.ItemCode);
+                if (item is null)
+                {
+                    validationFailures.Add(new ValidationFailure("Item ItemCode", $"Invalid ItemCode {requestItem.ItemCode}"));
+                    continue;
+                }
+            
+                quotation.Items.Add(new QuotationItem
                 {
                     LineId = index,
-                    LineOrder = item.LineOrder ?? index,
-                    ItemId = item.ItemId,
-                    ItemCode = item.ItemCode,
-                    AnvisaCode = item.AnvisaCode,
-                    AnvisaDueDate = item.AnvisaDueDate.ToUniversalTime(),
-                    UnitPrice = item.UnitPrice,
-                    Quantity = item.Quantity,
-                    ItemTotal = item.Quantity * item.UnitPrice,
-                }).ToList()
-            };
+                    LineOrder = requestItem.LineOrder ?? index,
+                    ItemId = item.Id,
+                    ItemCode = requestItem.ItemCode,
+                    ItemName = item.Name,
+                    ReferenceCode = "ref",
+                    AnvisaCode = item.AnvisaCode ?? string.Empty,
+                    AnvisaDueDate = item.AnvisaDueDate?.ToUniversalTime() ?? DateTime.Now.ToUniversalTime(),
+                    UnitPrice = requestItem.UnitPrice,
+                    Quantity = requestItem.Quantity,
+                    ItemTotal = requestItem.Quantity * requestItem.UnitPrice,
+                });
+            }
+
+            if (validationFailures.Any())
+            {
+                return new ValidationResult(validationFailures);
+            }
+
+            quotation.Total = quotation.Items.Sum(p => p.ItemTotal);
 
             await _quotationRepository.Add(quotation, cancellationToken);
             await _unitOfWork.Commit(cancellationToken);

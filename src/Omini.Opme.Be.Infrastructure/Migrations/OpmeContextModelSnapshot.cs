@@ -369,9 +369,6 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     b.Property<Guid>("InsuranceCompanyId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("InternalSpecialistId")
-                        .HasColumnType("uuid");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -398,6 +395,9 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
 
                     b.Property<Guid>("PhysicianId")
                         .HasColumnType("uuid");
+
+                    b.Property<double>("Total")
+                        .HasColumnType("double precision");
 
                     b.HasKey("Id");
 
@@ -436,6 +436,11 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     b.Property<Guid>("ItemId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ItemName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<double>("ItemTotal")
                         .HasColumnType("double precision");
 
@@ -444,6 +449,11 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
 
                     b.Property<double>("Quantity")
                         .HasColumnType("double precision");
+
+                    b.Property<string>("ReferenceCode")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<double>("UnitPrice")
                         .HasColumnType("double precision");
@@ -627,29 +637,37 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
 
             modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.Quotation", b =>
                 {
-                    b.HasOne("Omini.Opme.Be.Domain.Entities.Hospital", null)
+                    b.HasOne("Omini.Opme.Be.Domain.Entities.Hospital", "Hospital")
                         .WithMany()
                         .HasForeignKey("HospitalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Omini.Opme.Be.Domain.Entities.InsuranceCompany", null)
+                    b.HasOne("Omini.Opme.Be.Domain.Entities.InsuranceCompany", "InsuranceCompany")
                         .WithMany()
                         .HasForeignKey("InsuranceCompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Omini.Opme.Be.Domain.Entities.Patient", null)
+                    b.HasOne("Omini.Opme.Be.Domain.Entities.Patient", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Omini.Opme.Be.Domain.Entities.Physician", null)
+                    b.HasOne("Omini.Opme.Be.Domain.Entities.Physician", "Physician")
                         .WithMany()
                         .HasForeignKey("PhysicianId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Hospital");
+
+                    b.Navigation("InsuranceCompany");
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("Physician");
                 });
 
             modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.QuotationItem", b =>

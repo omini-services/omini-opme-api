@@ -12,5 +12,5 @@ public sealed class Item : Auditable
     public string? SupplierCode { get; set; }
     public string? Cst { get; set; }
     public string? SusCode { get; set; }
-    public string? NcmCode { get; set; }    
+    public string? NcmCode { get; set; }
 }
