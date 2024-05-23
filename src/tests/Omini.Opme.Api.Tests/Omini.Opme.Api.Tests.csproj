@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Omini.Opme.Be.Api\Omini.Opme.Be.Api.csproj" />
+    <ProjectReference Include="..\..\Api\Omini.Opme.Api\Omini.Opme.Api.csproj" />
   </ItemGroup>
 
 </Project>

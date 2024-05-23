@@ -1,32 +1,33 @@
 using Bogus;
-using Bogus.Extensions.Brazil;
 using Omini.Opme.Be.Api.Dtos;
+using Omini.Opme.Business.Commands;
 
-namespace Omini.Opme.Be.Api.Tests;
+namespace Omini.Opme.Api.Tests;
 
-public static class PatientFaker
+public static class PhysicianFaker
 {
-    public static PatientCreateDto GetFakePatientCreateDto()
+    public static CreatePhysicianCommand GetFakePhysicianCreateDto()
     {
         var personName = PersonNameFaker.PersonName();
 
-        return new Faker<PatientCreateDto>()
+        return new Faker<CreatePhysicianCommand>()
             .RuleFor(o => o.FirstName, f => personName.FirstName)
             .RuleFor(o => o.LastName, f => personName.LastName)
             .RuleFor(o => o.MiddleName, f => personName.MiddleName)
-            .RuleFor(o => o.Cpf, f => f.Person.Cpf())
+            .RuleFor(o => o.Crm, f => f.Random.AlphaNumeric(5))
+            .RuleFor(o => o.Cro, f => f.Random.AlphaNumeric(5))
             .RuleFor(o => o.Comments, f => f.Company.Bs());
     }
-
-    public static PatientUpdateDto GetFakePatientUpdateDto(Guid id)
+    public static UpdatePhysicianCommand GetFakePhysicianUpdateDto(Guid id)
     {
         var personName = PersonNameFaker.PersonName();
 
-        var faker = new Faker<PatientUpdateDto>()
+        var faker = new Faker<UpdatePhysicianCommand>()
             .RuleFor(o => o.FirstName, f => personName.FirstName)
             .RuleFor(o => o.LastName, f => personName.LastName)
             .RuleFor(o => o.MiddleName, f => personName.MiddleName)
-            .RuleFor(o => o.Cpf, f => f.Person.Cpf())
+            .RuleFor(o => o.Crm, f => f.Random.AlphaNumeric(5))
+            .RuleFor(o => o.Cro, f => f.Random.AlphaNumeric(5))
             .RuleFor(o => o.Comments, f => f.Company.Bs()).Generate();
 
         faker.Id = id;

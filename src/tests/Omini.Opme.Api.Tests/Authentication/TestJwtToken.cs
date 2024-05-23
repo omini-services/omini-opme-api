@@ -2,7 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using DI.Shared.Constants;
 
-namespace Omini.Opme.Be.Api.Tests.Authentication;
+namespace Omini.Opme.Api.Tests.Authentication;
 
 public class TestJwtToken
 {

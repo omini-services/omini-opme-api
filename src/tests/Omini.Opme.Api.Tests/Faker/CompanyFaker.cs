@@ -1,6 +1,8 @@
 using Bogus;
 using Bogus.DataSets;
-using Omini.Opme.Be.Domain;
+using Omini.Opme.Domain;
+
+namespace Omini.Opme.Api.Tests;
 
 public static class CompanyFaker
 {

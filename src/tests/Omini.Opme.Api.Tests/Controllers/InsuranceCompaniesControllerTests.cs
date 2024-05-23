@@ -1,10 +1,10 @@
 using FluentAssertions;
 using Flurl.Http;
 using Microsoft.AspNetCore.Http;
-using Omini.Opme.Be.Api.Dtos;
-using Omini.Opme.Be.Api.Tests.Extensions;
+using Omini.Opme.Api.Dtos;
+using Omini.Opme.Api.Tests.Extensions;
 
-namespace Omini.Opme.Be.Api.Tests.Controllers;
+namespace Omini.Opme.Api.Tests.Controllers;
 
 public class InsuranceCompaniesControllerTests : IntegrationTest
 {

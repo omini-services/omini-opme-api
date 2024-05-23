@@ -1,8 +1,8 @@
 
 using Flurl.Http;
-using Omini.Opme.Be.Api.Tests.Authentication;
+using Omini.Opme.Api.Tests.Authentication;
 
-namespace Omini.Opme.Be.Api.Tests.Extensions;
+namespace Omini.Opme.Api.Tests.Extensions;
 
 public static class FlurlExtensions
 {

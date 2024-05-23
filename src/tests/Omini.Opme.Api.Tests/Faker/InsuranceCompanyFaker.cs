@@ -1,27 +1,28 @@
 using Bogus;
 using Bogus.Extensions.Brazil;
 using Omini.Opme.Be.Api.Dtos;
+using Omini.Opme.Business.Commands;
 
-namespace Omini.Opme.Be.Api.Tests;
+namespace Omini.Opme.Api.Tests;
 
 public static class InsuranceCompanyFaker
 {
-    public static InsuranceCompanyCreateDto GetFakeInsuranceCompanyCreateDto()
+    public static CreateInsuranceCompanyCommand GetFakeInsuranceCompanyCreateDto()
     {
         var companyName = CompanyFaker.CompanyName();
 
-        return new Faker<InsuranceCompanyCreateDto>()
+        return new Faker<CreateInsuranceCompanyCommand>()
             .RuleFor(o => o.LegalName, f => companyName.LegalName)
             .RuleFor(o => o.TradeName, f => companyName.TradeName)
             .RuleFor(o => o.Cnpj, f => f.Company.Cnpj())
             .RuleFor(o => o.Comments, f => f.Company.Bs());
     }
 
-    public static InsuranceCompanyUpdateDto GetFakeInsuranceCompanyUpdateDto(Guid id)
+    public static UpdateInsuranceCompanyCommand GetFakeInsuranceCompanyUpdateDto(Guid id)
     {
         var companyName = CompanyFaker.CompanyName();
 
-        var faker = new Faker<InsuranceCompanyUpdateDto>()
+        var faker = new Faker<UpdateInsuranceCompanyCommand>()
             .RuleFor(o => o.LegalName, f => companyName.LegalName)
             .RuleFor(o => o.TradeName, f => companyName.TradeName)
             .RuleFor(o => o.Cnpj, f => f.Company.Cnpj())

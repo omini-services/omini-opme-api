@@ -1,14 +1,15 @@
 using Bogus;
 using FluentAssertions.Extensions;
 using Omini.Opme.Be.Api.Dtos;
+using Omini.Opme.Business.Commands;
 
-namespace Omini.Opme.Be.Api.Tests;
+namespace Omini.Opme.Api.Tests;
 
 public static class ItemFaker
 {
-    public static Faker<ItemCreateDto> GetFakerItemCreateDto()
+    public static Faker<CreateItemCommand> GetFakerItemCreateDto()
     {
-        return new Faker<ItemCreateDto>()
+        return new Faker<CreateItemCommand>()
             .RuleFor(o => o.Code, f => f.Random.AlphaNumeric(8))
             .RuleFor(o => o.Name, f => f.Commerce.ProductName())
             .RuleFor(o => o.SalesName, f => f.Commerce.ProductMaterial())
@@ -22,9 +23,9 @@ public static class ItemFaker
             .RuleFor(o => o.NcmCode, f => f.Random.AlphaNumeric(10));
     }
 
-    public static Faker<ItemUpdateDto> GetFakerItemUpdateDto()
+    public static Faker<UpdateItemCommand> GetFakerItemUpdateDto()
     {
-        return new Faker<ItemUpdateDto>()
+        return new Faker<UpdateItemCommand>()
             .RuleFor(o => o.Code, f => f.Random.AlphaNumeric(8))
             .RuleFor(o => o.Name, f => f.Commerce.ProductName())
             .RuleFor(o => o.SalesName, f => f.Commerce.ProductMaterial())

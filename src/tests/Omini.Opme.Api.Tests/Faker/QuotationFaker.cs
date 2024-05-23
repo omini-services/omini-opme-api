@@ -1,16 +1,17 @@
 using Bogus;
-using Omini.Opme.Be.Api.Dtos;
 using FluentAssertions.Extensions;
+using Omini.Opme.Business.Commands;
+using Omini.Opme.Api.Dtos;
 
-namespace Omini.Opme.Be.Api.Tests;
+namespace Omini.Opme.Api.Tests;
 
 public static class QuotationFaker
 {
-    public static QuotationCreateDto GetFakeQuotationCreateDto(List<ResponseDto<ItemOutputDto>> itemOutputDtos)
+    public static CreateQuotationCommand GetFakeQuotationCreateDto(List<ResponseDto<ItemOutputDto>> itemOutputDtos)
     {
         var faker = new Faker();
 
-        var quotationCreateDto = new Faker<QuotationCreateDto>()
+        var quotationCreateDto = new Faker<CreateQuotationCommand>()
             .RuleFor(o => o.Number, f => f.Random.AlphaNumeric(5))
             .RuleFor(o => o.DueDate, f => f.Date.Future().AsUtc())
             .Generate();

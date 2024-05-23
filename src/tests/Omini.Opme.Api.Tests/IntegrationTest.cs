@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Omini.Opme.Be.Api.Tests.Authentication;
 using Omini.Opme.Be.Infrastructure.Contexts;
 
-namespace Omini.Opme.Be.Api.Tests;
+namespace Omini.Opme.Api.Tests;
 
 public abstract class IntegrationTest
 {

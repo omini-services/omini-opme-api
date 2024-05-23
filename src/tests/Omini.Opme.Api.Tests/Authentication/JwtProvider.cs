@@ -2,7 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Omini.Opme.Be.Api.Tests.Authentication;
+namespace Omini.Opme.Api.Tests.Authentication;
 
 public static class JwtTokenProvider
 {

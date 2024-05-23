@@ -1,5 +1,7 @@
 using Bogus;
-using Omini.Opme.Be.Domain;
+using Omini.Opme.Domain;
+
+namespace Omini.Opme.Api.Tests;
 
 public static class PersonNameFaker
 {

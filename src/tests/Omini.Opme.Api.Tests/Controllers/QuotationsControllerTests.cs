@@ -2,10 +2,10 @@ using Bogus;
 using FluentAssertions;
 using Flurl.Http;
 using Microsoft.AspNetCore.Http;
-using Omini.Opme.Be.Api.Dtos;
-using Omini.Opme.Be.Api.Tests.Extensions;
+using Omini.Opme.Api.Dtos;
+using Omini.Opme.Domain.Common;
 
-namespace Omini.Opme.Be.Api.Tests.Controllers;
+namespace Omini.Opme.Api.Tests.Controllers;
 
 public class QuotationsControllerTests : IntegrationTest
 {
@@ -29,7 +29,7 @@ public class QuotationsControllerTests : IntegrationTest
         quotationCreateDto.PhysicianId = physicianOutputDto.Data.Id;
         quotationCreateDto.InternalSpecialistId = Guid.NewGuid();
         quotationCreateDto.PatientId = patientOutputDto.Data.Id;
-        quotationCreateDto.PayingSourceType = Domain.Enums.PayingSourceType.Hospital;
+        quotationCreateDto.PayingSourceType = PayingSourceType.Hospital;
         quotationCreateDto.PayingSourceId = hospitalOutputDto.Data.Id;
 
         //act
