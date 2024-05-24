@@ -42,8 +42,11 @@ public abstract class IntegrationTest
                         };
                         options.TokenValidationParameters = new TokenValidationParameters()
                         {
+                            ClockSkew = TimeSpan.Zero,
                             ValidIssuer = JwtTokenProvider.Issuer,
-                            ValidAudience = JwtTokenProvider.Issuer
+                            ValidAudience = JwtTokenProvider.Issuer,
+                            ValidateLifetime = true,
+                            RequireExpirationTime = true,
                         };
                         options.Configuration.SigningKeys.Add(JwtTokenProvider.SecurityKey);
                     });

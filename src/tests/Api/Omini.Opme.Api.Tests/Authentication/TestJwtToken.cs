@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using FluentAssertions.Extensions;
 using Omini.Opme.Shared.Constants;
 
 namespace Omini.Opme.Api.Tests.Authentication;
@@ -45,7 +46,7 @@ public class TestJwtToken
             JwtTokenProvider.Issuer,
             JwtTokenProvider.Issuer,
             Claims,
-            expires: DateTime.Now.AddMinutes(ExpiresInMinutes),
+            expires: DateTime.UtcNow.AddMinutes(ExpiresInMinutes),
             signingCredentials: JwtTokenProvider.SigningCredentials
         );
         return JwtTokenProvider.JwtSecurityTokenHandler.WriteToken(token);

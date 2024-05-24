@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Reflection;
 using Omini.Opme.Domain.Sales;
 using Omini.Opme.Domain.Services;
@@ -15,12 +16,14 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
     private readonly string _imagesPath;
     private readonly string _pdfLogoFullPath;
     private readonly IDateTimeService _dateTimeService;
+    private readonly CultureInfo _culture;
 
     public QuotationPdfGenerator(IDateTimeService dateTimeService)
     {
         _basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
         _imagesPath = Path.Combine(_basePath, "Images");
         _pdfLogoFullPath = Path.Combine(_imagesPath, "pdf-logo.png");
+        _culture = new CultureInfo("pt-BR");
 
         _dateTimeService = dateTimeService;
     }
@@ -47,7 +50,7 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
 
     private void ComposeHeader(IContainer container, Quotation quotation)
     {
-        var dateNow = _dateTimeService.Now();
+        var dateNow = _dateTimeService.TimeZoneNow();
 
         container.ShowIf(ctx => ctx.PageNumber == 1).Column(col =>
         {
@@ -175,7 +178,7 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
                                         .ShowIf(ctx => ctx.PageNumber == ctx.TotalPages).Row(tr =>
                                         {
                                             tr.RelativeItem().Element(QuotationPdfStyles.ContentTableFooterStyle);
-                                            tr.AutoItem().Element(QuotationPdfStyles.ContentTableFooterTotalStyle).Text($"R$ {quotation.Total:N2}").Bold().FontSize(14).AlignRight();
+                                            tr.AutoItem().Element(QuotationPdfStyles.ContentTableFooterTotalStyle).Text($"R$ {quotation.Total.ToString("N2", _culture)}").Bold().FontSize(14).AlignRight();
                                         });
                                 });
                             });
@@ -223,13 +226,13 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
         column.Item().PaddingVertical(2).LineHorizontal(1).LineColor(Colors.Grey.Lighten3);
     }
 
-    private static void AddRow(TableDescriptor container, QuotationItem quotationItem)
+    private void AddRow(TableDescriptor container, QuotationItem quotationItem)
     {
-        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text(quotationItem.Quantity.ToString("F0"));
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text(quotationItem.Quantity.ToString("F0", _culture));
         container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).Text(quotationItem.ItemName);
         container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).Text(quotationItem.ReferenceCode);
         container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).Text(quotationItem.AnvisaCode);
-        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text($"R$ {quotationItem.UnitPrice:F2}");
-        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text($"R$ {quotationItem.LineTotal:F2}");
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text($"R$ {quotationItem.UnitPrice.ToString("N2", _culture)}");
+        container.Cell().Element(QuotationPdfStyles.ContentTableCellStyle).AlignRight().Text($"R$ {quotationItem.LineTotal.ToString("N2", _culture)}");
     }
 }

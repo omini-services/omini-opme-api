@@ -5,7 +5,7 @@ namespace Omini.Opme.Infrastructure.Services;
 internal class DateTimeService : IDateTimeService
 {
     const string BrazilianTimeZone = "Central Brazilian Standard Time";
-    public DateTime Now()
+    public DateTime TimeZoneNow()
     {
         var timeUtc = DateTime.UtcNow;
         TimeZoneInfo istZone = TimeZoneInfo.FindSystemTimeZoneById(BrazilianTimeZone);

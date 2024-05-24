@@ -15,14 +15,6 @@ public static class DependencyInjection
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), includeInternalTypes: true);
 
-        UseDefaultCulture();
-
         return services;
-    }
-
-    private static void UseDefaultCulture()
-    {
-        CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("pt-BR");
-        CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("pt-BR");
     }
 }
