@@ -3,8 +3,9 @@ using System.Text.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using Omini.Opme.Be.Domain.Repositories;
-using Omini.Opme.Be.Domain.Transactions;
+using Omini.Opme.Domain.Admin;
+using Omini.Opme.Domain.Repositories;
+using Omini.Opme.Domain.Transactions;
 
 namespace AuthenticationConnector
 {
@@ -24,13 +25,13 @@ namespace AuthenticationConnector
     public class BeforeSignUp
     {
         private readonly ILogger _logger;
-        private readonly IIdentityOpmeUserRepository _identityOpmeUserRepository;
+        private readonly IOpmeUserRepository _opmeUserRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public BeforeSignUp(ILoggerFactory loggerFactory, IIdentityOpmeUserRepository identityOpmeUserRepository, IUnitOfWork unitOfWork)
+        public BeforeSignUp(ILoggerFactory loggerFactory, IOpmeUserRepository opmeUserRepository, IUnitOfWork unitOfWork)
         {
             _logger = loggerFactory.CreateLogger<BeforeSignUp>();
-            _identityOpmeUserRepository = identityOpmeUserRepository;
+            _opmeUserRepository = opmeUserRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -47,7 +48,7 @@ namespace AuthenticationConnector
 
             _logger.LogInformation("Creating user mapping");
 
-            await _identityOpmeUserRepository.Create(new Omini.Opme.Be.Domain.Entities.IdentityOpmeUser()
+            await _opmeUserRepository.Create(new OpmeUser()
             {
                 Email = data.Email,
                 Id = new Guid()

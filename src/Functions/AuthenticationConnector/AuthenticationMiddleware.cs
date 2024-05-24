@@ -4,7 +4,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.Functions.Worker.Middleware;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Omini.Opme.Be.Shared;
+using Omini.Opme.Shared;
 
 namespace AuthenticationConnector;
 

@@ -1,0 +1,19 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Omini.Opme.Domain.Admin;
+
+namespace Omini.Opme.Infrastructure.Mappings;
+
+internal class IdentityOpmeUserMapping : IEntityTypeConfiguration<OpmeUser>
+{
+    public void Configure(EntityTypeBuilder<OpmeUser> builder)
+    {
+        builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Email)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.ToTable("OpmeUsers");
+    }
+}
