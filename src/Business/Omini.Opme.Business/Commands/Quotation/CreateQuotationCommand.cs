@@ -19,7 +19,7 @@ public record CreateQuotationCommand : ICommand<Quotation>
     public Guid InsuranceCompanyId { get; set; }
     public Guid InternalSpecialistId { get; set; }
     public DateTime DueDate { get; set; }
-    public List<CreateQuotationItemCommand> Items { get; set; } = new();
+    public List<CreateQuotationItems> Items { get; set; } = new();
 
     public class CreateQuotationItems
     {
