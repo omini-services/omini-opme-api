@@ -1,6 +1,7 @@
 using FluentValidation.Results;
 using Omini.Opme.Application.Abstractions.Messaging;
-using Omini.Opme.Domain.Services;
+using Omini.Opme.Domain.Repositories;
+using Omini.Opme.Domain.Transactions;
 using Omini.Opme.Domain.Warehouse;
 using Omini.Opme.Shared.Entities;
 
@@ -8,49 +9,54 @@ namespace Omini.Opme.Business.Commands;
 
 public record UpdateItemCommand : ICommand<Item>
 {
-    public Guid Id { get; init; }
-    public string Code { get; init; }
-    public string Name { get; init; }
-    public string SalesName { get; init; }
-    public string Description { get; init; }
-    public string Uom { get; init; }
-    public string AnvisaCode { get; init; }
-    public DateTime? AnvisaDueDate { get; init; }
-    public string SupplierCode { get; init; }
-    public string Cst { get; init; }
-    public string SusCode { get; init; }
-    public string NcmCode { get; init; }
+    public Guid Id { get; set; }
+    public string Code { get; set; }
+    public string Name { get; set; }
+    public string SalesName { get; set; }
+    public string Description { get; set; }
+    public string Uom { get; set; }
+    public string AnvisaCode { get; set; }
+    public DateTime? AnvisaDueDate { get; set; }
+    public string SupplierCode { get; set; }
+    public string Cst { get; set; }
+    public string SusCode { get; set; }
+    public string NcmCode { get; set; }
 
 
     public class UpdateItemCommandHandler : ICommandHandler<UpdateItemCommand, Item>
     {
-        private readonly IItemService _itemService;
-        public UpdateItemCommandHandler(IItemService itemService)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IItemRepository _itemRepository;
+        public UpdateItemCommandHandler(IUnitOfWork unitOfWork, IItemRepository itemRepository)
         {
-            _itemService = itemService;
+            _unitOfWork = unitOfWork;
+            _itemRepository = itemRepository;
         }
 
         public async Task<Result<Item, ValidationResult>> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
         {
-            var item = await _itemService.GetById(request.Id, cancellationToken);
+            var item = await _itemRepository.GetById(request.Id, cancellationToken);
             if (item is null)
             {
                 return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
-            item.AnvisaCode = request.AnvisaCode;
-            item.AnvisaDueDate = request.AnvisaDueDate;
-            item.Code = request.Code;
-            item.Cst = request.Cst;
-            item.Description = request.Description;
-            item.Name = request.Name;
-            item.NcmCode = request.NcmCode;
-            item.SalesName = request.SalesName;
-            item.SupplierCode = request.SupplierCode;
-            item.SusCode = request.SusCode;
-            item.Uom = request.Uom;
+            item.SetData(
+                code: request.Code,
+                name: request.Name,
+                salesName: request.SalesName,
+                description: request.Description,
+                uom: request.Uom,
+                anvisaCode: request.AnvisaCode,
+                anvisaDueDate: request.AnvisaDueDate,
+                supplierCode: request.SupplierCode,
+                cst: request.Cst,
+                susCode: request.SusCode,
+                ncmCode: request.NcmCode
+            );
 
-            await _itemService.Update(item, cancellationToken);
+            _itemRepository.Update(item, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return item;
         }

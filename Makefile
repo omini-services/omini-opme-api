@@ -1,13 +1,13 @@
 .DEFAULT_GOAL := help
 
 createmigration:
-	dotnet ef migrations add $(name) --project ./src/Omini.Opme.Be.Infrastructure/Omini.Opme.Be.Infrastructure.csproj --startup-project ./src/Omini.Opme.Be.Api
+	dotnet ef migrations add $(name) --project ./src/Core/Omini.Opme.Infrastructure/Omini.Opme.Infrastructure.csproj --startup-project ./src/Api/Omini.Opme.Api
 	
 migrate:
-	dotnet ef database update $(name) --project ./src/Omini.Opme.Be.Infrastructure/Omini.Opme.Be.Infrastructure.csproj --startup-project ./src/Omini.Opme.Be.Api
+	dotnet ef database update $(name) --project ./src/Core/Omini.Opme.Infrastructure/Omini.Opme.Infrastructure.csproj --startup-project ./src/Api/Omini.Opme.Api
 
 build:
-	dotnet build ./src/Omini.Opme.Be.sln
+	dotnet build ./src/Omini.Opme.sln
 
 run:
 	go run -ldflags="-X 'main.version=v1.0.0' -X 'main.build=$(shell date +'%Y-%m-%d %H:%M:%S')'" cmd/main.go

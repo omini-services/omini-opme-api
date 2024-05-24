@@ -8,6 +8,7 @@ public class QuotationMapperProfile : Profile
 {
     public QuotationMapperProfile()
     {
+        CreateMap<Quotation, QuotationOutputDto>();
         CreateMap<QuotationItem, QuotationOutputDto.QuotationOutputItemDto>();
     }
 }

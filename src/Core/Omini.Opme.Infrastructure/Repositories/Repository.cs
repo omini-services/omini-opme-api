@@ -6,7 +6,7 @@ using Omini.Opme.Infrastructure.Contexts;
 
 namespace Omini.Opme.Infrastructure;
 
-internal abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity, new()
+internal abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
 {
     protected readonly OpmeContext Db;
     protected readonly DbSet<TEntity> DbSet;
@@ -42,9 +42,9 @@ internal abstract class Repository<TEntity> : IRepository<TEntity> where TEntity
         DbSet.Update(entity);
     }
 
-    public virtual void Delete(Guid id, CancellationToken cancellationToken = default)
+    public virtual void Delete(TEntity entity, CancellationToken cancellationToken = default)
     {
-        DbSet.Remove(new TEntity { Id = id });
+        DbSet.Remove(entity);
     }
 
     public void Dispose()

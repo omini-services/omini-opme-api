@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Omini.Opme.Domain.Entities;
 using Omini.Opme.Domain.Exceptions;
-using Omini.Opme.Shared.Interfaces;
+using Omini.Opme.Shared.Services.Security;
 
 namespace Omini.Opme.Infrastructure.Interceptors;
 
@@ -28,7 +28,6 @@ public sealed class AuditableInterceptor : SaveChangesInterceptor
 
         UpdateAdded(eventData);
         UpdateModified(eventData);
-        UpdateDeleted(eventData);
 
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
@@ -74,28 +73,6 @@ public sealed class AuditableInterceptor : SaveChangesInterceptor
         {
             auditable.Entity.UpdatedBy = opmeUserId.Value;
             auditable.Entity.UpdatedOn = DateTime.UtcNow;
-        }
-    }
-
-    private void UpdateDeleted(DbContextEventData eventData)
-    {
-        var opmeUserId = _claimsService.OpmeUserId;
-        if (opmeUserId is null)
-        {
-            throw new InvalidUserException();
-        }
-
-        IEnumerable<EntityEntry<AuditableDeletable>> auditables =
-                    eventData
-                        .Context
-                        .ChangeTracker
-                        .Entries<AuditableDeletable>()
-                        .Where(e => e.State == EntityState.Deleted);
-
-        foreach (EntityEntry<AuditableDeletable> auditable in auditables)
-        {
-            auditable.Entity.DeletedBy = opmeUserId.Value;
-            auditable.Entity.DeletedOn = DateTime.UtcNow;
         }
     }
 }

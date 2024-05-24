@@ -1,7 +1,8 @@
 using FluentValidation.Results;
 using Omini.Opme.Application.Abstractions.Messaging;
 using Omini.Opme.Domain.BusinessPartners;
-using Omini.Opme.Domain.Services;
+using Omini.Opme.Domain.Repositories;
+using Omini.Opme.Domain.Transactions;
 using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Business.Commands;
@@ -12,22 +13,25 @@ public record DeletePatientCommand : ICommand<Patient>
 
     public class DeletePatientCommandHandler : ICommandHandler<DeletePatientCommand, Patient>
     {
-        private readonly IPatientService _patientService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IPatientRepository _patientRepository;
 
-        public DeletePatientCommandHandler(IPatientService patientService)
+        public DeletePatientCommandHandler(IUnitOfWork unitOfWork, IPatientRepository patientRepository)
         {
-            _patientService = patientService;
+            _unitOfWork = unitOfWork;
+            _patientRepository = patientRepository;
         }
 
         public async Task<Result<Patient, ValidationResult>> Handle(DeletePatientCommand request, CancellationToken cancellationToken)
         {
-            var patient = await _patientService.GetById(request.Id, cancellationToken);
+            var patient = await _patientRepository.GetById(request.Id, cancellationToken);
             if (patient is null)
             {
                 return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
-            await _patientService.Delete(patient.Id, cancellationToken);
+            _patientRepository.Delete(patient, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return patient;
         }

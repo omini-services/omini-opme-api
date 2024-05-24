@@ -2,7 +2,8 @@ using FluentValidation.Results;
 using Omini.Opme.Application.Abstractions.Messaging;
 using Omini.Opme.Domain;
 using Omini.Opme.Domain.BusinessPartners;
-using Omini.Opme.Domain.Services;
+using Omini.Opme.Domain.Repositories;
+using Omini.Opme.Domain.Transactions;
 using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Business.Commands;
@@ -16,21 +17,24 @@ public record CreateInsuranceCompanyCommand : ICommand<InsuranceCompany>
 
     public class CreateInsuranceCompanyCommandHandler : ICommandHandler<CreateInsuranceCompanyCommand, InsuranceCompany>
     {
-        private readonly IInsuranceCompanyService _insuranceCompanyService;
-        public CreateInsuranceCompanyCommandHandler(IInsuranceCompanyService insuranceCompanyService)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IInsuranceCompanyRepository _insuranceCompanyRepository;
+        public CreateInsuranceCompanyCommandHandler(IUnitOfWork unitOfWork, IInsuranceCompanyRepository insuranceCompanyRepository)
         {
-            _insuranceCompanyService = insuranceCompanyService;
+            _unitOfWork = unitOfWork;
+            _insuranceCompanyRepository = insuranceCompanyRepository;
         }
 
         public async Task<Result<InsuranceCompany, ValidationResult>> Handle(CreateInsuranceCompanyCommand request, CancellationToken cancellationToken)
         {
-            var insuranceCompany = new InsuranceCompany()
-            {
-                Name = new CompanyName(request.LegalName, request.TradeName),
-                Comments = request.Comments
-            }.WithCnpj(request.Cnpj);
+            var insuranceCompany = new InsuranceCompany(
+                name: new CompanyName(request.LegalName, request.TradeName),
+                cnpj: request.Cnpj,
+                comments: request.Comments
+            );
 
-            await _insuranceCompanyService.Add(insuranceCompany, cancellationToken);
+            await _insuranceCompanyRepository.Add(insuranceCompany, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return insuranceCompany;
         }

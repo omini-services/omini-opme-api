@@ -1,6 +1,7 @@
 using FluentValidation.Results;
 using Omini.Opme.Application.Abstractions.Messaging;
-using Omini.Opme.Domain.Services;
+using Omini.Opme.Domain.Repositories;
+using Omini.Opme.Domain.Transactions;
 using Omini.Opme.Domain.Warehouse;
 using Omini.Opme.Shared.Entities;
 
@@ -21,12 +22,14 @@ public record CreateItemCommand : ICommand<Item>
 
     public class CreateItemCommandHandler : ICommandHandler<CreateItemCommand, Item>
     {
+        private readonly IUnitOfWork _unitOfWork;
         // private readonly IValidator<CreateItemCommand> _validator;
-        private readonly IItemService _itemService;
-        public CreateItemCommandHandler(IItemService itemService)
+        private readonly IItemRepository _itemRepository;
+        public CreateItemCommandHandler(IUnitOfWork unitOfWork, IItemRepository itemRepository)
         {
             //_validator = validator;
-            _itemService = itemService;
+            _unitOfWork = unitOfWork;
+            _itemRepository = itemRepository;
         }
 
         public async Task<Result<Item, ValidationResult>> Handle(CreateItemCommand request, CancellationToken cancellationToken)
@@ -37,23 +40,22 @@ public record CreateItemCommand : ICommand<Item>
             //    return new ValidationException(validationResult.Errors);
             //}
 
-            var item = new Item()
-            {
-                AnvisaCode = request.AnvisaCode,
-                AnvisaDueDate = request.AnvisaDueDate,
-                Code = request.Code,
-                Cst = request.Cst,
-                Description = request.Description,
-                Id = Guid.NewGuid(),
-                Name = request.Name,
-                NcmCode = request.NcmCode,
-                SalesName = request.SalesName,
-                SupplierCode = request.SupplierCode,
-                SusCode = request.SusCode,
-                Uom = request.Uom
-            };
+            var item = new Item(
+                anvisaCode: request.AnvisaCode,
+                anvisaDueDate: request.AnvisaDueDate,
+                code: request.Code,
+                cst: request.Cst,
+                description: request.Description,
+                name: request.Name,
+                ncmCode: request.NcmCode,
+                salesName: request.SalesName,
+                supplierCode: request.SupplierCode,
+                susCode: request.SusCode,
+                uom: request.Uom
+            );
 
-            await _itemService.Add(item, cancellationToken);
+            await _itemRepository.Add(item, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return item;
         }

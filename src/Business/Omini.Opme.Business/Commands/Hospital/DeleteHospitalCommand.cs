@@ -1,7 +1,8 @@
 using FluentValidation.Results;
 using Omini.Opme.Application.Abstractions.Messaging;
 using Omini.Opme.Domain.BusinessPartners;
-using Omini.Opme.Domain.Services;
+using Omini.Opme.Domain.Repositories;
+using Omini.Opme.Domain.Transactions;
 using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Business.Commands;
@@ -12,22 +13,25 @@ public record DeleteHospitalCommand : ICommand<Hospital>
 
     public class DeleteHospitalCommandHandler : ICommandHandler<DeleteHospitalCommand, Hospital>
     {
-        private readonly IHospitalService _hospitalService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IHospitalRepository _hospitalRepository;
 
-        public DeleteHospitalCommandHandler(IHospitalService hospitalService)
+        public DeleteHospitalCommandHandler(IUnitOfWork unitOfWork, IHospitalRepository hospitalRepository)
         {
-            _hospitalService = hospitalService;
+            _unitOfWork = unitOfWork;
+            _hospitalRepository = hospitalRepository;
         }
 
         public async Task<Result<Hospital, ValidationResult>> Handle(DeleteHospitalCommand request, CancellationToken cancellationToken)
         {
-            var hospital = await _hospitalService.GetById(request.Id, cancellationToken);
+            var hospital = await _hospitalRepository.GetById(request.Id, cancellationToken);
             if (hospital is null)
             {
                 return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
-            await _hospitalService.Delete(hospital.Id, cancellationToken);
+            _hospitalRepository.Delete(hospital, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return hospital;
         }

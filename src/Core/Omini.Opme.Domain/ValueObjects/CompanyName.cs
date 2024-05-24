@@ -9,8 +9,8 @@ public class CompanyName : ValueObject
         TradeName = tradeName;
     }
 
-    public string LegalName { get; init; }
-    public string TradeName { get; init; }
+    public string LegalName { get; set; }
+    public string TradeName { get; set; }
 
     public override IEnumerable<object> GetAtomicValues()
     {

@@ -1,8 +1,9 @@
 using FluentValidation.Results;
 using Omini.Opme.Application.Abstractions.Messaging;
 using Omini.Opme.Domain.Sales;
-using Omini.Opme.Domain.Services;
 using Omini.Opme.Shared.Entities;
+using Omini.Opme.Domain.Repositories;
+using Omini.Opme.Domain.Transactions;
 
 namespace Omini.Opme.Business.Commands;
 
@@ -13,17 +14,19 @@ public record DeleteQuotationItemCommand : ICommand<Quotation>
 
     public class DeleteQuotationItemCommandHandler : ICommandHandler<DeleteQuotationItemCommand, Quotation>
     {
-        private readonly IQuotationService _quotationService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IQuotationRepository _quotationRepository;
 
-        public DeleteQuotationItemCommandHandler(IQuotationService quotationService)
+        public DeleteQuotationItemCommandHandler(IUnitOfWork unitOfWork, IQuotationRepository quotationRepository)
         {
-            _quotationService = quotationService;
+            _unitOfWork = unitOfWork;
+            _quotationRepository = quotationRepository;
         }
 
         public async Task<Result<Quotation, ValidationResult>> Handle(DeleteQuotationItemCommand request, CancellationToken cancellationToken)
         {
             var validationFailures = new List<ValidationFailure>();
-            var quotation = await _quotationService.GetById(request.QuotationId, cancellationToken);
+            var quotation = await _quotationRepository.GetById(request.QuotationId, cancellationToken);
             if (quotation is null)
             {
                 validationFailures.Add(new ValidationFailure(nameof(request.QuotationId), "Invalid Id"));
@@ -42,7 +45,8 @@ public record DeleteQuotationItemCommand : ICommand<Quotation>
 
             quotation.RemoveItem(quotationItem!);
 
-            await _quotationService.Update(quotation, cancellationToken);
+            _quotationRepository.Update(quotation, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return quotation;
         }

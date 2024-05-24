@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Omini.Opme.Api.Configuration;
 using Omini.Opme.Api.Middlewares;
-using Omini.Opme.Api.Security;
 using Omini.Opme.Middlewares;
-using Omini.Opme.Shared.Interfaces;
 using Omini.Opme.Business;
 using Omini.Opme.Infrastructure;
+using Omini.Opme.Api.Services.Security;
+using Omini.Opme.Shared.Services.Security;
 
 internal class Startup
 {
@@ -33,10 +33,13 @@ internal class Startup
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
 
-        services.AddScoped<IClaimsService, ClaimsService>();
+        services.AddSingleton<IClaimsService, ClaimsService>();
+
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+
         services.AddAuthenticationConfiguration(Configuration);
+
         services.AddInfrastructure(Configuration);
 
         services.AddApplication();

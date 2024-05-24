@@ -3,7 +3,7 @@ using System.Text.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using Omini.Opme.Be.Domain.Repositories;
+using Omini.Opme.Domain.Repositories;
 
 namespace AuthenticationConnector
 {
@@ -16,12 +16,12 @@ namespace AuthenticationConnector
     public class EnrichToken
     {
         private readonly ILogger _logger;
-        private readonly IIdentityOpmeUserRepository _identityOpmeUserRepository;
+        private readonly IOpmeUserRepository _opmeUserRepository;
 
-        public EnrichToken(ILoggerFactory loggerFactory, IIdentityOpmeUserRepository identityOpmeUserRepository)
+        public EnrichToken(ILoggerFactory loggerFactory, IOpmeUserRepository opmeUserRepository)
         {
             _logger = loggerFactory.CreateLogger<BeforeSignUp>();
-            _identityOpmeUserRepository = identityOpmeUserRepository;
+            _opmeUserRepository = opmeUserRepository;
         }
 
         [Function("EnrichToken")]
@@ -37,7 +37,7 @@ namespace AuthenticationConnector
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 });
 
-            var opmeUser = await _identityOpmeUserRepository.FindByEmail(data.Email);
+            var opmeUser = await _opmeUserRepository.FindByEmail(data.Email);
 
             HttpResponseData response;
 

@@ -5,9 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Domain.Services;
+using Omini.Opme.Domain.Services.Pdf;
 using Omini.Opme.Domain.Transactions;
 using Omini.Opme.Infrastructure.Contexts;
-using Omini.Opme.Infrastructure.PdfGenerator.QuestPdf;
+using Omini.Opme.Infrastructure.Interceptors;
+using Omini.Opme.Infrastructure.Pdf.QuestPdf;
 using Omini.Opme.Infrastructure.Repositories;
 using Omini.Opme.Infrastructure.Services;
 using Omini.Opme.Infrastructure.Transaction;
@@ -19,22 +21,34 @@ public static class DependecyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<OpmeContext>(opt => opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+        services.AddSingleton<EntityInterceptor>();
+        services.AddSingleton<AuditableInterceptor>();
+        services.AddSingleton<SoftDeletableInterceptor>();
 
-        services.AddTransient<IDateTimeService, DateTimeService>();
+        services.AddDbContext<OpmeContext>((sp, opt) => 
+        {
+            opt.AddInterceptors(
+                sp.GetRequiredService<EntityInterceptor>(),
+                sp.GetRequiredService<AuditableInterceptor>(),
+                sp.GetRequiredService<SoftDeletableInterceptor>()
+            );
+            opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+        });
 
-        services.AddTransient<IOpmeUserRepository, OpmeUserRepository>();
+        services.AddScoped<IDateTimeService, DateTimeService>();
 
-        services.AddTransient<IHospitalRepository, HospitalRepository>();
-        services.AddTransient<IItemRepository, ItemRepository>();
-        services.AddTransient<IInsuranceCompanyRepository, InsuranceCompanyRepository>();
-        services.AddTransient<IPatientRepository, PatientRepository>();
-        services.AddTransient<IPhysicianRepository, PhysicianRepository>();
-        services.AddTransient<IQuotationRepository, QuotationRepository>();
+        services.AddScoped<IOpmeUserRepository, OpmeUserRepository>();
 
-        services.AddTransient<IQuotationPdfGenerator, QuotationPdfGenerator>();
+        services.AddScoped<IHospitalRepository, HospitalRepository>();
+        services.AddScoped<IItemRepository, ItemRepository>();
+        services.AddScoped<IInsuranceCompanyRepository, InsuranceCompanyRepository>();
+        services.AddScoped<IPatientRepository, PatientRepository>();
+        services.AddScoped<IPhysicianRepository, PhysicianRepository>();
+        services.AddScoped<IQuotationRepository, QuotationRepository>();
 
-        services.AddTransient<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IQuotationPdfGenerator, QuotationPdfGenerator>();
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }

@@ -1,9 +1,9 @@
 using System.Security.Claims;
-using DI.Shared.Constants;
 using Microsoft.Extensions.Options;
-using Omini.Opme.Be.Shared;
-using Omini.Opme.Be.Shared.Extensions;
-using Omini.Opme.Be.Shared.Interfaces;
+using Omini.Opme.Shared.Extensions;
+using Omini.Opme.Shared;
+using Omini.Opme.Shared.Services.Security;
+using Omini.Opme.Shared.Constants;
 
 namespace BeforeSignUp;
 

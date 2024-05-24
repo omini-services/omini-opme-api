@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Omini.Opme.Be.Infrastructure;
 using Omini.Opme.Domain.Common;
 using Omini.Opme.Domain.Exceptions;
 using Omini.Opme.Domain.Repositories;

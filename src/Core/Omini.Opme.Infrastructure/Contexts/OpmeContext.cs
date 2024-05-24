@@ -1,24 +1,17 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Omini.Opme.Infrastructure.Extensions;
-using Omini.Opme.Shared.Interfaces;
 using Omini.Opme.Domain.Admin;
 using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Domain.Sales;
 using Omini.Opme.Domain.Warehouse;
-using Omini.Opme.Domain.Exceptions;
-using Omini.Opme.Domain.Entities;
+using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Contexts;
 
 internal sealed class OpmeContext : DbContext
 {
-    private readonly IClaimsService _claimsProvider;
-
-    public OpmeContext(DbContextOptions<OpmeContext> options, IClaimsService claimsProvider)
+    public OpmeContext(DbContextOptions<OpmeContext> options)
         : base(options)
     {
-        _claimsProvider = claimsProvider;
     }
     public DbSet<OpmeUser> OpmeUsers { get; set; }
     public DbSet<Item> Items { get; set; }
@@ -51,31 +44,7 @@ internal sealed class OpmeContext : DbContext
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var opmeUserId = _claimsProvider.OpmeUserId;
-
-        if (opmeUserId is null)
-        {
-            throw new InvalidUserException();
-        }
-
-        foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().BaseType == typeof(Auditable)))
-        {
-            SetAuditable(opmeUserId.Value, entry);
-        }
-
         return await base.SaveChangesAsync(cancellationToken);
-    }
-
-    private static void SetAuditable(Guid userId, EntityEntry entry)
-    {
-        if (entry.State == EntityState.Added)
-        {
-            entry.Property(nameof(Auditable.CreatedBy)).CurrentValue = userId;
-            entry.Property(nameof(Auditable.CreatedOn)).CurrentValue = DateTime.UtcNow;
-        }
-
-        entry.Property(nameof(Auditable.UpdatedBy)).CurrentValue = userId;
-        entry.Property(nameof(Auditable.UpdatedOn)).CurrentValue = DateTime.UtcNow;
     }
 }
 // private void UpdateCompanyId(EntityEntry entry)

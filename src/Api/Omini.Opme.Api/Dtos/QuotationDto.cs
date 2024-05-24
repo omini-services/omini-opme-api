@@ -16,7 +16,7 @@ public sealed record QuotationOutputDto
     public Guid InternalSpecialistId { get; set; }
     public DateTime DueDate { get; set; }
     public List<QuotationOutputItemDto> Items { get; set; }
-    public double Total { get; set; }
+    public decimal Total { get; set; }
 
     public sealed record QuotationOutputItemDto
     {
@@ -26,8 +26,8 @@ public sealed record QuotationOutputDto
         public string ItemName { get; set; }
         public string AnvisaCode { get; set; }
         public DateTime AnvisaDueDate { get; set; }
-        public double UnitPrice { get; set; }
-        public double ItemTotal { get; set; }
-        public double Quantity { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal ItemTotal { get; set; }
+        public decimal Quantity { get; set; }
     }
 }

@@ -3,9 +3,9 @@ using BeforeSignUp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Omini.Opme.Be.Infrastructure;
-using Omini.Opme.Be.Shared;
-using Omini.Opme.Be.Shared.Interfaces;
+using Omini.Opme.Shared;
+using Omini.Opme.Shared.Services.Security;
+using Omini.Opme.Infrastructure;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults((worker) =>

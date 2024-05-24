@@ -2,17 +2,18 @@ using FluentValidation.Results;
 using Omini.Opme.Application.Abstractions.Messaging;
 using Omini.Opme.Domain;
 using Omini.Opme.Domain.BusinessPartners;
-using Omini.Opme.Domain.Services;
+using Omini.Opme.Domain.Repositories;
+using Omini.Opme.Domain.Transactions;
 using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Business.Commands;
 
 public record UpdatePhysicianCommand : ICommand<Physician>
 {
-    public Guid Id { get; init; }
-    public string FirstName { get; init; }
+    public Guid Id { get; set; }
+    public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string? MiddleName { get; init; }
+    public string? MiddleName { get; set; }
     public string Cro { get; set; }
     public string Crm { get; set; }
     public string Comments { get; set; }
@@ -20,26 +21,30 @@ public record UpdatePhysicianCommand : ICommand<Physician>
 
     public class UpdatePhysicianCommandHandler : ICommandHandler<UpdatePhysicianCommand, Physician>
     {
-        private readonly IPhysicianService _physicianService;
-        public UpdatePhysicianCommandHandler(IPhysicianService physicianService)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IPhysicianRepository _physicianRepository;
+        public UpdatePhysicianCommandHandler(IUnitOfWork unitOfWork, IPhysicianRepository physicianRepository)
         {
-            _physicianService = physicianService;
+            _unitOfWork = unitOfWork;
+            _physicianRepository = physicianRepository;
         }
 
         public async Task<Result<Physician, ValidationResult>> Handle(UpdatePhysicianCommand request, CancellationToken cancellationToken)
         {
-            var physician = await _physicianService.GetById(request.Id, cancellationToken);
+            var physician = await _physicianRepository.GetById(request.Id, cancellationToken);
             if (physician is null)
             {
                 return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
             }
 
-            physician.Cro = request.Cro;
-            physician.Crm = request.Crm;
-            physician.Name = new PersonName(request.FirstName, request.LastName, request.MiddleName);
-            physician.Comments = request.Comments;
+            physician.SetData(name: new PersonName(request.FirstName, request.LastName, request.MiddleName),
+                cro: request.Cro,
+                crm: request.Crm,
+                comments: request.Comments    
+            );
 
-            await _physicianService.Update(physician, cancellationToken);
+            _physicianRepository.Update(physician, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return physician;
         }

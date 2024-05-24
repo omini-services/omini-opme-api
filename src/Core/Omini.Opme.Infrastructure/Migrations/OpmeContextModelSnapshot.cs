@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Omini.Opme.Be.Infrastructure.Contexts;
+using Omini.Opme.Infrastructure.Contexts;
 
 #nullable disable
 
-namespace Omini.Opme.Be.Infrastructure.Migrations
+namespace Omini.Opme.Infrastructure.Migrations
 {
     [DbContext(typeof(OpmeContext))]
     partial class OpmeContextModelSnapshot : ModelSnapshot
@@ -22,49 +22,30 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.Hospital", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.Admin.InternalSpecialist", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Cnpj")
-                        .IsRequired()
-                        .HasMaxLength(18)
-                        .HasColumnType("character varying(18)");
-
-                    b.Property<string>("Comments")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("DeletedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastModified")
+                    b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Hospitals", (string)null);
+                    b.ToTable("InternalSpecialists", (string)null);
                 });
 
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.IdentityOpmeUser", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.Admin.OpmeUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -73,14 +54,14 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeletedAt")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("DeletedBy")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -90,18 +71,18 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("LastModifiedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityOpmeUsers", (string)null);
+                    b.ToTable("OpmeUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.InsuranceCompany", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Hospital", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -120,140 +101,54 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("DeletedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastModified")
+                    b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("LastModifiedBy")
+                    b.HasKey("Id");
+
+                    b.ToTable("Hospitals", (string)null);
+                });
+
+            modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.InsuranceCompany", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Cnpj")
+                        .IsRequired()
+                        .HasMaxLength(18)
+                        .HasColumnType("character varying(18)");
+
+                    b.Property<string>("Comments")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
                     b.ToTable("InsuranceCompanies", (string)null);
                 });
 
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.InternalSpecialist", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("DeletedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("InternalSpecialists", (string)null);
-                });
-
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.Item", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("AnvisaCode")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("AnvisaDueDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Cst")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("DeletedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("NcmCode")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("SalesName")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("SupplierCode")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("SusCode")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Uom")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Items", (string)null);
-                });
-
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.Patient", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Patient", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -272,30 +167,21 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("DeletedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastModified")
+                    b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.ToTable("Patients", (string)null);
                 });
 
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.Physician", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Physician", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -309,7 +195,7 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Crm")
@@ -322,27 +208,18 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("DeletedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastModified")
+                    b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.ToTable("Physicians", (string)null);
                 });
 
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.Quotation", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.Sales.Quotation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -351,14 +228,14 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeletedAt")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("DeletedBy")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("timestamp with time zone");
@@ -371,12 +248,6 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uuid");
 
                     b.Property<string>("Number")
                         .IsRequired()
@@ -396,8 +267,14 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     b.Property<Guid>("PhysicianId")
                         .HasColumnType("uuid");
 
-                    b.Property<double>("Total")
-                        .HasColumnType("double precision");
+                    b.Property<decimal>("Total")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -412,7 +289,7 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     b.ToTable("Quotations", (string)null);
                 });
 
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.QuotationItem", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.Sales.QuotationItem", b =>
                 {
                     b.Property<Guid>("QuotationId")
                         .HasColumnType("uuid");
@@ -441,22 +318,22 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<double>("ItemTotal")
-                        .HasColumnType("double precision");
-
-                    b.Property<int?>("LineOrder")
+                    b.Property<int>("LineOrder")
                         .HasColumnType("integer");
 
-                    b.Property<double>("Quantity")
-                        .HasColumnType("double precision");
+                    b.Property<decimal>("LineTotal")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("ReferenceCode")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<double>("UnitPrice")
-                        .HasColumnType("double precision");
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric");
 
                     b.HasKey("QuotationId", "LineId");
 
@@ -465,71 +342,78 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     b.ToTable("QuotationItems", (string)null);
                 });
 
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.Hospital", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.Warehouse.Item", b =>
                 {
-                    b.OwnsOne("Omini.Opme.Be.Domain.CompanyName", "Name", b1 =>
-                        {
-                            b1.Property<Guid>("HospitalId")
-                                .HasColumnType("uuid");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
-                            b1.Property<string>("LegalName")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)")
-                                .HasColumnName("LegalName");
+                    b.Property<string>("AnvisaCode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
-                            b1.Property<string>("TradeName")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)")
-                                .HasColumnName("TradeName");
+                    b.Property<DateTime?>("AnvisaDueDate")
+                        .HasColumnType("timestamp with time zone");
 
-                            b1.HasKey("HospitalId");
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
-                            b1.ToTable("Hospitals");
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
 
-                            b1.WithOwner()
-                                .HasForeignKey("HospitalId");
-                        });
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Navigation("Name")
-                        .IsRequired();
+                    b.Property<string>("Cst")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("NcmCode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("SalesName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("SupplierCode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("SusCode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Uom")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Items", (string)null);
                 });
 
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.InsuranceCompany", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.Admin.InternalSpecialist", b =>
                 {
-                    b.OwnsOne("Omini.Opme.Be.Domain.CompanyName", "Name", b1 =>
-                        {
-                            b1.Property<Guid>("InsuranceCompanyId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<string>("LegalName")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)")
-                                .HasColumnName("LegalName");
-
-                            b1.Property<string>("TradeName")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)")
-                                .HasColumnName("TradeName");
-
-                            b1.HasKey("InsuranceCompanyId");
-
-                            b1.ToTable("InsuranceCompanies");
-
-                            b1.WithOwner()
-                                .HasForeignKey("InsuranceCompanyId");
-                        });
-
-                    b.Navigation("Name")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.InternalSpecialist", b =>
-                {
-                    b.OwnsOne("Omini.Opme.Be.Domain.PersonName", "Name", b1 =>
+                    b.OwnsOne("Omini.Opme.Domain.PersonName", "Name", b1 =>
                         {
                             b1.Property<Guid>("InternalSpecialistId")
                                 .HasColumnType("uuid");
@@ -563,9 +447,71 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.Patient", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Hospital", b =>
                 {
-                    b.OwnsOne("Omini.Opme.Be.Domain.PersonName", "Name", b1 =>
+                    b.OwnsOne("Omini.Opme.Domain.CompanyName", "Name", b1 =>
+                        {
+                            b1.Property<Guid>("HospitalId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("LegalName")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("LegalName");
+
+                            b1.Property<string>("TradeName")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("TradeName");
+
+                            b1.HasKey("HospitalId");
+
+                            b1.ToTable("Hospitals");
+
+                            b1.WithOwner()
+                                .HasForeignKey("HospitalId");
+                        });
+
+                    b.Navigation("Name")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.InsuranceCompany", b =>
+                {
+                    b.OwnsOne("Omini.Opme.Domain.CompanyName", "Name", b1 =>
+                        {
+                            b1.Property<Guid>("InsuranceCompanyId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("LegalName")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("LegalName");
+
+                            b1.Property<string>("TradeName")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("TradeName");
+
+                            b1.HasKey("InsuranceCompanyId");
+
+                            b1.ToTable("InsuranceCompanies");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InsuranceCompanyId");
+                        });
+
+                    b.Navigation("Name")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Patient", b =>
+                {
+                    b.OwnsOne("Omini.Opme.Domain.PersonName", "Name", b1 =>
                         {
                             b1.Property<Guid>("PatientId")
                                 .HasColumnType("uuid");
@@ -599,9 +545,9 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.Physician", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Physician", b =>
                 {
-                    b.OwnsOne("Omini.Opme.Be.Domain.PersonName", "Name", b1 =>
+                    b.OwnsOne("Omini.Opme.Domain.PersonName", "Name", b1 =>
                         {
                             b1.Property<Guid>("PhysicianId")
                                 .HasColumnType("uuid");
@@ -635,27 +581,27 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.Quotation", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.Sales.Quotation", b =>
                 {
-                    b.HasOne("Omini.Opme.Be.Domain.Entities.Hospital", "Hospital")
+                    b.HasOne("Omini.Opme.Domain.BusinessPartners.Hospital", "Hospital")
                         .WithMany()
                         .HasForeignKey("HospitalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Omini.Opme.Be.Domain.Entities.InsuranceCompany", "InsuranceCompany")
+                    b.HasOne("Omini.Opme.Domain.BusinessPartners.InsuranceCompany", "InsuranceCompany")
                         .WithMany()
                         .HasForeignKey("InsuranceCompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Omini.Opme.Be.Domain.Entities.Patient", "Patient")
+                    b.HasOne("Omini.Opme.Domain.BusinessPartners.Patient", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Omini.Opme.Be.Domain.Entities.Physician", "Physician")
+                    b.HasOne("Omini.Opme.Domain.BusinessPartners.Physician", "Physician")
                         .WithMany()
                         .HasForeignKey("PhysicianId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -670,22 +616,22 @@ namespace Omini.Opme.Be.Infrastructure.Migrations
                     b.Navigation("Physician");
                 });
 
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.QuotationItem", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.Sales.QuotationItem", b =>
                 {
-                    b.HasOne("Omini.Opme.Be.Domain.Entities.Item", null)
+                    b.HasOne("Omini.Opme.Domain.Warehouse.Item", null)
                         .WithMany()
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Omini.Opme.Be.Domain.Entities.Quotation", null)
+                    b.HasOne("Omini.Opme.Domain.Sales.Quotation", null)
                         .WithMany("Items")
                         .HasForeignKey("QuotationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Omini.Opme.Be.Domain.Entities.Quotation", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.Sales.Quotation", b =>
                 {
                     b.Navigation("Items");
                 });

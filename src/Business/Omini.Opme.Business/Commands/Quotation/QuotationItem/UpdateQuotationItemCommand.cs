@@ -1,8 +1,9 @@
 using FluentValidation.Results;
 using Omini.Opme.Application.Abstractions.Messaging;
 using Omini.Opme.Domain.Sales;
-using Omini.Opme.Domain.Services;
 using Omini.Opme.Shared.Entities;
+using Omini.Opme.Domain.Repositories;
+using Omini.Opme.Domain.Transactions;
 
 namespace Omini.Opme.Business.Commands;
 
@@ -12,26 +13,28 @@ public record UpdateQuotationItemCommand : ICommand<Quotation>
     public int LineId { get; set; }
     public int? LineOrder { get; set; }
     public string ItemCode { get; set; }
-    public double UnitPrice { get; set; }
-    public double ItemTotal { get; set; }
-    public double Quantity { get; set; }
+    public decimal UnitPrice { get; set; }
+    public decimal Quantity { get; set; }
 
     public class UpdateQuotationCommandHandler : ICommandHandler<UpdateQuotationItemCommand, Quotation>
     {
-        private readonly IItemService _itemService;
-        private readonly IQuotationService _quotationService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IItemRepository _itemRepository;
+        private readonly IQuotationRepository _quotationRepository;
 
-        public UpdateQuotationCommandHandler(IItemService itemService,
-                                             IQuotationService quotationService)
+        public UpdateQuotationCommandHandler(IUnitOfWork unitOfWork,
+                                             IItemRepository itemRepository,
+                                             IQuotationRepository quotationRepository)
         {
-            _itemService = itemService;
-            _quotationService = quotationService;
+            _unitOfWork = unitOfWork;
+            _itemRepository = itemRepository;
+            _quotationRepository = quotationRepository;
         }
 
         public async Task<Result<Quotation, ValidationResult>> Handle(UpdateQuotationItemCommand request, CancellationToken cancellationToken)
         {
             var validationFailures = new List<ValidationFailure>();
-            var quotation = await _quotationService.GetById(request.QuotationId, cancellationToken);
+            var quotation = await _quotationRepository.GetById(request.QuotationId, cancellationToken);
             if (quotation is null)
             {
                 validationFailures.Add(new ValidationFailure(nameof(request.QuotationId), "Invalid Id"));
@@ -43,7 +46,7 @@ public record UpdateQuotationItemCommand : ICommand<Quotation>
                 validationFailures.Add(new ValidationFailure(nameof(request.QuotationId), "Invalid Id"));
             }
 
-            var item = await _itemService.GetByCode(request.ItemCode);
+            var item = await _itemRepository.GetByCode(request.ItemCode);
             if (item is null)
             {
                 validationFailures.Add(new ValidationFailure(nameof(request.ItemCode), "Invalid ItemCode"));
@@ -54,21 +57,21 @@ public record UpdateQuotationItemCommand : ICommand<Quotation>
                 return new ValidationResult(validationFailures);
             }
 
-            quotationItem.LineId = request.LineId;
-            quotationItem.LineOrder = request.LineOrder ?? quotationItem.LineOrder;
-            quotationItem.ItemId = item.Id;
-            quotationItem.ItemCode = request.ItemCode;
-            quotationItem.ItemName = item.Name;
-            quotationItem.ReferenceCode = "ref";
-            quotationItem.AnvisaCode = item.AnvisaCode ?? string.Empty;
-            quotationItem.AnvisaDueDate = item.AnvisaDueDate?.ToUniversalTime() ?? DateTime.Now.ToUniversalTime();
-            quotationItem.UnitPrice = request.UnitPrice;
-            quotationItem.Quantity = request.Quantity;
-            quotationItem.ItemTotal = request.Quantity * request.UnitPrice;
+            quotation.UpdateItem(request.LineId, (quotationItem) => {
+                quotationItem.SetData(
+                    itemId: item.Id,
+                    itemCode: item.Code,
+                    itemName: item.Name,
+                    referenceCode: "ref",
+                    anvisaCode: item.AnvisaCode ?? string.Empty,
+                    anvisaDueDate: item.AnvisaDueDate ?? DateTime.Now,
+                    unitPrice: request.UnitPrice,
+                    quantity: request.Quantity
+                );
+            });
 
-            quotation.Total = quotation.Items.Sum(p => p.ItemTotal);
-
-            await _quotationService.Update(quotation, cancellationToken);
+            _quotationRepository.Update(quotation, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return quotation;
         }

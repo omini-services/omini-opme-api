@@ -1,4 +1,3 @@
-using Omini.Opme.Domain;
 using Omini.Opme.Domain.Entities;
 using Omini.Opme.Shared;
 
@@ -10,8 +9,19 @@ public sealed class Patient : Auditable
     public string Cpf { get; private set; }
     public string Comments { get; set; }
 
-    public Patient WithCpf(string cpf){
+    private Patient()
+    {    
+    }
+
+    public Patient(PersonName name, string cpf, string comments)
+    {
+        SetData(name, cpf, comments);
+    }
+
+    public void SetData(PersonName name, string cpf, string comments)
+    {
+        Name = name;
         Cpf = Formatters.FormatCpf(cpf);
-        return this;
+        Comments = comments;
     }
 }
