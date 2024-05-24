@@ -21,7 +21,7 @@ public record CreateQuotationCommand : ICommand<Quotation>
     public DateTime DueDate { get; set; }
     public List<CreateQuotationItemCommand> Items { get; set; } = new();
 
-    public class CreateQuotationItemCommand
+    public class CreateQuotationItems
     {
         public int? LineOrder { get; set; }
         public string ItemCode { get; set; }

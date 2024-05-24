@@ -18,7 +18,7 @@ public static class QuotationFaker
 
         foreach (var item in itemOutputDtos)
         {
-            quotationCreateCommand.Items.Add(new CreateQuotationCommand.CreateQuotationItemCommand()
+            quotationCreateCommand.Items.Add(new CreateQuotationCommand.CreateQuotationItems()
             {
                 ItemCode = item.Data.Code,
                 Quantity = faker.Random.Number(1, 100),
