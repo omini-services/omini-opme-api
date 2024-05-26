@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -158,7 +159,8 @@ namespace Omini.Opme.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Number = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Number = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     PatientId = table.Column<Guid>(type: "uuid", nullable: false),
                     PhysicianId = table.Column<Guid>(type: "uuid", nullable: false),
                     PayingSourceType = table.Column<string>(type: "text", nullable: false),

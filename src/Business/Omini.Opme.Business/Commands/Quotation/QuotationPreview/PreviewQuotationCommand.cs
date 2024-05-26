@@ -4,7 +4,7 @@ using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Domain.Services.Pdf;
 using Omini.Opme.Shared.Entities;
 
-namespace Omini.Opme.Be.Application.Commands;
+namespace Omini.Opme.Application.Commands;
 
 public record PreviewQuotationCommand : ICommand<byte[]>
 {

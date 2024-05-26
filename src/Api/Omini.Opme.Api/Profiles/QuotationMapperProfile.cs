@@ -2,7 +2,7 @@ using AutoMapper;
 using Omini.Opme.Api.Dtos;
 using Omini.Opme.Domain.Sales;
 
-namespace Omini.Opme.Be.Api.Profiles;
+namespace Omini.Opme.Api.Profiles;
 
 public class QuotationMapperProfile : Profile
 {

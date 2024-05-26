@@ -9,6 +9,7 @@ using Omini.Opme.Business;
 using Omini.Opme.Infrastructure;
 using Omini.Opme.Api.Services.Security;
 using Omini.Opme.Shared.Services.Security;
+using FluentValidation.AspNetCore;
 
 internal class Startup
 {
@@ -43,6 +44,11 @@ internal class Startup
         services.AddInfrastructure(Configuration);
 
         services.AddApplication();
+
+        services.AddFluentValidationAutoValidation(config =>
+        {
+            config.DisableDataAnnotationsValidation = true;
+        });
 
         services.AddAutoMapper(typeof(Startup));
     }

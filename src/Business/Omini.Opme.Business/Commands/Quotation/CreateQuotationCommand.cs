@@ -10,7 +10,6 @@ namespace Omini.Opme.Business.Commands;
 
 public record CreateQuotationCommand : ICommand<Quotation>
 {
-    public string Number { get; set; }
     public Guid PatientId { get; set; }
     public Guid PhysicianId { get; set; }
     public PayingSourceType PayingSourceType { get; set; }
@@ -86,7 +85,6 @@ public record CreateQuotationCommand : ICommand<Quotation>
             var items = await _itemRepository.Get(p => request.Items.Select(x => x.ItemCode).Contains(p.Code));
 
             var quotation = new Quotation(
-                number: request.Number,
                 patientId: request.PatientId,
                 physicianId: request.PhysicianId,
                 payingSourceType: request.PayingSourceType,

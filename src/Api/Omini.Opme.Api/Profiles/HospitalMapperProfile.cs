@@ -2,7 +2,7 @@ using AutoMapper;
 using Omini.Opme.Api.Dtos;
 using Omini.Opme.Domain.BusinessPartners;
 
-namespace Omini.Opme.Be.Api.Profiles;
+namespace Omini.Opme.Api.Profiles;
 
 public class HospitalMapperProfile : Profile
 {

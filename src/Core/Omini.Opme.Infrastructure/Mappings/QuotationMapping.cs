@@ -13,8 +13,7 @@ internal class QuotationMapping : IEntityTypeConfiguration<Quotation>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Number)
-            .IsRequired()
-            .HasMaxLength(50);
+            .UseIdentityColumn();
 
         builder.Property(x => x.PayingSourceType)
             .HasConversion(

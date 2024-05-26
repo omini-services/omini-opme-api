@@ -1,4 +1,4 @@
-namespace Omini.Opme.Be.Domain.Services.Pdf;
+namespace Omini.Opme.Domain.Services.Pdf;
 
 public interface IPdfGenerator
 {

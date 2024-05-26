@@ -12,7 +12,6 @@ public static class QuotationFaker
         var faker = new Faker();
 
         var quotationCreateCommand = new Faker<CreateQuotationCommand>()
-            .RuleFor(o => o.Number, f => f.Random.AlphaNumeric(5))
             .RuleFor(o => o.DueDate, f => f.Date.Future().AsUtc())
             .Generate();
 

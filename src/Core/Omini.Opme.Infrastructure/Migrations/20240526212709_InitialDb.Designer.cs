@@ -12,7 +12,7 @@ using Omini.Opme.Infrastructure.Contexts;
 namespace Omini.Opme.Infrastructure.Migrations
 {
     [DbContext(typeof(OpmeContext))]
-    [Migration("20240524000309_InitialDb")]
+    [Migration("20240526212709_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -252,10 +252,11 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Number")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<long>("Number")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Number"));
 
                     b.Property<Guid>("PatientId")
                         .HasColumnType("uuid");

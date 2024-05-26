@@ -7,7 +7,7 @@ namespace Omini.Opme.Domain.Sales;
 
 public sealed class Quotation : SoftDeletable
 {
-    public string Number { get; private set; }
+    public long Number { get; private set; }
     public Guid PatientId { get; private set; }
     public Patient Patient { get; private set; }
     public Guid PhysicianId { get; private set; }
@@ -29,15 +29,14 @@ public sealed class Quotation : SoftDeletable
 
     private Quotation() { }
 
-    public Quotation(string number, Guid patientId, Guid physicianId, PayingSourceType payingSourceType, Guid payingSourceId, Guid hospitalId, Guid insuranceCompanyId, Guid internalSpecialistId, DateTime dueDate)
+    public Quotation(Guid patientId, Guid physicianId, PayingSourceType payingSourceType, Guid payingSourceId, Guid hospitalId, Guid insuranceCompanyId, Guid internalSpecialistId, DateTime dueDate)
     {
-        SetData(number, patientId, physicianId, payingSourceType, payingSourceId, hospitalId, insuranceCompanyId, internalSpecialistId, dueDate);
+        SetData(patientId, physicianId, payingSourceType, payingSourceId, hospitalId, insuranceCompanyId, internalSpecialistId, dueDate);
         SetTotal();
     }
 
-    public void SetData(string number, Guid patientId, Guid physicianId, PayingSourceType payingSourceType, Guid payingSourceId, Guid hospitalId, Guid insuranceCompanyId, Guid internalSpecialistId, DateTime dueDate)
+    public void SetData(Guid patientId, Guid physicianId, PayingSourceType payingSourceType, Guid payingSourceId, Guid hospitalId, Guid insuranceCompanyId, Guid internalSpecialistId, DateTime dueDate)
     {
-        Number = number;
         PatientId = patientId;
         PhysicianId = physicianId;
         PayingSourceType = payingSourceType;
