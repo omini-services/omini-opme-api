@@ -6,6 +6,8 @@ using Omini.Opme.Domain.Services.Pdf;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using QuestPDF.Previewer;
+using SkiaSharp;
 
 namespace Omini.Opme.Infrastructure.Pdf.QuestPdf;
 
@@ -15,6 +17,8 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
     private readonly string _basePath;
     private readonly string _imagesPath;
     private readonly string _pdfLogoFullPath;
+    private readonly string _linkedInIcoFullPath;
+    private readonly string _instagramIcoFullPath;
     private readonly IDateTimeService _dateTimeService;
     private readonly CultureInfo _culture;
 
@@ -23,6 +27,8 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
         _basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
         _imagesPath = Path.Combine(_basePath, "Images");
         _pdfLogoFullPath = Path.Combine(_imagesPath, "pdf-logo.png");
+        _linkedInIcoFullPath = Path.Combine(_imagesPath, "linkedin.svg");
+        _instagramIcoFullPath = Path.Combine(_imagesPath, "instagram.svg");
         _culture = new CultureInfo("pt-BR");
 
         _dateTimeService = dateTimeService;
@@ -30,7 +36,7 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
 
     public byte[] GenerateBytes(Quotation quotation)
     {
-        return Document.Create(container =>
+        Document.Create(container =>
         {
             container.Page(page =>
             {
@@ -38,14 +44,17 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
                 page.Size(PageSizes.A4);
 
                 page.Margin(25);
+                page.MarginBottom(0);
 
                 page.Header().Element(e => ComposeHeader(e, quotation));
 
                 page.Content().Element(e => ComposeContent(e, quotation));
 
-                page.Footer().Element(e => ComposeFooter(e));
+                page.Footer().Height(60).Element(e => ComposeFooter(e));
             });
-        }).GeneratePdf();
+        }).ShowInPreviewer();
+
+        return new byte[] { 0 };
     }
 
     private void ComposeHeader(IContainer container, Quotation quotation)
@@ -184,6 +193,20 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
                             });
                         });
                 });
+
+                col.Item().PaddingTop(10).Row(r =>
+                {
+                    r.RelativeItem().AlignRight().Text(text =>
+                    {
+                        text.Span("Página ");
+                        text.CurrentPageNumber();
+                        text.Span(" de ");
+                        text.TotalPages();
+                    });
+                });
+
+                col.Item().ShowIf(ctx => ctx.PageNumber == ctx.TotalPages)
+                          .Element(DefaultContent.CompanyFooterInfo);
             });
     }
 
@@ -191,19 +214,55 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
     {
         container.Column(col =>
         {
-            col.Item().Row(r =>
-            {
-                r.RelativeItem().AlignRight().Text(text =>
+            col.Item()
+                .PaddingHorizontal(-25)
+                .PaddingTop(10)
+                .Layers(layers =>
                 {
-                    text.Span("Página ");
-                    text.CurrentPageNumber();
-                    text.Span(" de ");
-                    text.TotalPages();
-                });
-            });
+                    layers.Layer().SkiaSharpCanvas((canvas, size) =>
+                        {
+                            DrawRoundedRectangle(Colors.Red.Lighten3, false);
 
-            col.Item().ShowIf(ctx => ctx.PageNumber == ctx.TotalPages)
-                      .Element(DefaultContent.CompanyFooterInfo);
+                            void DrawRoundedRectangle(string color, bool isStroke)
+                            {
+                                using var paint = new SKPaint
+                                {
+                                    Color = SKColor.Parse(color),
+                                    IsStroke = isStroke,
+                                    StrokeWidth = 2,
+                                    IsAntialias = true
+                                };
+
+                                float cornerRadius = 30;
+                                float canvasHeight = 50;
+
+                                SKRect rect = new SKRect(0, 0, canvas.LocalClipBounds.Width, canvasHeight);
+
+                                // Create a path with a rounded top
+                                SKPath path = new SKPath();
+                                path.MoveTo(rect.Left, rect.Top + cornerRadius);
+                                path.ArcTo(new SKRect(rect.Left, rect.Top, rect.Left + cornerRadius * 2, rect.Top + cornerRadius * 2), 180, 90, false);
+                                path.LineTo(rect.Right - cornerRadius, rect.Top);
+                                path.ArcTo(new SKRect(rect.Right - cornerRadius * 2, rect.Top, rect.Right, rect.Top + cornerRadius * 2), 270, 90, false);
+                                path.LineTo(rect.Right, rect.Bottom);
+                                path.LineTo(rect.Left, rect.Bottom);
+                                path.Close();
+
+                                canvas.DrawPath(path, paint);
+                            }
+                        });
+
+                    layers
+                        .PrimaryLayer()
+                        .Row(row =>
+                        {
+                            row.RelativeItem().Height(50).AlignMiddle().AlignCenter().Border(1).Column(col =>
+                            {
+                                col.Item().Text("asdas0");
+                            });
+                        });
+                }
+            );
         });
     }
 
