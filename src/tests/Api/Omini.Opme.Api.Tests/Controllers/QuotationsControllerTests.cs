@@ -45,7 +45,7 @@ public class QuotationsControllerTests : IntegrationTest
             options =>
                 options.Excluding(p => p.Id)
                     .For(p => p.Items)
-                    .Exclude(p => p.ItemTotal)
+                    .Exclude(p => p.LineTotal)
                     .For(p => p.Items)
                     .Exclude(p => p.LineId)
                     .For(p => p.Items)
@@ -56,7 +56,7 @@ public class QuotationsControllerTests : IntegrationTest
         quotationOutputDto.Items.Should()
                                      .OnlyHaveUniqueItems(p => p.LineId).And
                                      .OnlyHaveUniqueItems(p => p.LineOrder).And
-                                     .AllSatisfy(p => p.ItemTotal.Should().BeGreaterThanOrEqualTo(0));
+                                     .AllSatisfy(p => p.LineTotal.Should().BeGreaterThanOrEqualTo(0));
 
         var total = quotationCreateCommand.Items.Sum(p => p.UnitPrice * p.Quantity);
         quotationOutputDto.Total.Should().Be(total);
@@ -132,7 +132,7 @@ public class QuotationsControllerTests : IntegrationTest
         quotationAfterUpdate.Items.Should()
                                      .OnlyHaveUniqueItems(p => p.LineId).And
                                      .OnlyHaveUniqueItems(p => p.LineOrder).And
-                                     .AllSatisfy(p => p.ItemTotal.Should().BeGreaterThanOrEqualTo(0));
+                                     .AllSatisfy(p => p.LineTotal.Should().BeGreaterThanOrEqualTo(0));
 
         var addedItem = quotationAfterUpdate.Items.Last();
         quotationAfterUpdate.Items.Should().ContainEquivalentOf(addedItem);
@@ -184,7 +184,7 @@ public class QuotationsControllerTests : IntegrationTest
         quotationAfterUpdate.Items.Should()
                                      .OnlyHaveUniqueItems(p => p.LineId).And
                                      .OnlyHaveUniqueItems(p => p.LineOrder).And
-                                     .AllSatisfy(p => p.ItemTotal.Should().BeGreaterThanOrEqualTo(0));
+                                     .AllSatisfy(p => p.LineTotal.Should().BeGreaterThanOrEqualTo(0));
 
         var total = totalCreate - (quotation.Items[0].Quantity * quotation.Items[0].UnitPrice) + (quotation.Items[1].Quantity * quotation.Items[1].UnitPrice);
         quotationAfterUpdate.Total.Should().Be(total);
@@ -222,7 +222,7 @@ public class QuotationsControllerTests : IntegrationTest
         quotationAfterUpdate.Items.Should()
                                      .OnlyHaveUniqueItems(p => p.LineId).And
                                      .OnlyHaveUniqueItems(p => p.LineOrder).And
-                                     .AllSatisfy(p => p.ItemTotal.Should().BeGreaterThanOrEqualTo(0));
+                                     .AllSatisfy(p => p.LineTotal.Should().BeGreaterThanOrEqualTo(0));
 
         quotationAfterUpdate.Items.Should().NotContain(quotation.Items[0]);
     }

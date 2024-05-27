@@ -4,6 +4,7 @@ using Omini.Opme.Api.Dtos;
 using Omini.Opme.Application.Commands;
 using Omini.Opme.Business.Commands;
 using Omini.Opme.Domain.Repositories;
+using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Api.Controllers;
 
@@ -18,10 +19,10 @@ public class QuotationsController : MainController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IList<QuotationOutputDto>>> Get([FromServices] IQuotationRepository repository)
+    public async Task<ActionResult<PagedResult<QuotationOutputDto>>> Get([FromServices] IQuotationRepository repository)
     {
-        var quotations = await repository.GetAll();
-        var result = Mapper.Map<IList<QuotationOutputDto>>(quotations);
+        var quotations = await repository.GetAllPaginated();
+        var result = Mapper.Map<PagedResult<QuotationOutputDto>>(quotations);
 
         return Ok(ResponseDto.ApiSuccess(result));
     }
@@ -59,7 +60,7 @@ public class QuotationsController : MainController
 
         var result = await Mediator.Send(previewQuotationByIdCommand);
 
-        return File(result.Response, "application/pdf");
+        return File(result.Response!, "application/pdf");
     }
 
 

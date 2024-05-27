@@ -5,9 +5,9 @@ using Omini.Opme.Api.Dtos;
 
 namespace Omini.Opme.Api.Tests;
 
-public static class QuotationFaker
+internal static class QuotationFaker
 {
-    public static CreateQuotationCommand GetFakeQuotationCreateCommand(List<ResponseDto<ItemOutputDto>> itemOutputDtos)
+    internal static CreateQuotationCommand GetFakeQuotationCreateCommand(List<ResponseDto<ItemOutputDto>> itemOutputDtos)
     {
         var faker = new Faker();
 

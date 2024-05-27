@@ -2,7 +2,9 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Omini.Opme.Api.Dtos;
 using Omini.Opme.Business.Commands;
+using Omini.Opme.Business.Queries;
 using Omini.Opme.Domain.Repositories;
+using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Api.Controllers;
 
@@ -17,10 +19,10 @@ public class HospitalsController : MainController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IList<HospitalOutputDto>>> Get([FromServices] IHospitalRepository repository)
+    public async Task<ActionResult<PagedResult<HospitalOutputDto>>> Get([FromQuery]PaginationFilter paginationFilter, [FromServices] IHospitalRepository repository)
     {
-        var hospitals = await repository.GetAll();
-        var result = Mapper.Map<IList<HospitalOutputDto>>(hospitals);
+        var hospitals = await Mediator.Send(new GetAllHospitalsQuery(paginationFilter));
+        var result = Mapper.Map<PagedResult<HospitalOutputDto>>(hospitals);
 
         return Ok(ResponseDto.ApiSuccess(result));
     }

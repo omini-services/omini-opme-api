@@ -4,6 +4,7 @@ using Omini.Opme.Domain.Exceptions;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Domain.Sales;
 using Omini.Opme.Infrastructure.Contexts;
+using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Infrastructure.Repositories;
 
@@ -13,11 +14,45 @@ internal class QuotationRepository : Repository<Quotation>, IQuotationRepository
     {
     }
 
-    public override async Task<List<Quotation>> GetAll(CancellationToken cancellationToken = default)
+    public override async Task<PagedResult<Quotation>> GetAllPaginated(int pageNumber = default, int pageSize = default, CancellationToken cancellationToken = default)
     {
-        return await DbSet.AsNoTracking()
-                          .Include(p => p.Items)
+        var query = DbSet.AsNoTracking()
+                          .Include(p => p.Patient)
+                          .Include(p => p.Hospital)
+                          .Include(p => p.Physician)
+                          .Include(p => p.InsuranceCompany)
                           .ToListAsync(cancellationToken);
+
+        return await GetPagedResult(DbSet.AsNoTracking(), pageNumber, pageSize);
+        
+        // var query = DbSet.AsNoTracking()
+        //                   .Include(p => p.Items)
+        //                   .Include(p => p.Patient)
+        //                   .Include(p => p.Hospital)
+        //                   .Include(p => p.Physician)
+        //                   .Include(p => p.InsuranceCompany);
+
+        // var withPayingSource = from quotation in query
+        //                        join hospital in Db.Hospitals on quotation.PayingSourceId equals hospital.Id into hospitalGroup
+        //                        from hospital in hospitalGroup.DefaultIfEmpty()
+        //                        join patient in Db.Patients on quotation.PayingSourceId equals patient.Id into patientGroup
+        //                        from patient in patientGroup.DefaultIfEmpty()
+        //                        join insuranceCompany in Db.InsuranceCompanies on quotation.PayingSourceId equals insuranceCompany.Id into insuranceGroup
+        //                        from insuranceCompany in insuranceGroup.DefaultIfEmpty()
+        //                        join physician in Db.Physicians on quotation.PhysicianId equals physician.Id into physicianGroup
+        //                        from physician in physicianGroup.DefaultIfEmpty()
+        //                        select new
+        //                        {
+        //                            quotation,
+        //                            payingSource = hospital.Name.TradeName ?? patient.Name.FullName ?? insuranceCompany.Name.LegalName ?? physician.Name.FullName ?? string.Empty
+        //                        };
+
+        // foreach (var groupedQuotation in await withPayingSource.ToListAsync())
+        // {
+        //     groupedQuotation.quotation.PayingSource = new PayingSource() { Name = groupedQuotation.payingSource };
+        // }
+
+        //return withPayingSource.Select(p => p.quotation).ToList();
     }
 
     public override async Task<Quotation?> GetById(Guid id, CancellationToken cancellationToken = default)

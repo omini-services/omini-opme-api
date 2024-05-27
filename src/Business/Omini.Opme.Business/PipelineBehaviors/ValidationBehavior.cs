@@ -1,13 +1,14 @@
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Omini.Opme.Application.Abstractions.Messaging;
 using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Business.PipelineBehaviors;
 
 public class ValidationBehavior<TRequest, TResponse> :
     IPipelineBehavior<TRequest, TResponse>
-        where TRequest : notnull, IRequest<TResponse>
+        where TRequest : notnull, ICommand<TResponse>
         where TResponse : class
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;

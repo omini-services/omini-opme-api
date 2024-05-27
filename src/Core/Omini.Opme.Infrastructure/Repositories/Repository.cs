@@ -1,8 +1,10 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Omini.Opme.Domain.Entities;
+using Omini.Opme.Domain.Exceptions;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Infrastructure.Contexts;
+using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Infrastructure;
 
@@ -27,9 +29,32 @@ internal abstract class Repository<TEntity> : IRepository<TEntity> where TEntity
         return await DbSet.AsNoTracking().Where(p => p.Id == id).SingleOrDefaultAsync(cancellationToken);
     }
 
-    public virtual async Task<List<TEntity>> GetAll(CancellationToken cancellationToken = default)
+    public async Task<PagedResult<TEntity>> GetPagedResult(IQueryable<TEntity> query, int pageNumber, int pageSize)
     {
-        return await DbSet.AsNoTracking().ToListAsync(cancellationToken);
+        if (pageNumber < 1)
+        {
+            pageNumber = 1;
+        }
+
+        if (pageSize == 0)
+        {
+            pageSize = int.MaxValue;
+        }
+
+        var paginatedQuery = new
+        {
+            TotalCount = query.Count(),
+            Data = await query.Skip((pageNumber - 1) * pageSize)
+                         .Take(pageSize)
+                         .ToListAsync()
+        };
+
+        return new PagedResult<TEntity>(paginatedQuery.Data, pageNumber, pageSize, paginatedQuery.TotalCount);
+    }
+
+    public virtual async Task<PagedResult<TEntity>> GetAllPaginated(int pageNumber = default, int pageSize = default, CancellationToken cancellationToken = default)
+    {
+        return await GetPagedResult(DbSet.AsNoTracking(), pageNumber, pageSize);
     }
 
     public virtual async Task Add(TEntity entity, CancellationToken cancellationToken = default)

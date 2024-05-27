@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Omini.Opme.Api.Dtos;
 using Omini.Opme.Business.Commands;
 using Omini.Opme.Domain.Repositories;
+using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Api.Controllers;
 
@@ -17,10 +18,10 @@ public class PatientsController : MainController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IList<PatientOutputDto>>> Get([FromServices] IPatientRepository repository)
+    public async Task<ActionResult<PagedResult<PatientOutputDto>>> Get([FromServices] IPatientRepository repository)
     {
-        var patients = await repository.GetAll();
-        var result = Mapper.Map<IList<PatientOutputDto>>(patients);
+        var patients = await repository.GetAllPaginated();
+        var result = Mapper.Map<PagedResult<PatientOutputDto>>(patients);
 
         return Ok(ResponseDto.ApiSuccess(result));
     }
