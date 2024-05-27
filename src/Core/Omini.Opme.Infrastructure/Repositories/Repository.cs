@@ -8,7 +8,7 @@ using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Infrastructure;
 
-internal abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
+internal abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : Auditable
 {
     protected readonly OpmeContext Db;
     protected readonly DbSet<TEntity> DbSet;
@@ -29,7 +29,7 @@ internal abstract class Repository<TEntity> : IRepository<TEntity> where TEntity
         return await DbSet.AsNoTracking().Where(p => p.Id == id).SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<PagedResult<TEntity>> GetPagedResult(IQueryable<TEntity> query, int pageNumber, int pageSize)
+    public async Task<PagedResult<TEntity>> GetPagedResult(IQueryable<TEntity> query, int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         if (pageNumber < 1)
         {
@@ -46,7 +46,7 @@ internal abstract class Repository<TEntity> : IRepository<TEntity> where TEntity
             TotalCount = query.Count(),
             Data = await query.Skip((pageNumber - 1) * pageSize)
                          .Take(pageSize)
-                         .ToListAsync()
+                         .ToListAsync(cancellationToken)
         };
 
         return new PagedResult<TEntity>(paginatedQuery.Data, pageNumber, pageSize, paginatedQuery.TotalCount);
@@ -54,7 +54,7 @@ internal abstract class Repository<TEntity> : IRepository<TEntity> where TEntity
 
     public virtual async Task<PagedResult<TEntity>> GetAllPaginated(int pageNumber = default, int pageSize = default, CancellationToken cancellationToken = default)
     {
-        return await GetPagedResult(DbSet.AsNoTracking(), pageNumber, pageSize);
+        return await GetPagedResult(DbSet.AsNoTracking().OrderBy(p => p.CreatedOn), pageNumber, pageSize, cancellationToken);
     }
 
     public virtual async Task Add(TEntity entity, CancellationToken cancellationToken = default)

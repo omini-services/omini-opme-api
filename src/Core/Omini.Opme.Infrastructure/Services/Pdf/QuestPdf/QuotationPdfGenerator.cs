@@ -62,7 +62,7 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
                     .Column(col =>
                     {
                         col.Item().AlignRight()
-                            .Text($"Orçamento Nº: {quotation.Number}").FontSize(14).Bold();
+                            .Text($"Orçamento Nº: {quotation.Number.ToString().PadLeft(6, '0')}").FontSize(14).Bold();
                         col.Item()
                             .AlignRight()
                             .DefaultTextStyle(TextStyle.Default.FontColor(Colors.Grey.Medium).FontSize(9))

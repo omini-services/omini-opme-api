@@ -21,10 +21,10 @@ internal class QuotationRepository : Repository<Quotation>, IQuotationRepository
                           .Include(p => p.Hospital)
                           .Include(p => p.Physician)
                           .Include(p => p.InsuranceCompany)
-                          .ToListAsync(cancellationToken);
+                          .OrderBy(p => p.Number);
 
-        return await GetPagedResult(DbSet.AsNoTracking(), pageNumber, pageSize);
-        
+        return await GetPagedResult(query, pageNumber, pageSize, cancellationToken);
+
         // var query = DbSet.AsNoTracking()
         //                   .Include(p => p.Items)
         //                   .Include(p => p.Patient)
