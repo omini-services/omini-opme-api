@@ -36,7 +36,7 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
 
     public byte[] GenerateBytes(Quotation quotation)
     {
-        Document.Create(container =>
+        return Document.Create(container =>
         {
             container.Page(page =>
             {
@@ -52,9 +52,7 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
 
                 page.Footer().Height(60).Element(e => ComposeFooter(e));
             });
-        }).ShowInPreviewer();
-
-        return new byte[] { 0 };
+        }).GeneratePdf();        
     }
 
     private void ComposeHeader(IContainer container, Quotation quotation)
@@ -237,20 +235,20 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
                             t.Cell().AlignCenter().Row(row =>
                             {
                                 row.AutoItem()
-                                   .MaxHeight(50)
-                                   .AlignMiddle()
-                                   .AlignCenter()
-                                   .Column(col =>
-                                   {
-                                       col.Item().Hyperlink("https://www.google.com.br").Row(r =>
-                                       {
-                                           r.AutoItem().AlignCenter().AlignMiddle().MaxHeight(15).Svg(SvgImage.FromFile(_linkedInIcoFullPath));
-                                           r.AutoItem().PaddingLeft(3).AlignCenter().AlignMiddle().MaxHeight(20).Text("Frater Medical");
+                                    .MaxHeight(50)
+                                    .AlignMiddle()
+                                    .AlignCenter()
+                                    .Column(col =>
+                                    {
+                                        col.Item().Hyperlink("https://www.google.com.br").Row(r =>
+                                        {
+                                            r.AutoItem().AlignCenter().AlignMiddle().MaxHeight(15).Svg(SvgImage.FromFile(_linkedInIcoFullPath));
+                                            r.AutoItem().PaddingLeft(3).AlignCenter().AlignMiddle().MaxHeight(20).Text("Frater Medical");
 
-                                           r.AutoItem().PaddingLeft(10).AlignCenter().AlignMiddle().MaxHeight(15).Svg(SvgImage.FromFile(_instagramIcoFullPath));
-                                           r.AutoItem().PaddingLeft(3).AlignCenter().AlignMiddle().MaxHeight(20).Text("@fratermedical");
-                                       });
-                                   });
+                                            r.AutoItem().PaddingLeft(10).AlignCenter().AlignMiddle().MaxHeight(15).Svg(SvgImage.FromFile(_instagramIcoFullPath));
+                                            r.AutoItem().PaddingLeft(3).AlignCenter().AlignMiddle().MaxHeight(20).Text("@fratermedical");
+                                        });
+                                    });
                             });
                             t.Cell().AlignRight().AlignBottom().PaddingRight(5).Text("Gerado por Omini ®").FontSize(10).FontColor(Colors.Grey.Darken1);
                         });
