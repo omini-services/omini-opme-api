@@ -68,7 +68,7 @@ internal class Startup
 
         app.UseQuestPdf((options) =>
         {
-            options.FontsPath = Path.Combine(Assembly.GetExecutingAssembly().Location, "fonts");
+            options.FontsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "fonts");
         });
 
         app.UseAuthentication();
