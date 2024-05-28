@@ -34,7 +34,7 @@ internal class LoggingMiddleware
             }
             catch (Exception e)
             {
-                _logger.LogError(e.Message, e);
+                _logger.LogError(e, "Unexpected error");
             }
 
             stopwatch.Stop();
