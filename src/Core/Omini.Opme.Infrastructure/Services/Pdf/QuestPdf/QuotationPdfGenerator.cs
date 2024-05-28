@@ -212,55 +212,85 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
 
     private void ComposeFooter(IContainer container)
     {
-        container.Column(col =>
+        container.ShowIf(ctx => ctx.PageNumber == ctx.TotalPages).Column(col =>
         {
             col.Item()
                 .PaddingHorizontal(-25)
                 .PaddingTop(10)
                 .Layers(layers =>
                 {
-                    layers.Layer().SkiaSharpCanvas((canvas, size) =>
-                        {
-                            DrawRoundedRectangle(Colors.Red.Lighten3, false);
-
-                            void DrawRoundedRectangle(string color, bool isStroke)
-                            {
-                                using var paint = new SKPaint
-                                {
-                                    Color = SKColor.Parse(color),
-                                    IsStroke = isStroke,
-                                    StrokeWidth = 2,
-                                    IsAntialias = true
-                                };
-
-                                float cornerRadius = 30;
-                                float canvasHeight = 50;
-
-                                SKRect rect = new SKRect(0, 0, canvas.LocalClipBounds.Width, canvasHeight);
-
-                                // Create a path with a rounded top
-                                SKPath path = new SKPath();
-                                path.MoveTo(rect.Left, rect.Top + cornerRadius);
-                                path.ArcTo(new SKRect(rect.Left, rect.Top, rect.Left + cornerRadius * 2, rect.Top + cornerRadius * 2), 180, 90, false);
-                                path.LineTo(rect.Right - cornerRadius, rect.Top);
-                                path.ArcTo(new SKRect(rect.Right - cornerRadius * 2, rect.Top, rect.Right, rect.Top + cornerRadius * 2), 270, 90, false);
-                                path.LineTo(rect.Right, rect.Bottom);
-                                path.LineTo(rect.Left, rect.Bottom);
-                                path.Close();
-
-                                canvas.DrawPath(path, paint);
-                            }
-                        });
-
                     layers
                         .PrimaryLayer()
-                        .Row(row =>
+                        .AlignCenter()
+                        .Height(50)
+                        .AlignMiddle()
+                        .Padding(0)
+                        .Table(t =>
                         {
-                            row.RelativeItem().Height(50).AlignMiddle().AlignCenter().Border(1).Column(col =>
+                            t.ColumnsDefinition(def =>
+                               {
+                                   def.ConstantColumn(150);
+                                   def.RelativeColumn();
+                                   def.ConstantColumn(150);
+                               });
+                            t.Cell().ExtendVertical();
+                            t.Cell().AlignCenter().Row(row =>
                             {
-                                col.Item().Text("asdas0");
+                                row.AutoItem()
+                                   .MaxHeight(50)
+                                   .AlignMiddle()
+                                   .AlignCenter()
+                                   .Column(col =>
+                                   {
+                                       col.Item().Hyperlink("https://www.google.com.br").Row(r =>
+                                       {
+                                           r.AutoItem().AlignCenter().AlignMiddle().MaxHeight(15).Svg(SvgImage.FromFile(_linkedInIcoFullPath));
+                                           r.AutoItem().PaddingLeft(3).AlignCenter().AlignMiddle().MaxHeight(20).Text("Frater Medical");
+
+                                           r.AutoItem().PaddingLeft(10).AlignCenter().AlignMiddle().MaxHeight(15).Svg(SvgImage.FromFile(_instagramIcoFullPath));
+                                           r.AutoItem().PaddingLeft(3).AlignCenter().AlignMiddle().MaxHeight(20).Text("@fratermedical");
+                                       });
+                                   });
                             });
+                            t.Cell().AlignRight().AlignBottom().PaddingRight(5).Text("Gerado por Omini ®").FontSize(10).FontColor(Colors.Grey.Darken1);
                         });
+
+                    layers.Layer().SkiaSharpCanvas((canvas, size) =>
+                    {
+                        DrawRoundedRectangle(Colors.Grey.Lighten3, false);
+
+                        void DrawRoundedRectangle(string colorHex, bool isStroke)
+                        {
+                            // Parse the color and set the alpha for transparency
+                            SKColor color = SKColor.Parse(colorHex).WithAlpha((byte)(0.5f * 255));
+
+                            using var paint = new SKPaint
+                            {
+                                Color = color,
+                                IsStroke = isStroke,
+                                StrokeWidth = 100,
+                                IsAntialias = true
+                            };
+
+                            float cornerRadius = 30;
+                            float canvasHeight = 50;
+
+                            SKRect rect = new SKRect(0, 0, canvas.LocalClipBounds.Width, canvasHeight);
+
+                            // Create a path with a rounded top
+                            SKPath path = new SKPath();
+                            path.MoveTo(rect.Left, rect.Top + cornerRadius);
+                            path.ArcTo(new SKRect(rect.Left, rect.Top, rect.Left + cornerRadius * 2, rect.Top + cornerRadius * 2), 180, 90, false);
+                            path.LineTo(rect.Right - cornerRadius, rect.Top);
+                            path.ArcTo(new SKRect(rect.Right - cornerRadius * 2, rect.Top, rect.Right, rect.Top + cornerRadius * 2), 270, 90, false);
+                            path.LineTo(rect.Right, rect.Bottom);
+                            path.LineTo(rect.Left, rect.Bottom);
+                            path.Close();
+
+                            canvas.DrawPath(path, paint);
+                        }
+                    });
+
                 }
             );
         });

@@ -13,6 +13,6 @@ internal class ItemRepository : Repository<Item>, IItemRepository
 
     public async Task<Item?> GetByCode(string code, CancellationToken cancellationToken = default)
     {
-        return await DbSet.SingleOrDefaultAsync(p => p.Code == code, cancellationToken);
+        return await DbSet.AsNoTracking().SingleOrDefaultAsync(p => p.Code == code, cancellationToken);
     }
 }

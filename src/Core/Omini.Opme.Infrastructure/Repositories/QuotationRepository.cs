@@ -16,12 +16,12 @@ internal class QuotationRepository : Repository<Quotation>, IQuotationRepository
 
     public override async Task<PagedResult<Quotation>> GetAllPaginated(int pageNumber = default, int pageSize = default, CancellationToken cancellationToken = default)
     {
-        var query = DbSet.AsNoTracking()
-                          .Include(p => p.Patient)
-                          .Include(p => p.Hospital)
-                          .Include(p => p.Physician)
-                          .Include(p => p.InsuranceCompany)
-                          .OrderBy(p => p.Number);
+        var query = DbSet.Include(p => p.Patient)
+                         .Include(p => p.Hospital)
+                         .Include(p => p.Physician)
+                         .Include(p => p.InsuranceCompany)
+                         .OrderBy(p => p.Number)
+                         .AsNoTracking();
 
         return await GetPagedResult(query, pageNumber, pageSize, cancellationToken);
 

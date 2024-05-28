@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Omini.Opme.Domain.Entities;
-using Omini.Opme.Domain.Exceptions;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Infrastructure.Contexts;
 using Omini.Opme.Shared.Entities;
@@ -21,12 +20,12 @@ internal abstract class Repository<TEntity> : IRepository<TEntity> where TEntity
 
     public async Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
-        return await DbSet.AsNoTracking().Where(predicate).ToListAsync(cancellationToken);
+        return await DbSet.Where(predicate).AsNoTracking().ToListAsync(cancellationToken);
     }
 
     public virtual async Task<TEntity?> GetById(Guid id, CancellationToken cancellationToken = default)
     {
-        return await DbSet.AsNoTracking().Where(p => p.Id == id).SingleOrDefaultAsync(cancellationToken);
+        return await DbSet.Where(p => p.Id == id).AsNoTracking().SingleOrDefaultAsync(cancellationToken);
     }
 
     public async Task<PagedResult<TEntity>> GetPagedResult(IQueryable<TEntity> query, int pageNumber, int pageSize, CancellationToken cancellationToken)
