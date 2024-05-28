@@ -32,6 +32,12 @@ jobs:
       - name: dotnet publish
         run: dotnet publish src/Api/Omini.Opme.Api/Omini.Opme.Api.csproj -c Release -o ./output -r linux-x64
 
+      - name: dotnet publish
+        run: dotnet publish src/Api/Omini.Opme.Api/Omini.Opme.Api.csproj -c Release -o ./output -r linux-x64
+
+      - name: Remove unwanted folder
+        run: rm -rf ./output/LatoFont
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:

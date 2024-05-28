@@ -25,7 +25,7 @@ public static class DependecyInjection
         services.AddSingleton<AuditableInterceptor>();
         services.AddSingleton<SoftDeletableInterceptor>();
 
-        services.AddDbContext<OpmeContext>((sp, opt) => 
+        services.AddDbContext<OpmeContext>((sp, opt) =>
         {
             opt.AddInterceptors(
                 sp.GetRequiredService<EntityInterceptor>(),
@@ -58,10 +58,11 @@ public static class DependecyInjection
         var logger = app.ApplicationServices.GetRequiredService<ILogger<IApplicationBuilder>>();
 
         QuestPDF.Settings.License = LicenseType.Community;
+        QuestPDF.Settings.UseEnvironmentFonts = false;
         var questPdfBuilder = new QuestPdfBuilder();
 
         options(questPdfBuilder);
-        
+
         if (questPdfBuilder.FontsPath is not null)
         {
             QuestPdfConfiguration.RegisterFontsFromPath(questPdfBuilder.FontsPath, logger);
