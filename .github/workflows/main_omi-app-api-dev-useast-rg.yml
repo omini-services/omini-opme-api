@@ -30,7 +30,7 @@ jobs:
         run: dotnet build src/Api/Omini.Opme.Api/Omini.Opme.Api.csproj --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish src/Api/Omini.Opme.Api/Omini.Opme.Api.csproj -c Release -o ./output -r win-x64
+        run: dotnet publish src/Api/Omini.Opme.Api/Omini.Opme.Api.csproj -c Release -o ./output -r linux-x64
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
