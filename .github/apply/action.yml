@@ -1,6 +1,15 @@
 name: "Terraform setup and apply"
 description: "Applys a terraform plan file from an artifact"
 inputs:
+  azure_client_id:
+    description: 'Azure client id'
+    required: true
+  azure_tenant_id:
+    description: 'Azure tenant id'
+    required: true
+  azure_subscription_id:
+    description: 'Azure subscription id'
+    required: true
   terraform_directory: 
     description: 'where to execute terraform'
     required: true

@@ -1,6 +1,15 @@
 name: 'Terraform setup and plan'
 description: 'Setup Terraform and creates plan'
 inputs:
+  azure_client_id:
+    description: 'Azure client id'
+    required: true
+  azure_tenant_id:
+    description: 'Azure tenant id'
+    required: true
+  azure_subscription_id:
+    description: 'Azure subscription id'
+    required: true
   terraform_directory:
     description: 'Directory that holds Terraform code'
     required: true
