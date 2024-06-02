@@ -42,6 +42,7 @@ runs:
         subscription-id: ${{ inputs.azure_subscription_id }}
 
     - name: Set OIDC Token
+      shell: bash
       run: echo "ARM_OIDC_TOKEN=${{ steps.azure_login.outputs.oidc_token }}" >> $GITHUB_ENV
 
     - name: Terraform Init
