@@ -1,4 +1,4 @@
-name: Terraform Plan
+name: Terraform Plan and Apply
 
 on:
   workflow_dispatch:
@@ -9,6 +9,8 @@ env:
 jobs:
   terraform_plan:
     runs-on: ubuntu-latest
+    environment:
+      name: 'development'
     steps:
       - uses: actions/checkout@v4
 
