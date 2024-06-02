@@ -49,6 +49,7 @@ runs:
         ARM_CLIENT_ID: ${{ inputs.azure_client_id }}
         ARM_TENANT_ID: ${{ inputs.azure_tenant_id }}
         ARM_SUBSCRIPTION_ID: ${{ inputs.azure_subscription_id }}
+        ARM_USE_OIDC: true
       run: |
         terraform init
 
@@ -65,6 +66,7 @@ runs:
         ARM_CLIENT_ID: ${{ inputs.azure_client_id }}
         ARM_TENANT_ID: ${{ inputs.azure_tenant_id }}
         ARM_SUBSCRIPTION_ID: ${{ inputs.azure_subscription_id }}
+        ARM_USE_OIDC: true
       shell: bash
       run: |
         echo 'apply<<EOF' >> $GITHUB_OUTPUT

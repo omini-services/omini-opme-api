@@ -32,7 +32,7 @@ runs:
       with:
         terraform_version: ${{ inputs.terraforom_version }}
         terraform_wrapper: false
-        
+
     - id: 'auth'
       name: 'Authenticate to Azure'
       uses: 'azure/login@v2'
@@ -49,6 +49,7 @@ runs:
         ARM_CLIENT_ID: ${{ inputs.azure_client_id }}
         ARM_TENANT_ID: ${{ inputs.azure_tenant_id }}
         ARM_SUBSCRIPTION_ID: ${{ inputs.azure_subscription_id }}
+        ARM_USE_OIDC: true
       run: |
         terraform init
 
@@ -59,6 +60,7 @@ runs:
         ARM_CLIENT_ID: ${{ inputs.azure_client_id }}
         ARM_TENANT_ID: ${{ inputs.azure_tenant_id }}
         ARM_SUBSCRIPTION_ID: ${{ inputs.azure_subscription_id }}
+        ARM_USE_OIDC: true
       shell: bash
       run: |
         echo 'plan<<EOF' >> $GITHUB_OUTPUT
