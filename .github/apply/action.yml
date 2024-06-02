@@ -34,11 +34,14 @@ runs:
         terraform_wrapper: false
 
     - name: 'Az CLI login'
-      uses: azure/login@v1
+      uses: azure/login@v2
       with:
         client-id: ${{ secrets.azure_client_id }}
         tenant-id: ${{ secrets.azure_tenant_id }}
         subscription-id: ${{ secrets.azure_subscription_id }}
+
+    - name: Set OIDC Token
+      run: echo "ARM_OIDC_TOKEN=${{ steps.azure_login.outputs.oidc_token }}" >> $GITHUB_ENV
 
     - name: Terraform Init
       id: init
