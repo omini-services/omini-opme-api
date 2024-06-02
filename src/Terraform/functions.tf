@@ -15,4 +15,11 @@ resource "azurerm_linux_function_app" "function_auth" {
   storage_account_access_key = azurerm_storage_account.storage.primary_access_key
 
   site_config {}
+
+  app_settings = {
+    "APIConnectors__ClientId"                                 = "25c1f96b-1d38-42de-a3ac-051c80189600"
+    "APIConnectors__SignInSignUpExtension__BasicAuthPassword" = "admin"
+    "APIConnectors__SignInSignUpExtension__BasicAuthUsername" = "admin"
+    "AzureWebJobsStorage"                                     = azurerm_storage_account.storage.primary_connection_string
+  }
 }
