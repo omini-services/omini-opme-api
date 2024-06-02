@@ -8,6 +8,8 @@ env:
 
 permissions:
   actions: write
+  id-token: write
+  contents: read
 
 jobs:
   terraform_plan:
@@ -25,6 +27,13 @@ jobs:
     #     run: |
     #       PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
     #       echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_OUTPUT
+
+      - name: 'Authenticate to Azure'
+        uses: 'azure/login@v2'
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Terraform Plan
         uses: ./.github/plan
