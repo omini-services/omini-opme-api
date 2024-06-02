@@ -36,10 +36,12 @@ jobs:
     environment:
         name: 'development'
     steps:
+      - uses: actions/checkout@v4
+      
       - name: Terraform Apply
         uses: ./.github/apply
         with:
-            terraform_directory: "./src/Terraform"
+            terraform_directory: "src/Terraform"
             terraform_version: ${{ env.TERRAFORM_VERSION }}
             github_token: ${{ secrets.GITHUB_TOKEN }}
             azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}

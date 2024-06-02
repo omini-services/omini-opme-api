@@ -17,12 +17,6 @@ inputs:
     description: 'Terraform Version'
     required: true
     default: 1.8.4
-  github_token: 
-    description: 'github secret'
-    required: true
-  pr_id:
-    description: 'Pull request ID'
-    required: true
 
 runs:
   using: "composite"
@@ -57,7 +51,7 @@ runs:
       id: download-plan
       uses: actions/download-artifact@v3
       with:
-        name: ${{ inputs.pr_id }}-tf-plan
+        name: tf-plan
 
     - name: Terraform Apply
       id: apply
