@@ -65,7 +65,7 @@ runs:
       with:
         # name: ${{ inputs.pr_id }}-tf-plan
         name: tf-plan
-        path: ${{ inputs.terraform_directory }}/tf-plan
+        path: ${{ inputs.terraform_directory }}/tfplan
 
     # - name: Comment Plan
     #   id: comment-plan
