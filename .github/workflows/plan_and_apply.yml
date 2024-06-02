@@ -6,6 +6,8 @@ on:
 env:
   TERRAFORM_VERSION: "1.8.4"
 
+permissions:
+  actions: write
 
 jobs:
   terraform_plan:
@@ -40,8 +42,6 @@ jobs:
     needs: terraform_plan
     environment:
         name: 'development'
-    permissions:
-        id-token: write
     steps:
       - name: Terraform Apply
         uses: ./.github/apply
