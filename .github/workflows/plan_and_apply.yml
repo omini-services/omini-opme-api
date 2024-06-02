@@ -31,7 +31,7 @@ jobs:
       - name: Terraform Plan
         uses: ./.github/plan
         with:
-          terraform_directory: "src/terraform"
+          terraform_directory: "src/Terraform"
           terraform_version: ${{ env.TERRAFORM_VERSION }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -48,7 +48,7 @@ jobs:
       - name: Terraform Apply
         uses: ./.github/apply
         with:
-            terraform_directory: "./src/terraform"
+            terraform_directory: "./src/Terraform"
             terraform_version: ${{ env.TERRAFORM_VERSION }}
             github_token: ${{ secrets.GITHUB_TOKEN }}
             azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
