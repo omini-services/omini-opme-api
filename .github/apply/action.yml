@@ -51,7 +51,7 @@ runs:
       id: download-plan
       uses: actions/download-artifact@v4
       with:
-        name: tf-plan
+        name: tfplan
         path: ${{ inputs.terraform_directory }}/tfplan
 
     - name: Terraform Apply
