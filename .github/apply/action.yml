@@ -64,4 +64,4 @@ runs:
         ARM_USE_OIDC: true
       shell: bash
       run: |
-        terraform apply -input=false -no-color tfplan
+        terraform apply tfplan/tfplan
