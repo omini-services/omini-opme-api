@@ -17,12 +17,6 @@ inputs:
     description: 'Terraform Version'
     required: true
     default: 1.8.4
-  github_token: 
-    description: 'GitHub token for auth'
-    required: true
-  pr_id:
-    description: 'Pull request ID'
-    required: false
 
 runs:
   using: "composite"
@@ -30,7 +24,7 @@ runs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
       with:
-        terraform_version: ${{ inputs.terraforom_version }}
+        terraform_version: ${{ inputs.terraform_version }}
         terraform_wrapper: false
 
     - id: 'auth'
@@ -63,17 +57,15 @@ runs:
         ARM_USE_OIDC: true
       shell: bash
       run: |
-        echo 'plan<<EOF' >> $GITHUB_OUTPUT
-        terraform plan -no-color -out=tfplan >> $GITHUB_OUTPUT
-        echo 'EOF' >> $GITHUB_OUTPUT
+        terraform plan -no-color -out=tfplan
 
     - name: Save Artifact
       id: save-artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         # name: ${{ inputs.pr_id }}-tf-plan
         name: tf-plan
-        path: ${{ inputs.terraform_directory }}/tfplan
+        path: ${{ inputs.terraform_directory }}/tf-plan
 
     # - name: Comment Plan
     #   id: comment-plan

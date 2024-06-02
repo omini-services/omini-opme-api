@@ -49,7 +49,7 @@ runs:
 
     - name: Download Plan
       id: download-plan
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: tf-plan
         path: ${{ inputs.terraform_directory }}/tfplan
