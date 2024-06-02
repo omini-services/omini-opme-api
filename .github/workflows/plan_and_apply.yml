@@ -1,0 +1,45 @@
+name: Terraform Plan
+
+on:
+  workflow_dispatch:
+
+env:
+  TERRAFORM_VERSION: "1.8.4"
+
+jobs:
+  terraform_plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+    #   - name: Get PR ID
+    #     id: pr-id
+    #     shell: bash
+    #     env:
+    #       GITHUB_REF: ${{ inputs.github_ref }}
+    #     run: |
+    #       PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+    #       echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_OUTPUT
+
+      - name: Terraform Plan
+        uses: ./.github/plan
+        with:
+          terraform_directory: "./src/terraform"
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+        #   pr_id: ${{ steps.pr-id.outputs.PR_NUMBER }}
+  terraform_apply:
+    runs-on: ubuntu-latest
+    needs: terraform_plan
+    environment:
+        name: 'development'
+    permissions:
+        id-token: write
+    steps:
+      - name: Terraform Apply
+        uses: ./.github/apply
+        with:
+            terraform_directory: "./src/terraform"
+            terraform_version: ${{ env.TERRAFORM_VERSION }}
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            # pr_id: ${{ steps.pr-id.outputs.PR_NUMBER }}

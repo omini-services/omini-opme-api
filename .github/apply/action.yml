@@ -1,0 +1,67 @@
+name: "Terraform setup and apply"
+description: "Applys a terraform plan file from an artifact"
+inputs:
+  terraform_directory: 
+    description: 'where to execute terraform'
+    required: true
+  terraform_version: 
+    description: 'Terraform Version'
+    required: true
+    default: 1.8.4
+  github_token: 
+    description: 'github secret'
+    required: true
+  pr_id:
+    description: 'Pull request ID'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ inputs.terraforom_version }}
+        terraform_wrapper: false
+
+    - name: 'Az CLI login'
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Terraform Init
+      id: init
+      working-directory: ${{ inputs.terraform_directory }}
+      shell: bash
+      run: |
+        terraform init
+
+    - name: Download Plan
+      id: download-plan
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ inputs.pr_id }}-tf-plan
+
+    - name: Terraform Apply
+      id: apply
+      working-directory: ${{ inputs.terraform_directory }}
+      shell: bash
+      run: |
+        echo 'apply<<EOF' >> $GITHUB_OUTPUT
+        terraform apply -input=false -no-color tfplan >> $GITHUB_OUTPUT
+        echo 'EOF' >> $GITHUB_OUTPUT
+
+    - name: Comment Apply
+      id: comment-apply
+      uses: peter-evans/create-or-update-comment@v2
+      with:
+        token: ${{ inputs.github_token }}
+        issue-number: ${{ inputs.pr_id }}
+        body: |
+          Terraform Apply:
+
+          ```
+          ${{ steps.apply.outputs.apply }}
+          ```

@@ -1,0 +1,16 @@
+az ad sp create-for-rbac --name omni-dev-api-pipeline --description omni-dev-api-pipeline
+
+az role assignment create --assignee c30d6e95-bb56-49fe-a5ba-60162d278c4d --role Contributor --scope "/subscriptions/5f62b02b-6602-4b30-aefc-aa2043aee7c5/resourceGroups/rg-omni-opme-eastus-dev" --description "The deployment pipeline for the company's website needs to be able to create resources within the resource group."
+
+az ad app federated-credential create --id c30d6e95-bb56-49fe-a5ba-60162d278c4d --parameters credential.json
+("credential.json" contains the following content)
+{
+    "name": "<CREDENTIAL-NAME>",
+    "issuer": "https://token.actions.githubusercontent.com",
+    "subject": "repo:octo-org/octo-repo:environment:Production",
+    "description": "Testing",
+    "audiences": [
+        "api://AzureADTokenExchange"
+    ]
+}
+
