@@ -43,7 +43,7 @@ runs:
 
     - name: Set OIDC Token
       shell: bash
-      run: echo "ARM_OIDC_TOKEN=${{ steps.azure_login.outputs.oidc_token }}" >> $GITHUB_ENV
+      run: echo "ARM_OIDC_TOKEN=${{ steps.auth.outputs.oidc_token }}" >> $GITHUB_ENV
 
     - name: Terraform Init
       id: init
