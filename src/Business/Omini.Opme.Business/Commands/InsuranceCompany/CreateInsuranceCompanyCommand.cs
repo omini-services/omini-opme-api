@@ -1,15 +1,16 @@
 using FluentValidation.Results;
 using Omini.Opme.Application.Abstractions.Messaging;
-using Omini.Opme.Domain;
 using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Domain.Transactions;
+using Omini.Opme.Domain.ValueObjects;
 using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Business.Commands;
 
 public record CreateInsuranceCompanyCommand : ICommand<InsuranceCompany>
 {
+    public string Code { get; set; }
     public string LegalName { get; init; }
     public string TradeName { get; init; }
     public string Cnpj { get; set; }
@@ -28,6 +29,7 @@ public record CreateInsuranceCompanyCommand : ICommand<InsuranceCompany>
         public async Task<Result<InsuranceCompany, ValidationResult>> Handle(CreateInsuranceCompanyCommand request, CancellationToken cancellationToken)
         {
             var insuranceCompany = new InsuranceCompany(
+                code: request.Code,
                 name: new CompanyName(request.LegalName, request.TradeName),
                 cnpj: request.Cnpj,
                 comments: request.Comments

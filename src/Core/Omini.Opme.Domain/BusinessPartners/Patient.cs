@@ -1,25 +1,27 @@
-using Omini.Opme.Domain.Entities;
+using Omini.Opme.Domain.Common;
+using Omini.Opme.Domain.ValueObjects;
 using Omini.Opme.Shared;
 
 namespace Omini.Opme.Domain.BusinessPartners;
 
-public sealed class Patient : Auditable
+public sealed class Patient : MasterEntity
 {
-    public PersonName Name { get; set; }
+    public new PersonName Name { get; set; }
     public string Cpf { get; private set; }
     public string Comments { get; set; }
 
     private Patient()
-    {    
+    {
     }
 
-    public Patient(PersonName name, string cpf, string comments)
+    public Patient(string code, PersonName name, string cpf, string comments)
     {
-        SetData(name, cpf, comments);
+        SetData(code, name, cpf, comments);
     }
 
-    public void SetData(PersonName name, string cpf, string comments)
+    public void SetData(string code, PersonName name, string cpf, string comments)
     {
+        Code = code;
         Name = name;
         Cpf = Formatters.FormatCpf(cpf);
         Comments = comments;

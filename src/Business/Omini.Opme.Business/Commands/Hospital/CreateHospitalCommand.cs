@@ -1,17 +1,18 @@
 using FluentValidation.Results;
 using Omini.Opme.Application.Abstractions.Messaging;
-using Omini.Opme.Domain;
 using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Domain.Transactions;
+using Omini.Opme.Domain.ValueObjects;
 using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Business.Commands;
 
 public sealed record CreateHospitalCommand : ICommand<Hospital>
 {
-    public string LegalName { get; set;}
-    public string TradeName { get; set;}
+    public string Code { get; set; }
+    public string LegalName { get; set; }
+    public string TradeName { get; set; }
     public string Cnpj { get; set; }
     public string Comments { get; set; }
 
@@ -28,6 +29,7 @@ public sealed record CreateHospitalCommand : ICommand<Hospital>
         public async Task<Result<Hospital, ValidationResult>> Handle(CreateHospitalCommand request, CancellationToken cancellationToken)
         {
             var hospital = new Hospital(
+                code: request.Code,
                 name: new CompanyName(request.LegalName, request.TradeName),
                 cnpj: request.Cnpj,
                 comments: request.Comments

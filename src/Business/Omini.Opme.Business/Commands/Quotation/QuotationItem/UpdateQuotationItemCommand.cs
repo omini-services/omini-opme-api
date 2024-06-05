@@ -37,19 +37,19 @@ public record UpdateQuotationItemCommand : ICommand<Quotation>
             var quotation = await _quotationRepository.GetById(request.QuotationId, cancellationToken);
             if (quotation is null)
             {
-                validationFailures.Add(new ValidationFailure(nameof(request.QuotationId), "Invalid Id"));
+                validationFailures.Add(new ValidationFailure(nameof(request.QuotationId), "Invalid quotation id"));
             }
 
             var quotationItem = quotation.Items.SingleOrDefault(i => i.LineId == request.LineId);
             if (quotationItem is null)
             {
-                validationFailures.Add(new ValidationFailure(nameof(request.QuotationId), "Invalid Id"));
+                validationFailures.Add(new ValidationFailure(nameof(request.LineId), "Invalid line id"));
             }
 
             var item = await _itemRepository.GetByCode(request.ItemCode);
             if (item is null)
             {
-                validationFailures.Add(new ValidationFailure(nameof(request.ItemCode), "Invalid ItemCode"));
+                validationFailures.Add(new ValidationFailure(nameof(request.ItemCode), "Invalid item code"));
             }
 
             if (validationFailures.Any())
@@ -59,7 +59,6 @@ public record UpdateQuotationItemCommand : ICommand<Quotation>
 
             quotation.UpdateItem(request.LineId, (quotationItem) => {
                 quotationItem.SetData(
-                    itemId: item.Id,
                     itemCode: item.Code,
                     itemName: item.Name,
                     referenceCode: "ref",

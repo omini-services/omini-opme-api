@@ -6,7 +6,6 @@ using Omini.Opme.Domain.Services.Pdf;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using QuestPDF.Previewer;
 using SkiaSharp;
 
 namespace Omini.Opme.Infrastructure.Pdf.QuestPdf;

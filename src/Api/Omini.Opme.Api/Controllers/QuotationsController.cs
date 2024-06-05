@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Omini.Opme.Api.Dtos;
 using Omini.Opme.Application.Commands;
 using Omini.Opme.Business.Commands;
+using Omini.Opme.Business.Queries;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Shared.Entities;
 
@@ -19,10 +20,10 @@ public class QuotationsController : MainController
     }
 
     [HttpGet]
-    public async Task<ActionResult<PagedResult<QuotationOutputDto>>> Get([FromServices] IQuotationRepository repository)
+    public async Task<ActionResult<PagedResult<QuotationOutputDto>>> Get([FromQuery] QueryFilter queryFilter, [FromQuery] PaginationFilter paginationFilter)
     {
-        var quotations = await repository.GetAllPaginated();
-        var result = Mapper.Map<PagedResult<QuotationOutputDto>>(quotations);
+        var quotations = await Mediator.Send(new GetAllQuotationsQuery(queryFilter, paginationFilter));
+        var result = Mapper.Map<PagedResult<HospitalOutputDto>>(quotations);
 
         return Ok(ResponseDto.ApiSuccess(result));
     }
@@ -76,13 +77,13 @@ public class QuotationsController : MainController
         });
     }
 
-    [HttpPost("{id:guid}/items")]
-    public async Task<IActionResult> CreateItem(Guid id,
+    [HttpPost("{quotationId:guid}/items")]
+    public async Task<IActionResult> CreateItem(Guid quotationId,
      [FromBody] CreateQuotationItemCommand createQuotationItemCommand)
     {
-        if (createQuotationItemCommand.QuotationId != id)
+        if (createQuotationItemCommand.QuotationId != quotationId)
         {
-            return ToBadRequest(new ValidationResult([new ValidationFailure("Id", "Invalid id")]));
+            return ToBadRequest(new ValidationResult([new ValidationFailure("QuotationId", "Invalid quotation id")]));
         }
 
         var result = await Mediator.Send(createQuotationItemCommand);
@@ -131,12 +132,12 @@ public class QuotationsController : MainController
     //     return ToNoContent(result);
     // }
 
-    [HttpPut("{id:guid}/items/{lineId:int}")]
-    public async Task<IActionResult> UpdateItem(Guid id, int lineId, [FromBody] UpdateQuotationItemCommand updateQuotationItemCommand)
+    [HttpPut("{quotationId:guid}/items/{lineId:int}")]
+    public async Task<IActionResult> UpdateItem(Guid quotationId, int lineId, [FromBody] UpdateQuotationItemCommand updateQuotationItemCommand)
     {
-        if (updateQuotationItemCommand.QuotationId != id)
+        if (updateQuotationItemCommand.QuotationId != quotationId)
         {
-            return ToBadRequest(new ValidationResult([new ValidationFailure("Id", "Invalid id")]));
+            return ToBadRequest(new ValidationResult([new ValidationFailure("QuotationId", "Invalid quotation id")]));
         }
 
         if (updateQuotationItemCommand.LineId != lineId)
@@ -146,7 +147,7 @@ public class QuotationsController : MainController
 
         var result = await Mediator.Send(updateQuotationItemCommand);
 
-        return ToNoContent(result);
+        return ToOk(result, Mapper.Map<QuotationOutputDto>);
     }
 
     [HttpDelete("{id:guid}")]
@@ -159,20 +160,20 @@ public class QuotationsController : MainController
 
         var result = await Mediator.Send(command);
 
-        return ToNoContent(result);
+        return ToOk(result, Mapper.Map<QuotationOutputDto>);
     }
 
-    [HttpDelete("{id:guid}/items/{lineId:int}")]
-    public async Task<IActionResult> DeleteItem(Guid id, int lineId)
+    [HttpDelete("{quotationId:guid}/items/{lineId:int}")]
+    public async Task<IActionResult> DeleteItem(Guid quotationId, int lineId)
     {
         var command = new DeleteQuotationItemCommand()
         {
-            QuotationId = id,
+            QuotationId = quotationId,
             LineId = lineId
         };
 
         var result = await Mediator.Send(command);
 
-        return ToNoContent(result);
+        return ToOk(result, Mapper.Map<QuotationOutputDto>);
     }
 }

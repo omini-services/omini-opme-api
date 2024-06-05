@@ -8,7 +8,10 @@ internal class HospitalMapping : IEntityTypeConfiguration<Hospital>
 {
     public void Configure(EntityTypeBuilder<Hospital> builder)
     {
-        builder.HasKey(x => x.Id);
+        builder.HasKey(x => x.Code);
+
+        builder.Property(x => x.Code)
+            .HasMaxLength(50);
 
         builder.OwnsOne(x => x.Name)
             .Property(x => x.TradeName)

@@ -30,16 +30,9 @@ internal sealed class OpmeContext : DbContext
 
         builder.EnableSoftDelete();
 
+        builder.ApplyDefaultRules();
+
         base.OnModelCreating(builder);
-    }
-
-    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-    {
-        configurationBuilder
-            .Properties<string>()
-            .HaveMaxLength(100);
-
-        base.ConfigureConventions(configurationBuilder);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

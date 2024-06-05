@@ -21,10 +21,7 @@ public class PhysiciansControllerTests : IntegrationTest
         //assert
         response.StatusCode.Should().Be(StatusCodes.Status201Created);
 
-        fakePhysician.Should().BeEquivalentTo(physicianOutputDto,
-            options =>
-                options.Excluding(p => p.Id)
-        );
+        fakePhysician.Should().BeEquivalentTo(physicianOutputDto);
     }
 
     [Fact]
@@ -36,14 +33,16 @@ public class PhysiciansControllerTests : IntegrationTest
         //act
         var physician = (await TestClient.Request("/api/physicians").AsAuthenticated().PostJsonAsync(fakePhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
 
-        var physicianUpdateCommand = PhysicianFaker.GetFakePhysicianUpdateCommand(physician.Id);
+        var physicianUpdateCommand = PhysicianFaker.GetFakePhysicianUpdateCommand(physician.Code);
 
-        var updatePhysicianResponse = await TestClient.Request($"/api/physicians/{physician.Id}").AsAuthenticated().PutJsonAsync(physicianUpdateCommand);
-        var physicianAfterUpdate = (await TestClient.Request($"/api/physicians/{physician.Id}").AsAuthenticated().GetAsync().ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
+        var updatePhysicianResponse = await TestClient.Request($"/api/physicians/{physician.Code}").AsAuthenticated().PutJsonAsync(physicianUpdateCommand);
+        var updatePhysicianData = (await updatePhysicianResponse.GetJsonAsync<ResponseDto<PhysicianOutputDto>>()).Data;
+        var physicianAfterUpdate = (await TestClient.Request($"/api/physicians/{physician.Code}").AsAuthenticated().GetAsync().ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
 
         //assert
-        updatePhysicianResponse.StatusCode.Should().Be(StatusCodes.Status204NoContent);
-        physicianAfterUpdate.Should().BeEquivalentTo(physicianUpdateCommand);
+        updatePhysicianResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
+        physicianAfterUpdate.Should().BeEquivalentTo(updatePhysicianData);        
+        physicianUpdateCommand.Should().BeEquivalentTo(updatePhysicianData);
     }   
 
     [Fact]
@@ -55,11 +54,11 @@ public class PhysiciansControllerTests : IntegrationTest
         //act
         var physician = (await TestClient.Request("/api/physicians").AsAuthenticated().PostJsonAsync(fakePhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
 
-        var deleteHospitalResponse = await TestClient.Request($"/api/physicians/{physician.Id}").AsAuthenticated().DeleteAsync();
-        var physicianAfterDeleteResponse = await TestClient.Request($"/api/physicians/{physician.Id}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
+        var deleteHospitalResponse = await TestClient.Request($"/api/physicians/{physician.Code}").AsAuthenticated().DeleteAsync();
+        var physicianAfterDeleteResponse = await TestClient.Request($"/api/physicians/{physician.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
 
         //assert
-        deleteHospitalResponse.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+        deleteHospitalResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
         physicianAfterDeleteResponse.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
@@ -71,7 +70,7 @@ public class PhysiciansControllerTests : IntegrationTest
 
         //act
         var physician = (await TestClient.Request("/api/physicians").AsAuthenticated().PostJsonAsync(fakePhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
-        var physicianResponse = await TestClient.Request($"/api/physicians/{physician.Id}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
+        var physicianResponse = await TestClient.Request($"/api/physicians/{physician.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
         var physicianData = (await physicianResponse.GetJsonAsync<ResponseDto<PhysicianOutputDto>>()).Data;
 
         //assert

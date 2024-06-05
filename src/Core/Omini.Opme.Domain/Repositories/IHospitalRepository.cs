@@ -2,6 +2,6 @@ using Omini.Opme.Domain.BusinessPartners;
 
 namespace Omini.Opme.Domain.Repositories;
 
-public interface IHospitalRepository : IRepository<Hospital>
+public interface IHospitalRepository : IRespositoryMasterEntity<Hospital>
 {
 }

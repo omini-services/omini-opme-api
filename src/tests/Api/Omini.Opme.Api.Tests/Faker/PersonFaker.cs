@@ -1,5 +1,5 @@
 using Bogus;
-using Omini.Opme.Domain;
+using Omini.Opme.Domain.ValueObjects;
 
 namespace Omini.Opme.Api.Tests;
 

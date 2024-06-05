@@ -11,13 +11,14 @@ public static class InsuranceCompanyFaker
         var companyName = CompanyFaker.CompanyName();
 
         return new Faker<CreateInsuranceCompanyCommand>()
+            .RuleFor(o => o.Code, f => Guid.NewGuid().ToString())
             .RuleFor(o => o.LegalName, f => companyName.LegalName)
             .RuleFor(o => o.TradeName, f => companyName.TradeName)
             .RuleFor(o => o.Cnpj, f => f.Company.Cnpj())
             .RuleFor(o => o.Comments, f => f.Company.Bs());
     }
 
-    public static UpdateInsuranceCompanyCommand GetFakeInsuranceCompanyUpdateCommand(Guid id)
+    public static UpdateInsuranceCompanyCommand GetFakeInsuranceCompanyUpdateCommand(string code)
     {
         var companyName = CompanyFaker.CompanyName();
 
@@ -27,7 +28,7 @@ public static class InsuranceCompanyFaker
             .RuleFor(o => o.Cnpj, f => f.Company.Cnpj())
             .RuleFor(o => o.Comments, f => f.Company.Bs()).Generate();
 
-        faker.Id = id;
+        faker.Code = code;
 
         return faker;
     }

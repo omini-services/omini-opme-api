@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using FluentAssertions.Extensions;
 using Omini.Opme.Shared.Constants;
 
 namespace Omini.Opme.Api.Tests.Authentication;

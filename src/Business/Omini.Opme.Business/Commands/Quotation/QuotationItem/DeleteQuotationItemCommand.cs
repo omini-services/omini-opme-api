@@ -29,13 +29,13 @@ public record DeleteQuotationItemCommand : ICommand<Quotation>
             var quotation = await _quotationRepository.GetById(request.QuotationId, cancellationToken);
             if (quotation is null)
             {
-                validationFailures.Add(new ValidationFailure(nameof(request.QuotationId), "Invalid Id"));
+                validationFailures.Add(new ValidationFailure(nameof(request.QuotationId), "Invalid line id"));
             }
 
             var quotationItem = quotation.Items.SingleOrDefault(i => i.LineId == request.LineId);
             if (quotationItem is null)
             {
-                validationFailures.Add(new ValidationFailure(nameof(request.QuotationId), "Invalid Id"));
+                validationFailures.Add(new ValidationFailure(nameof(request.LineId), "Invalid line id"));
             }
 
             if (validationFailures.Any())

@@ -26,13 +26,17 @@ public class QuotationsControllerTests : IntegrationTest
         var faker = new Faker();
 
         var quotationCreateCommand = QuotationFaker.GetFakeQuotationCreateCommand(itemOutputDtos);
-        quotationCreateCommand.HospitalId = hospitalOutputDto.Data.Id;
-        quotationCreateCommand.InsuranceCompanyId = insuranceCompanyOutputDto.Data.Id;
-        quotationCreateCommand.PhysicianId = physicianOutputDto.Data.Id;
-        quotationCreateCommand.InternalSpecialistId = Guid.NewGuid();
-        quotationCreateCommand.PatientId = patientOutputDto.Data.Id;
+        quotationCreateCommand.HospitalCode = hospitalOutputDto.Data.Code;
+        quotationCreateCommand.HospitalName = hospitalOutputDto.Data.TradeName;
+        quotationCreateCommand.InsuranceCompanyCode = insuranceCompanyOutputDto.Data.Code;
+        quotationCreateCommand.InsuranceCompanyName = insuranceCompanyOutputDto.Data.TradeName;
+        quotationCreateCommand.PhysicianCode = physicianOutputDto.Data.Code;
+        quotationCreateCommand.PhysicianName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientCode = patientOutputDto.Data.Code;
+        quotationCreateCommand.PatientName = patientOutputDto.Data.FirstName;
         quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
-        quotationCreateCommand.PayingSourceId = hospitalOutputDto.Data.Id;
+        quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
+        quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
 
         //act
         var response = await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand);
@@ -72,22 +76,28 @@ public class QuotationsControllerTests : IntegrationTest
         var faker = new Faker();
 
         var quotationCreateCommand = QuotationFaker.GetFakeQuotationCreateCommand(itemOutputDtos);
-        quotationCreateCommand.HospitalId = hospitalOutputDto.Data.Id;
-        quotationCreateCommand.InsuranceCompanyId = insuranceCompanyOutputDto.Data.Id;
-        quotationCreateCommand.PhysicianId = physicianOutputDto.Data.Id;
-        quotationCreateCommand.InternalSpecialistId = Guid.NewGuid();
-        quotationCreateCommand.PatientId = patientOutputDto.Data.Id;
+        quotationCreateCommand.HospitalCode = hospitalOutputDto.Data.Code;
+        quotationCreateCommand.HospitalName = hospitalOutputDto.Data.TradeName;
+        quotationCreateCommand.InsuranceCompanyCode = insuranceCompanyOutputDto.Data.Code;
+        quotationCreateCommand.InsuranceCompanyName = insuranceCompanyOutputDto.Data.TradeName;
+        quotationCreateCommand.PhysicianCode = physicianOutputDto.Data.Code;
+        quotationCreateCommand.PhysicianName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientCode = patientOutputDto.Data.Code;
+        quotationCreateCommand.PatientName = patientOutputDto.Data.FirstName;
         quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
-        quotationCreateCommand.PayingSourceId = hospitalOutputDto.Data.Id;
+        quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
+        quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
+
 
         //act
         var quotation = (await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
 
         var deleteQuotationResponse = await TestClient.Request($"/api/quotations/{quotation.Id}").AsAuthenticated().DeleteAsync();
+        var deleteQuotationData = (await deleteQuotationResponse.GetJsonAsync<ResponseDto<QuotationOutputDto>>()).Data;
         var quotationAfterDeleteResponse = await TestClient.Request($"/api/quotations/{quotation.Id}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
 
         //assert
-        deleteQuotationResponse.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+        deleteQuotationResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
         quotationAfterDeleteResponse.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
@@ -98,13 +108,17 @@ public class QuotationsControllerTests : IntegrationTest
         await Seed();
 
         var quotationCreateCommand = QuotationFaker.GetFakeQuotationCreateCommand(itemOutputDtos);
-        quotationCreateCommand.HospitalId = hospitalOutputDto.Data.Id;
-        quotationCreateCommand.InsuranceCompanyId = insuranceCompanyOutputDto.Data.Id;
-        quotationCreateCommand.PhysicianId = physicianOutputDto.Data.Id;
-        quotationCreateCommand.InternalSpecialistId = Guid.NewGuid();
-        quotationCreateCommand.PatientId = patientOutputDto.Data.Id;
+        quotationCreateCommand.HospitalCode = hospitalOutputDto.Data.Code;
+        quotationCreateCommand.HospitalName = hospitalOutputDto.Data.TradeName;
+        quotationCreateCommand.InsuranceCompanyCode = insuranceCompanyOutputDto.Data.Code;
+        quotationCreateCommand.InsuranceCompanyName = insuranceCompanyOutputDto.Data.TradeName;
+        quotationCreateCommand.PhysicianCode = physicianOutputDto.Data.Code;
+        quotationCreateCommand.PhysicianName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientCode = patientOutputDto.Data.Code;
+        quotationCreateCommand.PatientName = patientOutputDto.Data.FirstName;
         quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
-        quotationCreateCommand.PayingSourceId = hospitalOutputDto.Data.Id;
+        quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
+        quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
 
         var quotation = (await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
 
@@ -149,13 +163,17 @@ public class QuotationsControllerTests : IntegrationTest
         await Seed();
 
         var quotationCreateCommand = QuotationFaker.GetFakeQuotationCreateCommand(itemOutputDtos);
-        quotationCreateCommand.HospitalId = hospitalOutputDto.Data.Id;
-        quotationCreateCommand.InsuranceCompanyId = insuranceCompanyOutputDto.Data.Id;
-        quotationCreateCommand.PhysicianId = physicianOutputDto.Data.Id;
-        quotationCreateCommand.InternalSpecialistId = Guid.NewGuid();
-        quotationCreateCommand.PatientId = patientOutputDto.Data.Id;
+        quotationCreateCommand.HospitalCode = hospitalOutputDto.Data.Code;
+        quotationCreateCommand.HospitalName = hospitalOutputDto.Data.TradeName;
+        quotationCreateCommand.InsuranceCompanyCode = insuranceCompanyOutputDto.Data.Code;
+        quotationCreateCommand.InsuranceCompanyName = insuranceCompanyOutputDto.Data.TradeName;
+        quotationCreateCommand.PhysicianCode = physicianOutputDto.Data.Code;
+        quotationCreateCommand.PhysicianName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientCode = patientOutputDto.Data.Code;
+        quotationCreateCommand.PatientName = patientOutputDto.Data.FirstName;
         quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
-        quotationCreateCommand.PayingSourceId = hospitalOutputDto.Data.Id;
+        quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
+        quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
 
         var quotation = (await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
         var lineIdToUpdate = quotation.Items[0].LineId;
@@ -177,7 +195,7 @@ public class QuotationsControllerTests : IntegrationTest
         var quotationAfterUpdate = (await TestClient.Request($"/api/quotations/{quotation.Id}").AsAuthenticated().GetJsonAsync<ResponseDto<QuotationOutputDto>>()).Data;
 
         //assert
-        updateQuotationResponse.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+        updateQuotationResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
 
         var updatedItem = quotationAfterUpdate.Items.Single(p => p.LineId == lineIdToUpdate);
 
@@ -198,13 +216,17 @@ public class QuotationsControllerTests : IntegrationTest
         await Seed();
 
         var quotationCreateCommand = QuotationFaker.GetFakeQuotationCreateCommand(itemOutputDtos);
-        quotationCreateCommand.HospitalId = hospitalOutputDto.Data.Id;
-        quotationCreateCommand.InsuranceCompanyId = insuranceCompanyOutputDto.Data.Id;
-        quotationCreateCommand.PhysicianId = physicianOutputDto.Data.Id;
-        quotationCreateCommand.InternalSpecialistId = Guid.NewGuid();
-        quotationCreateCommand.PatientId = patientOutputDto.Data.Id;
+        quotationCreateCommand.HospitalCode = hospitalOutputDto.Data.Code;
+        quotationCreateCommand.HospitalName = hospitalOutputDto.Data.TradeName;
+        quotationCreateCommand.InsuranceCompanyCode = insuranceCompanyOutputDto.Data.Code;
+        quotationCreateCommand.InsuranceCompanyName = insuranceCompanyOutputDto.Data.TradeName;
+        quotationCreateCommand.PhysicianCode = physicianOutputDto.Data.Code;
+        quotationCreateCommand.PhysicianName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientCode = patientOutputDto.Data.Code;
+        quotationCreateCommand.PatientName = patientOutputDto.Data.FirstName;
         quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
-        quotationCreateCommand.PayingSourceId = hospitalOutputDto.Data.Id;
+        quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
+        quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
 
         var quotation = (await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
 
@@ -215,7 +237,7 @@ public class QuotationsControllerTests : IntegrationTest
         var quotationAfterUpdate = quotationAfterUpdateResponse.Data;
 
         //assert
-        updateQuotationResponse.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+        updateQuotationResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
 
         quotationAfterUpdate.Items.Should().HaveCount(quotation.Items.Count - 1);
 

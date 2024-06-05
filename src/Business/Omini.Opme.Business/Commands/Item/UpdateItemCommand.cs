@@ -9,7 +9,6 @@ namespace Omini.Opme.Business.Commands;
 
 public record UpdateItemCommand : ICommand<Item>
 {
-    public Guid Id { get; set; }
     public string Code { get; set; }
     public string Name { get; set; }
     public string SalesName { get; set; }
@@ -35,10 +34,10 @@ public record UpdateItemCommand : ICommand<Item>
 
         public async Task<Result<Item, ValidationResult>> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
         {
-            var item = await _itemRepository.GetById(request.Id, cancellationToken);
+            var item = await _itemRepository.GetByCode(request.Code, cancellationToken);
             if (item is null)
             {
-                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+                return new ValidationResult([new ValidationFailure(nameof(request.Code), "Invalid code")]);
             }
 
             item.SetData(

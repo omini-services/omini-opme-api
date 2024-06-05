@@ -2,6 +2,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Omini.Opme.Api.Dtos;
 using Omini.Opme.Business.Commands;
+using Omini.Opme.Business.Queries;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Shared.Entities;
 
@@ -18,18 +19,18 @@ public class ItemsController : MainController
     }
 
     [HttpGet]
-    public async Task<ActionResult<PagedResult<ItemOutputDto>>> Get([FromServices] IItemRepository repository)
+    public async Task<ActionResult<PagedResult<ItemOutputDto>>> Get([FromQuery] QueryFilter queryFilter, [FromQuery] PaginationFilter paginationFilter)
     {
-        var items = await repository.GetAllPaginated();
+        var items = await Mediator.Send(new GetAllItemsQuery(queryFilter, paginationFilter));
         var result = Mapper.Map<PagedResult<ItemOutputDto>>(items);
 
         return Ok(ResponseDto.ApiSuccess(result));
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<ItemOutputDto>> GetById([FromServices] IItemRepository repository, Guid id)
+    [HttpGet("{code}")]
+    public async Task<ActionResult<ItemOutputDto>> GetByCode([FromServices] IItemRepository repository, string code)
     {
-        var item = await repository.GetById(id);
+        var item = await repository.GetByCode(code);
 
         if (item is null)
         {
@@ -47,32 +48,32 @@ public class ItemsController : MainController
     {
         var result = await Mediator.Send(createItemCommand);
 
-        return ToCreatedAtRoute(result, Mapper.Map<ItemOutputDto>, nameof(ItemsController), nameof(this.GetById), (mapped) => new { id = mapped.Id });
+        return ToCreatedAtRoute(result, Mapper.Map<ItemOutputDto>, nameof(ItemsController), nameof(this.GetByCode), (mapped) => new { code = mapped.Code });
     }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateItemCommand updateItemCommand)
+    [HttpPut("{code}")]
+    public async Task<IActionResult> Update(string code, [FromBody] UpdateItemCommand updateItemCommand)
     {
-        if (updateItemCommand.Id != id)
+        if (updateItemCommand.Code != code)
         {
-            return ToBadRequest(new ValidationResult([new ValidationFailure("Id", "Invalid id")]));
-        }        
+            return ToBadRequest(new ValidationResult([new ValidationFailure("Code", "Invalid code")]));
+        }
 
         var result = await Mediator.Send(updateItemCommand);
 
-        return ToNoContent(result);
+        return ToOk(result, Mapper.Map<ItemOutputDto>);
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id)
+    [HttpDelete("{code}")]
+    public async Task<IActionResult> Delete(string code)
     {
         var command = new DeleteItemCommand()
         {
-            Id = id
+            Code = code
         };
 
         var result = await Mediator.Send(command);
 
-        return ToNoContent(result);
+        return ToOk(result, Mapper.Map<ItemOutputDto>);
     }
 }

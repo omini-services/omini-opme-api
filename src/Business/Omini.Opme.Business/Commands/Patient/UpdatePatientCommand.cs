@@ -1,16 +1,16 @@
 using FluentValidation.Results;
 using Omini.Opme.Application.Abstractions.Messaging;
-using Omini.Opme.Domain;
 using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Domain.Transactions;
+using Omini.Opme.Domain.ValueObjects;
 using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Business.Commands;
 
 public record UpdatePatientCommand : ICommand<Patient>
 {
-    public Guid Id { get; set; }
+    public string Code { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string? MiddleName { get; set; }
@@ -29,13 +29,15 @@ public record UpdatePatientCommand : ICommand<Patient>
 
         public async Task<Result<Patient, ValidationResult>> Handle(UpdatePatientCommand request, CancellationToken cancellationToken)
         {
-            var patient = await _patientRepository.GetById(request.Id, cancellationToken);
+            var patient = await _patientRepository.GetByCode(request.Code, cancellationToken);
             if (patient is null)
             {
-                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+                return new ValidationResult([new ValidationFailure(nameof(request.Code), "Invalid code")]);
             }
 
-            patient.SetData(name: new PersonName(request.FirstName, request.LastName, request.MiddleName),
+            patient.SetData(
+                code: request.Code,
+                name: new PersonName(request.FirstName, request.LastName, request.MiddleName),
                 cpf: request.Cpf,
                 comments: request.Comments);
 

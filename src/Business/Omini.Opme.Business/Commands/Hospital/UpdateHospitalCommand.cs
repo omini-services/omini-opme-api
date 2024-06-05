@@ -1,9 +1,9 @@
 using FluentValidation.Results;
 using Omini.Opme.Application.Abstractions.Messaging;
-using Omini.Opme.Domain;
 using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Domain.Transactions;
+using Omini.Opme.Domain.ValueObjects;
 using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Business.Commands;
@@ -11,6 +11,7 @@ namespace Omini.Opme.Business.Commands;
 public record UpdateHospitalCommand : ICommand<Hospital>
 {
     public Guid Id { get; set; }
+    public string Code { get; set; }
     public string LegalName { get; set; }
     public string TradeName { get; set; }
     public string Cnpj { get; set; }
@@ -28,13 +29,15 @@ public record UpdateHospitalCommand : ICommand<Hospital>
 
         public async Task<Result<Hospital, ValidationResult>> Handle(UpdateHospitalCommand request, CancellationToken cancellationToken)
         {
-            var hospital = await _hospitalRepository.GetById(request.Id, cancellationToken);
+            var hospital = await _hospitalRepository.GetByCode(request.Code, cancellationToken);
             if (hospital is null)
             {
-                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+                return new ValidationResult([new ValidationFailure(nameof(request.Code), "Invalid code")]);
             }
 
-            hospital.SetData(name: new CompanyName(request.LegalName, request.TradeName),
+            hospital.SetData(
+                code: request.Code,
+                name: new CompanyName(request.LegalName, request.TradeName),
                 cnpj: request.Cnpj,
                 comments: request.Comments);
 

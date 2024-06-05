@@ -2,43 +2,39 @@ using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Api.Dtos;
 
-internal record ResponseDto
+public record ResponseDto
 {
     public static ResponseDto ApiSuccess<T>(T body)
     {
         return new ResponseDto<T>()
         {
-            Success = true,
             Data = body!
         };
     }
 
-    public static ResponseDto ApiSuccess<T>(PagedResult<T> body)
+    public static ResponsePagedDto<T> ApiSuccess<T>(PagedResult<T> body)
     {
         return new ResponsePagedDto<T>()
         {
-            Success = true,
             Data = body?.Response!,
-            PageNumber = body.PageNumber,
+            CurrentPage = body.CurrentPage,
             PageSize = body.PageSize,
-            TotalCount = body.TotalCount,
-            TotalPages = body.TotalPages,
+            RowCount = body.RowCount,
+            PageCount = body.PageCount,
         };
     }
 }
 
-internal record ResponseDto<T> : ResponseDto
+public record ResponseDto<T> : ResponseDto
 {
-    public bool Success { get; init; }
     public T Data { get; init; }
 }
 
-internal record ResponsePagedDto<T> : ResponseDto
+public record ResponsePagedDto<T> : ResponseDto
 {
-    public bool Success { get; init; }
-    public int PageNumber { get; init; }
+    public int CurrentPage { get; init; }
     public int PageSize { get; init; }
-    public int TotalCount { get; init; }
-    public int TotalPages { get; init; }
+    public int RowCount { get; init; }
+    public int PageCount { get; init; }
     public IEnumerable<T> Data { get; init; }
 }

@@ -26,7 +26,7 @@ public record PreviewQuotationCommand : ICommand<byte[]>
             var quotation = await _quotationRepository.GetById(request.Id);
             if (quotation is null)
             {
-                validationFailures.Add(new ValidationFailure(nameof(request.Id), "Invalid Id"));
+                validationFailures.Add(new ValidationFailure(nameof(request.Id), "Invalid id"));
             }
 
             if (validationFailures.Any())

@@ -8,7 +8,11 @@ internal class PhysicianMapping : IEntityTypeConfiguration<Physician>
 {
     public void Configure(EntityTypeBuilder<Physician> builder)
     {
-        builder.HasKey(x => x.Id);
+        builder.HasKey(x => x.Code);
+
+        builder.Property(x => x.Code)
+            .HasMaxLength(50)
+            .IsRequired();
 
         builder.OwnsOne(x => x.Name)
             .Property(x => x.FirstName)

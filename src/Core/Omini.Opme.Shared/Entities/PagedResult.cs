@@ -2,28 +2,28 @@
 
 public class PagedResult<TValue>
 {
-    public int PageNumber { get; protected set; }
+    public int CurrentPage { get; protected set; }
     public int PageSize { get; protected set; }
-    public int TotalCount { get; protected set; }
-    public int TotalPages { get; protected set; }
+    public int RowCount { get; protected set; }
+    public int PageCount { get; protected set; }
 
     private readonly List<TValue>? _value;
 
     public List<TValue>? Response { get { return _value; } }
 
-    public PagedResult(IEnumerable<TValue> source, int pageNumber, int pageSize)
+    public PagedResult(IEnumerable<TValue> source, int currentPage, int pageSize)
     {
         _value = new();
-        Initialize(source, pageNumber, pageSize);
+        Initialize(source, currentPage, pageSize);
     }
 
-    public PagedResult(IEnumerable<TValue> source, int pageNumber, int pageSize, int totalCount)
+    public PagedResult(IEnumerable<TValue> source, int currentPage, int pageSize, int rowCount)
     {
         _value = new();
-        Initialize(source, pageNumber, pageSize, totalCount);
+        Initialize(source, currentPage, pageSize, rowCount);
     }
 
-    private void Initialize(IEnumerable<TValue>? source, int pageNumber, int pageSize, int? totalCount = null)
+    private void Initialize(IEnumerable<TValue>? source, int currentPage, int pageSize, int? rowCount = null)
     {
         if (source is null)
         {
@@ -33,18 +33,18 @@ public class PagedResult<TValue>
         if (pageSize <= 0)
             pageSize = 1;
 
-        TotalCount = totalCount ?? source.Count();
+        RowCount = rowCount ?? source.Count();
 
         if (pageSize > 0)
         {
-            TotalPages = TotalCount / pageSize;
-            if (TotalCount % pageSize > 0)
-                TotalPages++;
+            PageCount = RowCount / pageSize;
+            if (RowCount % pageSize > 0)
+                PageCount++;
         }
 
         PageSize = pageSize;
-        PageNumber = pageNumber;
-        source = totalCount == null ? source.Skip(pageNumber * pageSize).Take(pageSize) : source;
+        CurrentPage = currentPage;
+        source = rowCount == null ? source.Skip(currentPage * pageSize).Take(pageSize) : source;
         _value.AddRange(source);
     }
 }

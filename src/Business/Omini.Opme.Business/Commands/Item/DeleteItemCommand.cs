@@ -8,7 +8,7 @@ namespace Omini.Opme.Business.Commands;
 
 public record DeleteItemCommand : ICommand<Item>
 {
-    public Guid Id { get; init; }
+    public string Code { get; init; }
 
     public class DeleteItemCommandHandler : ICommandHandler<DeleteItemCommand, Item>
     {
@@ -23,14 +23,14 @@ public record DeleteItemCommand : ICommand<Item>
 
         public async Task<Result<Item, ValidationResult>> Handle(DeleteItemCommand request, CancellationToken cancellationToken)
         {
-            var item = await _itemRepository.GetById(request.Id, cancellationToken);
+            var item = await _itemRepository.GetByCode(request.Code, cancellationToken);
             if (item is null)
             {
-                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+                return new ValidationResult([new ValidationFailure(nameof(request.Code), "Invalid code")]);
             }
 
             _itemRepository.Delete(item, cancellationToken);
-                        await _unitOfWork.Commit(cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
             return item;
         }

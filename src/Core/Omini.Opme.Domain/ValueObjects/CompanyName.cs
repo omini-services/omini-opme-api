@@ -1,5 +1,4 @@
-
-namespace Omini.Opme.Domain;
+namespace Omini.Opme.Domain.ValueObjects;
 
 public class CompanyName : ValueObject
 {

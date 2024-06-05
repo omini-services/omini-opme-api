@@ -36,13 +36,13 @@ public record CreateQuotationItemCommand : ICommand<Quotation>
             var quotation = await _quotationRepository.GetById(request.QuotationId, cancellationToken);
             if (quotation is null)
             {
-                validationFailures.Add(new ValidationFailure(nameof(request.QuotationId), "Invalid Id"));
+                validationFailures.Add(new ValidationFailure(nameof(request.QuotationId), "Invalid quotation id"));
             }
 
             var item = await _itemRepository.GetByCode(request.ItemCode, cancellationToken);
             if (item is null)
             {
-                validationFailures.Add(new ValidationFailure(nameof(request.ItemCode), "Invalid ItemCode"));
+                validationFailures.Add(new ValidationFailure(nameof(request.ItemCode), "Invalid item code"));
             }
 
             if (validationFailures.Any())
@@ -50,11 +50,7 @@ public record CreateQuotationItemCommand : ICommand<Quotation>
                 return new ValidationResult(validationFailures);
             }
 
-            var items = quotation.Items;
-            var newLineId = items.Max(i => i.LineId) + 1;
-
             quotation.AddItem(
-                itemId: item.Id,
                 itemCode: item.Code,
                 itemName: item.Name,
                 referenceCode: "ref",

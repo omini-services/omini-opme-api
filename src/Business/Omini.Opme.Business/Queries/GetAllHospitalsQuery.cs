@@ -1,4 +1,3 @@
-using FluentValidation.Results;
 using Omini.Opme.Application.Abstractions.Messaging;
 using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Domain.Repositories;
@@ -10,12 +9,14 @@ public class GetAllHospitalsQuery : IQuery<Hospital>
 {
     public GetAllHospitalsQuery() { }
 
-    public GetAllHospitalsQuery(PaginationFilter paginationFilter)
+    public GetAllHospitalsQuery(QueryFilter queryFilter, PaginationFilter paginationFilter)
     {
+        QueryFilter = queryFilter;
         PaginationFilter = paginationFilter;
     }
-
     public PaginationFilter PaginationFilter { get; set; }
+    public QueryFilter QueryFilter { get; set; }
+
     public class GetAllHospitalsQueryHandler : IQueryHandler<GetAllHospitalsQuery, Hospital>
     {
         private readonly IHospitalRepository _hospitalRepository;
@@ -26,7 +27,14 @@ public class GetAllHospitalsQuery : IQuery<Hospital>
 
         public async Task<PagedResult<Hospital>> Handle(GetAllHospitalsQuery request, CancellationToken cancellationToken)
         {
-            var hospitals = await _hospitalRepository.GetAllPaginated(request.PaginationFilter.PageNumber, request.PaginationFilter.PageSize, cancellationToken);            
+            var hospitals = await _hospitalRepository.GetAll(
+                currentPage: request.PaginationFilter.CurrentPage,
+                pageSize: request.PaginationFilter.PageSize,
+                orderByField: request.PaginationFilter.OrderBy,
+                sortDirection: request.PaginationFilter.Direction,
+                queryField: request.QueryFilter.QueryField,
+                queryValue: request.QueryFilter.QueryValue,
+                cancellationToken);
 
             return hospitals;
         }

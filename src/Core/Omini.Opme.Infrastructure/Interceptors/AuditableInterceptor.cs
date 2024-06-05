@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Omini.Opme.Domain.Entities;
+using Omini.Opme.Domain.Common;
 using Omini.Opme.Domain.Exceptions;
 using Omini.Opme.Shared.Services.Security;
 
@@ -40,17 +39,17 @@ public sealed class AuditableInterceptor : SaveChangesInterceptor
             throw new InvalidUserException();
         }
 
-        IEnumerable<EntityEntry<Auditable>> auditables =
+        var auditables =
                     eventData
                         .Context
-                        .ChangeTracker
-                        .Entries<Auditable>()
-                        .Where(e => e.State == EntityState.Added);
+                        .ChangeTracker.Entries()
+                        .Where(e => typeof(IAuditable).IsAssignableFrom(e.Entity.GetType()) && e.State == EntityState.Added);
 
-        foreach (EntityEntry<Auditable> auditable in auditables)
+        foreach (var auditable in auditables)
         {
-            auditable.Entity.CreatedBy = opmeUserId.Value;
-            auditable.Entity.CreatedOn = DateTime.UtcNow;
+            var auditableEntity = auditable.Entity as IAuditable;
+            auditableEntity.CreatedBy = opmeUserId.Value;
+            auditableEntity.CreatedOn = DateTime.UtcNow;
         }
     }
 
@@ -62,17 +61,17 @@ public sealed class AuditableInterceptor : SaveChangesInterceptor
             throw new InvalidUserException();
         }
 
-        IEnumerable<EntityEntry<Auditable>> auditables =
+        var auditables =
                     eventData
                         .Context
-                        .ChangeTracker
-                        .Entries<Auditable>()
-                        .Where(e => e.State == EntityState.Modified);
+                        .ChangeTracker.Entries()
+                        .Where(e => typeof(IAuditable).IsAssignableFrom(e.Entity.GetType()) && e.State == EntityState.Modified);
 
-        foreach (EntityEntry<Auditable> auditable in auditables)
+        foreach (var auditable in auditables)
         {
-            auditable.Entity.UpdatedBy = opmeUserId.Value;
-            auditable.Entity.UpdatedOn = DateTime.UtcNow;
+            var auditableEntity = auditable.Entity as IAuditable;
+            auditableEntity.UpdatedBy = opmeUserId.Value;
+            auditableEntity.UpdatedOn = DateTime.UtcNow;
         }
     }
 }

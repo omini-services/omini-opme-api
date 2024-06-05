@@ -1,4 +1,4 @@
-namespace Omini.Opme.Domain;
+namespace Omini.Opme.Domain.ValueObjects;
 
 public abstract class ValueObject : IEquatable<ValueObject>
 {

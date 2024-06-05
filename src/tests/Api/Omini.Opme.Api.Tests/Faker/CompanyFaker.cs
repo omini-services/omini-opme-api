@@ -1,6 +1,6 @@
 using Bogus;
 using Bogus.DataSets;
-using Omini.Opme.Domain;
+using Omini.Opme.Domain.ValueObjects;
 
 namespace Omini.Opme.Api.Tests;
 

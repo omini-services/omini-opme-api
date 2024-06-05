@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Omini.Opme.Domain.Entities;
+using Omini.Opme.Domain.Common;
 using Omini.Opme.Domain.Exceptions;
 using Omini.Opme.Shared.Services.Security;
 
@@ -39,19 +38,20 @@ public sealed class SoftDeletableInterceptor : SaveChangesInterceptor
             throw new InvalidUserException();
         }
 
-        IEnumerable<EntityEntry<SoftDeletable>> auditables =
+        var softDeletables =
                     eventData
                         .Context
-                        .ChangeTracker
-                        .Entries<SoftDeletable>()
-                        .Where(e => e.State == EntityState.Deleted);
+                        .ChangeTracker.Entries()
+                        .Where(e => typeof(ISoftDeletable).IsAssignableFrom(e.Entity.GetType()) && e.State == EntityState.Deleted);
 
-        foreach (EntityEntry<SoftDeletable> auditable in auditables)
+        foreach (var softDeletable in softDeletables)
         {
-            auditable.State = EntityState.Modified;
-            auditable.Entity.DeletedBy = opmeUserId.Value;
-            auditable.Entity.DeletedOn = DateTime.UtcNow;
-            auditable.Entity.IsDeleted = true;
+            var auditableEntity = softDeletable.Entity as ISoftDeletable;
+
+            softDeletable.State = EntityState.Modified;
+            auditableEntity.DeletedBy = opmeUserId.Value;
+            auditableEntity.DeletedOn = DateTime.UtcNow;
+            auditableEntity.IsDeleted = true;
         }
     }
 }

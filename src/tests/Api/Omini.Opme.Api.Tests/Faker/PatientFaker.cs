@@ -11,6 +11,7 @@ public static class PatientFaker
         var personName = PersonNameFaker.PersonName();
 
         return new Faker<CreatePatientCommand>()
+            .RuleFor(o => o.Code, f => Guid.NewGuid().ToString())
             .RuleFor(o => o.FirstName, f => personName.FirstName)
             .RuleFor(o => o.LastName, f => personName.LastName)
             .RuleFor(o => o.MiddleName, f => personName.MiddleName)
@@ -18,7 +19,7 @@ public static class PatientFaker
             .RuleFor(o => o.Comments, f => f.Company.Bs());
     }
 
-    public static UpdatePatientCommand GetFakePatientUpdateCommand(Guid id)
+    public static UpdatePatientCommand GetFakePatientUpdateCommand(string code)
     {
         var personName = PersonNameFaker.PersonName();
 
@@ -29,7 +30,7 @@ public static class PatientFaker
             .RuleFor(o => o.Cpf, f => f.Person.Cpf())
             .RuleFor(o => o.Comments, f => f.Company.Bs()).Generate();
 
-        faker.Id = id;
+        faker.Code = code;
 
         return faker;
     }

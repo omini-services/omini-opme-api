@@ -2,6 +2,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Omini.Opme.Api.Dtos;
 using Omini.Opme.Business.Commands;
+using Omini.Opme.Business.Queries;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Shared.Entities;
 
@@ -18,18 +19,18 @@ public class PhysiciansController : MainController
     }
 
     [HttpGet]
-    public async Task<ActionResult<PagedResult<PhysicianOutputDto>>> Get([FromServices] IPhysicianRepository repository)
+    public async Task<ActionResult<PagedResult<PhysicianOutputDto>>> Get([FromQuery] QueryFilter queryFilter, [FromQuery] PaginationFilter paginationFilter)
     {
-        var physicians = await repository.GetAllPaginated();
+        var physicians = await Mediator.Send(new GetAllPhysiciansQuery(queryFilter, paginationFilter));
         var result = Mapper.Map<PagedResult<PhysicianOutputDto>>(physicians);
 
         return Ok(ResponseDto.ApiSuccess(result));
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<PhysicianOutputDto>> GetById([FromServices] IPhysicianRepository repository, Guid id)
+    [HttpGet("{code}")]
+    public async Task<ActionResult<PhysicianOutputDto>> GetByCode([FromServices] IPhysicianRepository repository, string code)
     {
-        var physician = await repository.GetById(id);
+        var physician = await repository.GetByCode(code);
 
         if (physician is null)
         {
@@ -47,32 +48,32 @@ public class PhysiciansController : MainController
     {
         var result = await Mediator.Send(createPhysicianCommand);
 
-        return ToCreatedAtRoute(result, Mapper.Map<PhysicianOutputDto>, nameof(PhysiciansController), nameof(this.GetById), (mapped) => new { id = mapped.Id });
+        return ToCreatedAtRoute(result, Mapper.Map<PhysicianOutputDto>, nameof(PhysiciansController), nameof(this.GetByCode), (mapped) => new { code = mapped.Code });
     }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdatePhysicianCommand updatePhysicianCommand)
+    [HttpPut("{code}")]
+    public async Task<IActionResult> Update(string code, [FromBody] UpdatePhysicianCommand updatePhysicianCommand)
     {
-        if (updatePhysicianCommand.Id != id)
+        if (updatePhysicianCommand.Code != code)
         {
-            return ToBadRequest(new ValidationResult([new ValidationFailure("Id", "Invalid id")]));
+            return ToBadRequest(new ValidationResult([new ValidationFailure("Code", "Invalid code")]));
         }
 
         var result = await Mediator.Send(updatePhysicianCommand);
 
-        return ToNoContent(result);
+        return ToOk(result, Mapper.Map<PhysicianOutputDto>);
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id)
+    [HttpDelete("{code}")]
+    public async Task<IActionResult> Delete(string code)
     {
         var command = new DeletePhysicianCommand()
         {
-            Id = id
+            Code = code
         };
 
         var result = await Mediator.Send(command);
 
-        return ToNoContent(result);
+        return ToOk(result, Mapper.Map<PhysicianOutputDto>);
     }
 }

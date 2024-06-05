@@ -1,4 +1,3 @@
-using FluentValidation.Results;
 using MediatR;
 using Omini.Opme.Shared.Entities;
 

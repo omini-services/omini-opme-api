@@ -12,7 +12,7 @@ using Omini.Opme.Infrastructure.Contexts;
 namespace Omini.Opme.Infrastructure.Migrations
 {
     [DbContext(typeof(OpmeContext))]
-    [Migration("20240526212709_InitialDb")]
+    [Migration("20240605021935_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -27,9 +27,9 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             modelBuilder.Entity("Omini.Opme.Domain.Admin.InternalSpecialist", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -43,7 +43,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.ToTable("InternalSpecialists", (string)null);
                 });
@@ -87,14 +87,14 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Hospital", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Cnpj")
                         .IsRequired()
-                        .HasMaxLength(18)
-                        .HasColumnType("character varying(18)");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Comments")
                         .IsRequired()
@@ -113,21 +113,21 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.ToTable("Hospitals", (string)null);
                 });
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.InsuranceCompany", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Cnpj")
                         .IsRequired()
-                        .HasMaxLength(18)
-                        .HasColumnType("character varying(18)");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Comments")
                         .IsRequired()
@@ -146,16 +146,16 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.ToTable("InsuranceCompanies", (string)null);
                 });
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Patient", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Comments")
                         .IsRequired()
@@ -164,8 +164,8 @@ namespace Omini.Opme.Infrastructure.Migrations
 
                     b.Property<string>("Cpf")
                         .IsRequired()
-                        .HasMaxLength(14)
-                        .HasColumnType("character varying(14)");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -179,16 +179,16 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.ToTable("Patients", (string)null);
                 });
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Physician", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Comments")
                         .IsRequired()
@@ -217,7 +217,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.ToTable("Physicians", (string)null);
                 });
@@ -243,11 +243,27 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("HospitalId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("HospitalCode")
+                        .IsRequired()
+                        .HasColumnType("character varying(50)");
 
-                    b.Property<Guid>("InsuranceCompanyId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("HospitalName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("InsuranceCompanyCode")
+                        .IsRequired()
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("InsuranceCompanyName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("InternalSpecialistCode")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -258,18 +274,37 @@ namespace Omini.Opme.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Number"));
 
-                    b.Property<Guid>("PatientId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("PatientCode")
+                        .IsRequired()
+                        .HasColumnType("character varying(50)");
 
-                    b.Property<Guid>("PayingSourceId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("PatientName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("PayingSourceCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("PayingSourceName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("PayingSourceType")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("PhysicianId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("PhysicianCode")
+                        .IsRequired()
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("PhysicianName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("numeric");
@@ -282,13 +317,13 @@ namespace Omini.Opme.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HospitalId");
+                    b.HasIndex("HospitalCode");
 
-                    b.HasIndex("InsuranceCompanyId");
+                    b.HasIndex("InsuranceCompanyCode");
 
-                    b.HasIndex("PatientId");
+                    b.HasIndex("PatientCode");
 
-                    b.HasIndex("PhysicianId");
+                    b.HasIndex("PhysicianCode");
 
                     b.ToTable("Quotations", (string)null);
                 });
@@ -303,19 +338,14 @@ namespace Omini.Opme.Infrastructure.Migrations
 
                     b.Property<string>("AnvisaCode")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("AnvisaDueDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ItemCode")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<Guid>("ItemId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("ItemName")
                         .IsRequired()
@@ -333,24 +363,23 @@ namespace Omini.Opme.Infrastructure.Migrations
 
                     b.Property<string>("ReferenceCode")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("text");
 
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("numeric");
 
                     b.HasKey("QuotationId", "LineId");
 
-                    b.HasIndex("ItemId");
+                    b.HasIndex("ItemCode");
 
                     b.ToTable("QuotationItems", (string)null);
                 });
 
             modelBuilder.Entity("Omini.Opme.Domain.Warehouse.Item", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("AnvisaCode")
                         .HasMaxLength(100)
@@ -358,11 +387,6 @@ namespace Omini.Opme.Infrastructure.Migrations
 
                     b.Property<DateTime?>("AnvisaDueDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -410,17 +434,17 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("Omini.Opme.Domain.Admin.InternalSpecialist", b =>
                 {
-                    b.OwnsOne("Omini.Opme.Domain.PersonName", "Name", b1 =>
+                    b.OwnsOne("Omini.Opme.Domain.ValueObjects.PersonName", "Name", b1 =>
                         {
-                            b1.Property<Guid>("InternalSpecialistId")
-                                .HasColumnType("uuid");
+                            b1.Property<string>("InternalSpecialistCode")
+                                .HasColumnType("character varying(50)");
 
                             b1.Property<string>("FirstName")
                                 .IsRequired()
@@ -439,12 +463,12 @@ namespace Omini.Opme.Infrastructure.Migrations
                                 .HasColumnType("character varying(100)")
                                 .HasColumnName("MiddleName");
 
-                            b1.HasKey("InternalSpecialistId");
+                            b1.HasKey("InternalSpecialistCode");
 
                             b1.ToTable("InternalSpecialists");
 
                             b1.WithOwner()
-                                .HasForeignKey("InternalSpecialistId");
+                                .HasForeignKey("InternalSpecialistCode");
                         });
 
                     b.Navigation("Name")
@@ -453,10 +477,10 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Hospital", b =>
                 {
-                    b.OwnsOne("Omini.Opme.Domain.CompanyName", "Name", b1 =>
+                    b.OwnsOne("Omini.Opme.Domain.ValueObjects.CompanyName", "Name", b1 =>
                         {
-                            b1.Property<Guid>("HospitalId")
-                                .HasColumnType("uuid");
+                            b1.Property<string>("HospitalCode")
+                                .HasColumnType("character varying(50)");
 
                             b1.Property<string>("LegalName")
                                 .IsRequired()
@@ -470,12 +494,12 @@ namespace Omini.Opme.Infrastructure.Migrations
                                 .HasColumnType("character varying(100)")
                                 .HasColumnName("TradeName");
 
-                            b1.HasKey("HospitalId");
+                            b1.HasKey("HospitalCode");
 
                             b1.ToTable("Hospitals");
 
                             b1.WithOwner()
-                                .HasForeignKey("HospitalId");
+                                .HasForeignKey("HospitalCode");
                         });
 
                     b.Navigation("Name")
@@ -484,10 +508,10 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.InsuranceCompany", b =>
                 {
-                    b.OwnsOne("Omini.Opme.Domain.CompanyName", "Name", b1 =>
+                    b.OwnsOne("Omini.Opme.Domain.ValueObjects.CompanyName", "Name", b1 =>
                         {
-                            b1.Property<Guid>("InsuranceCompanyId")
-                                .HasColumnType("uuid");
+                            b1.Property<string>("InsuranceCompanyCode")
+                                .HasColumnType("character varying(50)");
 
                             b1.Property<string>("LegalName")
                                 .IsRequired()
@@ -501,12 +525,12 @@ namespace Omini.Opme.Infrastructure.Migrations
                                 .HasColumnType("character varying(100)")
                                 .HasColumnName("TradeName");
 
-                            b1.HasKey("InsuranceCompanyId");
+                            b1.HasKey("InsuranceCompanyCode");
 
                             b1.ToTable("InsuranceCompanies");
 
                             b1.WithOwner()
-                                .HasForeignKey("InsuranceCompanyId");
+                                .HasForeignKey("InsuranceCompanyCode");
                         });
 
                     b.Navigation("Name")
@@ -515,10 +539,10 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Patient", b =>
                 {
-                    b.OwnsOne("Omini.Opme.Domain.PersonName", "Name", b1 =>
+                    b.OwnsOne("Omini.Opme.Domain.ValueObjects.PersonName", "Name", b1 =>
                         {
-                            b1.Property<Guid>("PatientId")
-                                .HasColumnType("uuid");
+                            b1.Property<string>("PatientCode")
+                                .HasColumnType("character varying(50)");
 
                             b1.Property<string>("FirstName")
                                 .IsRequired()
@@ -537,12 +561,12 @@ namespace Omini.Opme.Infrastructure.Migrations
                                 .HasColumnType("character varying(100)")
                                 .HasColumnName("MiddleName");
 
-                            b1.HasKey("PatientId");
+                            b1.HasKey("PatientCode");
 
                             b1.ToTable("Patients");
 
                             b1.WithOwner()
-                                .HasForeignKey("PatientId");
+                                .HasForeignKey("PatientCode");
                         });
 
                     b.Navigation("Name")
@@ -551,10 +575,10 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Physician", b =>
                 {
-                    b.OwnsOne("Omini.Opme.Domain.PersonName", "Name", b1 =>
+                    b.OwnsOne("Omini.Opme.Domain.ValueObjects.PersonName", "Name", b1 =>
                         {
-                            b1.Property<Guid>("PhysicianId")
-                                .HasColumnType("uuid");
+                            b1.Property<string>("PhysicianCode")
+                                .HasColumnType("character varying(50)");
 
                             b1.Property<string>("FirstName")
                                 .IsRequired()
@@ -573,12 +597,12 @@ namespace Omini.Opme.Infrastructure.Migrations
                                 .HasColumnType("character varying(100)")
                                 .HasColumnName("MiddleName");
 
-                            b1.HasKey("PhysicianId");
+                            b1.HasKey("PhysicianCode");
 
                             b1.ToTable("Physicians");
 
                             b1.WithOwner()
-                                .HasForeignKey("PhysicianId");
+                                .HasForeignKey("PhysicianCode");
                         });
 
                     b.Navigation("Name")
@@ -589,25 +613,25 @@ namespace Omini.Opme.Infrastructure.Migrations
                 {
                     b.HasOne("Omini.Opme.Domain.BusinessPartners.Hospital", "Hospital")
                         .WithMany()
-                        .HasForeignKey("HospitalId")
+                        .HasForeignKey("HospitalCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Omini.Opme.Domain.BusinessPartners.InsuranceCompany", "InsuranceCompany")
                         .WithMany()
-                        .HasForeignKey("InsuranceCompanyId")
+                        .HasForeignKey("InsuranceCompanyCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Omini.Opme.Domain.BusinessPartners.Patient", "Patient")
                         .WithMany()
-                        .HasForeignKey("PatientId")
+                        .HasForeignKey("PatientCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Omini.Opme.Domain.BusinessPartners.Physician", "Physician")
                         .WithMany()
-                        .HasForeignKey("PhysicianId")
+                        .HasForeignKey("PhysicianCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -624,7 +648,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                 {
                     b.HasOne("Omini.Opme.Domain.Warehouse.Item", null)
                         .WithMany()
-                        .HasForeignKey("ItemId")
+                        .HasForeignKey("ItemCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

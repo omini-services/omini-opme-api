@@ -23,30 +23,33 @@ internal class QuotationMapping : IEntityTypeConfiguration<Quotation>
 
         builder.Ignore(p => p.PayingSource);
 
-        builder.Property(x => x.PayingSourceId)
+        builder.Property(x => x.PayingSourceCode)
+            .HasMaxLength(50)
             .IsRequired();
 
         builder.HasOne(x => x.Patient)
             .WithMany()
-            .HasForeignKey(x => x.PatientId)
+            .HasForeignKey(x => x.PatientCode)
             .IsRequired();
 
         builder.HasOne(x => x.Physician)
             .WithMany()
-            .HasForeignKey(x => x.PhysicianId)
+            .HasForeignKey(x => x.PhysicianCode)
             .IsRequired();
 
         builder.HasOne(x => x.Hospital)
             .WithMany()
-            .HasForeignKey(x => x.HospitalId)
-            .IsRequired();
+            .HasForeignKey(x => x.HospitalCode)
+            .IsRequired();  
 
-        builder.HasOne(x => x.InsuranceCompany)
-            .WithMany()
-            .HasForeignKey(x => x.InsuranceCompanyId)
-            .IsRequired();
+        // builder.HasOne(x => x.InsuranceCompany)
+        //     .WithMany()
+        //     .HasForeignKey(x => x.InsuranceCompanyCode)
+        //     .IsRequired();
 
-        builder.Ignore(p => p.InternalSpecialistId);
+        // builder.Property(x => x.InternalSpecialistCode)
+        //     .HasMaxLength(50)
+        //     .IsRequired();
 
         builder.ToTable("Quotations");
     }
@@ -65,7 +68,7 @@ internal class QuotationItemMapping : IEntityTypeConfiguration<QuotationItem>
 
         builder.HasOne<Item>()
             .WithMany()
-            .HasForeignKey(x => x.ItemId)
+            .HasForeignKey(x => x.ItemCode)
             .IsRequired();
 
         builder.ToTable("QuotationItems");

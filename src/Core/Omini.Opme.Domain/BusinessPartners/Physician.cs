@@ -1,24 +1,25 @@
-using Omini.Opme.Domain.Entities;
+using Omini.Opme.Domain.Common;
+using Omini.Opme.Domain.ValueObjects;
 
 namespace Omini.Opme.Domain.BusinessPartners;
 
-public sealed class Physician : Auditable
+public sealed class Physician : MasterEntity
 {
-    public Physician(PersonName name, string cro, string crm, string comments)
+    public Physician(string code, PersonName name, string cro, string crm, string comments)
     {
-        SetData(name, cro, crm, comments);
+        SetData(code, name, cro, crm, comments);
     }
 
-    private Physician(){}
+    private Physician() { }
 
-    public PersonName Name { get; set; }
+    public new PersonName Name { get; set; }
     public string Cro { get; set; }
     public string Crm { get; set; }
     public string Comments { get; set; }
 
-
-    public void SetData(PersonName name, string cro, string crm, string comments)
+    public void SetData(string code, PersonName name, string cro, string crm, string comments)
     {
+        Code = code;
         Name = name;
         Cro = cro;
         Crm = crm;

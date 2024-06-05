@@ -11,13 +11,14 @@ public static class HospitalFaker
         var companyName = CompanyFaker.CompanyName();
 
         return new Faker<CreateHospitalCommand>()
+            .RuleFor(o => o.Code, f => Guid.NewGuid().ToString())
             .RuleFor(o => o.LegalName, f => companyName.LegalName)
             .RuleFor(o => o.TradeName, f => companyName.TradeName)
             .RuleFor(o => o.Cnpj, f => f.Company.Cnpj())
             .RuleFor(o => o.Comments, f => f.Company.Bs());
     }
 
-    public static UpdateHospitalCommand GetFakeHospitalUpdateCommand(Guid id)
+    public static UpdateHospitalCommand GetFakeHospitalUpdateCommand(string code)
     {
         var companyName = CompanyFaker.CompanyName();
 
@@ -27,7 +28,7 @@ public static class HospitalFaker
             .RuleFor(o => o.Cnpj, f => f.Company.Cnpj())
             .RuleFor(o => o.Comments, f => f.Company.Bs()).Generate();
 
-        faker.Id = id;
+        faker.Code = code;
 
         return faker;
     }

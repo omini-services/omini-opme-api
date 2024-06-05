@@ -1,25 +1,28 @@
 using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Domain.Common;
-using Omini.Opme.Domain.Entities;
 using Omini.Opme.Domain.Exceptions;
 
 namespace Omini.Opme.Domain.Sales;
 
-public sealed class Quotation : SoftDeletable
+public sealed class Quotation : DocumentEntity
 {
-    public long Number { get; private set; }
-    public Guid PatientId { get; private set; }
+    public string PatientCode { get; private set; }
+    public string PatientName { get; private set; }
     public Patient Patient { get; private set; }
-    public Guid PhysicianId { get; private set; }
+    public string PhysicianCode { get; private set; }
+    public string PhysicianName { get; private set; }
     public Physician Physician { get; private set; }
-    public PayingSourceType PayingSourceType { get; private set; }
-    public Guid PayingSourceId { get; private set; }
-    public PayingSource PayingSource { get; set; }
-    public Guid HospitalId { get; private set; }
+    public string HospitalCode { get; private set; }
+    public string HospitalName { get; private set; }
     public Hospital Hospital { get; private set; }
-    public Guid InsuranceCompanyId { get; private set; }
+    public string InsuranceCompanyCode { get; private set; }
+    public string InsuranceCompanyName { get; private set; }
     public InsuranceCompany InsuranceCompany { get; private set; }
-    public Guid InternalSpecialistId { get; private set; }
+    public string InternalSpecialistCode { get; private set; }
+    public PayingSourceType PayingSourceType { get; private set; }
+    public string PayingSourceCode { get; private set; }
+    public string PayingSourceName { get; private set; }
+    public PayingSource PayingSource { get; set; }
     // public InternalSpecialist InternalSpecialist { get; private set; }
     private DateTime _dueDate;
     public DateTime DueDate { get { return _dueDate; } private set { _dueDate = value.ToUniversalTime(); } }
@@ -29,32 +32,58 @@ public sealed class Quotation : SoftDeletable
 
     private Quotation() { }
 
-    public Quotation(Guid patientId, Guid physicianId, PayingSourceType payingSourceType, Guid payingSourceId, Guid hospitalId, Guid insuranceCompanyId, Guid internalSpecialistId, DateTime dueDate)
+    public Quotation(string patientCode, string patientName,
+                     string physicianCode, string physicianName,
+                     string hospitalCode, string hospitalName,
+                     string insuranceCompanyCode, string insuranceCompanyName,
+                     string internalSpecialistCode,
+                     PayingSourceType payingSourceType, string payingSourceCode, string payingSourceName,
+                     DateTime dueDate)
     {
-        SetData(patientId, physicianId, payingSourceType, payingSourceId, hospitalId, insuranceCompanyId, internalSpecialistId, dueDate);
+        SetData(
+            patientCode, patientName,
+            physicianCode, physicianName,
+            hospitalCode, hospitalName,
+            insuranceCompanyCode, insuranceCompanyName,
+            internalSpecialistCode,
+            payingSourceType, payingSourceCode, payingSourceName,
+            dueDate
+        );
+
         SetTotal();
     }
 
-    public void SetData(Guid patientId, Guid physicianId, PayingSourceType payingSourceType, Guid payingSourceId, Guid hospitalId, Guid insuranceCompanyId, Guid internalSpecialistId, DateTime dueDate)
+    public void SetData(string patientCode, string patientName,
+                        string physicianCode, string physicianName,
+                        string hospitalCode, string hospitalName,
+                        string insuranceCompanyCode, string insuranceCompanyName,
+                        string internalSpecialistCode,
+                        PayingSourceType payingSourceType, string payingSourceCode, string payingSourceName,
+                        DateTime dueDate)
     {
-        PatientId = patientId;
-        PhysicianId = physicianId;
+        PatientCode = patientCode;
+        PatientName = patientName;
+        PhysicianCode = physicianCode;
+        PhysicianName = physicianName;
+        HospitalCode = hospitalCode;
+        HospitalName = hospitalName;
+        InsuranceCompanyCode = insuranceCompanyCode;
+        InsuranceCompanyName = insuranceCompanyName;
+        InternalSpecialistCode = internalSpecialistCode;
         PayingSourceType = payingSourceType;
-        PayingSourceId = payingSourceId;
-        HospitalId = hospitalId;
-        InsuranceCompanyId = insuranceCompanyId;
-        InternalSpecialistId = internalSpecialistId;
+        PayingSourceCode = payingSourceCode;
+        PayingSourceName = payingSourceName;
         DueDate = dueDate;
+
         SetTotal();
     }
 
-    public void AddItem(Guid itemId, string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, decimal unitPrice, decimal quantity, int? lineOrder = null)
+    public void AddItem(string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, decimal unitPrice, decimal quantity, int? lineOrder = null)
     {
         var newItem = new QuotationItem(
             quotationId: Id,
             lineOrder: lineOrder ?? LastLineOrder,
             lineId: LastLineId,
-            itemId: itemId,
             itemCode: itemCode,
             itemName: itemName,
             referenceCode: referenceCode,
@@ -104,7 +133,6 @@ public sealed class QuotationItem
     public Guid QuotationId { get; private set; }
     public int LineId { get; private set; }
     public int LineOrder { get; private set; }
-    public Guid ItemId { get; private set; }
     public string ItemCode { get; private set; }
     public string ItemName { get; private set; }
     public string ReferenceCode { get; private set; }
@@ -118,22 +146,21 @@ public sealed class QuotationItem
 
     private QuotationItem() { }
 
-    public QuotationItem(Guid quotationId, Guid itemId, int lineId, string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, decimal unitPrice, decimal quantity, int? lineOrder = null)
+    public QuotationItem(Guid quotationId, int lineId, string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, decimal unitPrice, decimal quantity, int? lineOrder = null)
     {
         QuotationId = quotationId;
         LineId = lineId;
 
-        SetData(itemId, itemCode, itemName, referenceCode, anvisaCode, anvisaDueDate, unitPrice, quantity, lineOrder);
+        SetData(itemCode, itemName, referenceCode, anvisaCode, anvisaDueDate, unitPrice, quantity, lineOrder);
     }
 
-    public void SetData(Guid itemId, string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, decimal unitPrice, decimal quantity, int? lineOrder = null)
+    public void SetData(string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, decimal unitPrice, decimal quantity, int? lineOrder = null)
     {
         if (lineOrder is not null)
         {
             LineOrder = lineOrder.Value;
         }
 
-        ItemId = itemId;
         ItemCode = itemCode;
         ItemName = itemName;
         ReferenceCode = referenceCode;

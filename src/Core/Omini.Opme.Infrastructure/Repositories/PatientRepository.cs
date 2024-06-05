@@ -4,7 +4,7 @@ using Omini.Opme.Infrastructure.Contexts;
 
 namespace Omini.Opme.Infrastructure.Repositories;
 
-internal class PatientRepository : Repository<Patient>, IPatientRepository
+internal class PatientRepository : RepositoryMasterEntity<Patient>, IPatientRepository
 {
     public PatientRepository(OpmeContext context) : base(context)
     {

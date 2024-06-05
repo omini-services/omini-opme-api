@@ -2,6 +2,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Omini.Opme.Api.Dtos;
 using Omini.Opme.Business.Commands;
+using Omini.Opme.Business.Queries;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Shared.Entities;
 
@@ -18,18 +19,18 @@ public class InsuranceCompaniesController : MainController
     }
 
     [HttpGet]
-    public async Task<ActionResult<PagedResult<InsuranceCompanyOutputDto>>> Get([FromServices] IInsuranceCompanyRepository repository)
+    public async Task<ActionResult<PagedResult<InsuranceCompanyOutputDto>>> Get([FromQuery] QueryFilter queryFilter, [FromQuery] PaginationFilter paginationFilter)
     {
-        var insuranceCompanies = await repository.GetAllPaginated();
+        var insuranceCompanies = await Mediator.Send(new GetAllInsuranceCompaniesQuery(queryFilter, paginationFilter));
         var result = Mapper.Map<PagedResult<InsuranceCompanyOutputDto>>(insuranceCompanies);
 
         return Ok(ResponseDto.ApiSuccess(result));
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<InsuranceCompanyOutputDto>> GetById([FromServices] IInsuranceCompanyRepository repository, Guid id)
+    [HttpGet("{code}")]
+    public async Task<ActionResult<InsuranceCompanyOutputDto>> GetByCode([FromServices] IInsuranceCompanyRepository repository, string code)
     {
-        var insuranceCompany = await repository.GetById(id);
+        var insuranceCompany = await repository.GetByCode(code);
 
         if (insuranceCompany is null)
         {
@@ -47,32 +48,32 @@ public class InsuranceCompaniesController : MainController
     {
         var result = await Mediator.Send(createInsuranceCompanyCommand);
 
-        return ToCreatedAtRoute(result, Mapper.Map<InsuranceCompanyOutputDto>, nameof(InsuranceCompaniesController), nameof(this.GetById), (mapped) => new { id = mapped.Id });
+        return ToCreatedAtRoute(result, Mapper.Map<InsuranceCompanyOutputDto>, nameof(InsuranceCompaniesController), nameof(this.GetByCode), (mapped) => new { code = mapped.Code });
     }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateInsuranceCompanyCommand updateInsuranceCompanyCommand)
+    [HttpPut("{code}")]
+    public async Task<IActionResult> Update(string code, [FromBody] UpdateInsuranceCompanyCommand updateInsuranceCompanyCommand)
     {
-        if (updateInsuranceCompanyCommand.Id != id)
+        if (updateInsuranceCompanyCommand.Code != code)
         {
-            return ToBadRequest(new ValidationResult([new ValidationFailure("Id", "Invalid id")]));
+            return ToBadRequest(new ValidationResult([new ValidationFailure("Code", "Invalid code")]));
         }
 
         var result = await Mediator.Send(updateInsuranceCompanyCommand);
 
-        return ToNoContent(result);
+        return ToOk(result, Mapper.Map<InsuranceCompanyOutputDto>);
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id)
+    [HttpDelete("{code}")]
+    public async Task<IActionResult> Delete(string code)
     {
         var command = new DeleteInsuranceCompanyCommand()
         {
-            Id = id
+            Code = code
         };
 
         var result = await Mediator.Send(command);
 
-        return ToNoContent(result);
+        return ToOk(result, Mapper.Map<InsuranceCompanyOutputDto>);
     }
 }

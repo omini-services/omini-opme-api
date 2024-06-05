@@ -2,7 +2,6 @@ namespace Omini.Opme.Api.Dtos;
 
 public sealed record ItemOutputDto
 {
-    public Guid Id { get; set; }
     public string Code { get; set; }
     public string Name { get; set; }
     public string SalesName { get; set; }

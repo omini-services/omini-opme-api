@@ -1,6 +1,6 @@
-﻿namespace Omini.Opme.Domain.Entities;
+﻿namespace Omini.Opme.Domain.Common;
 
-public abstract class Auditable : Entity
+public interface IAuditable
 {
   public Guid CreatedBy { get; set; }
   public DateTime CreatedOn { get; set; }

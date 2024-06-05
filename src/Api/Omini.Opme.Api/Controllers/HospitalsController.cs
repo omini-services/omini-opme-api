@@ -19,18 +19,18 @@ public class HospitalsController : MainController
     }
 
     [HttpGet]
-    public async Task<ActionResult<PagedResult<HospitalOutputDto>>> Get([FromQuery]PaginationFilter paginationFilter, [FromServices] IHospitalRepository repository)
+    public async Task<ActionResult<ResponsePagedDto<HospitalOutputDto>>> Get([FromQuery] QueryFilter queryFilter, [FromQuery] PaginationFilter paginationFilter)
     {
-        var hospitals = await Mediator.Send(new GetAllHospitalsQuery(paginationFilter));
+        var hospitals = await Mediator.Send(new GetAllHospitalsQuery(queryFilter, paginationFilter));
         var result = Mapper.Map<PagedResult<HospitalOutputDto>>(hospitals);
 
         return Ok(ResponseDto.ApiSuccess(result));
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<HospitalOutputDto>> GetById([FromServices] IHospitalRepository repository, Guid id)
+    [HttpGet("{code}")]
+    public async Task<ActionResult<HospitalOutputDto>> GetByCode([FromServices] IHospitalRepository repository, string code)
     {
-        var hospital = await repository.GetById(id);
+        var hospital = await repository.GetByCode(code);
 
         if (hospital is null)
         {
@@ -48,32 +48,32 @@ public class HospitalsController : MainController
     {
         var result = await Mediator.Send(createHospitalCommand);
 
-        return ToCreatedAtRoute(result, Mapper.Map<HospitalOutputDto>, nameof(HospitalsController), nameof(this.GetById), (mapped) => new { id = mapped.Id });
+        return ToCreatedAtRoute(result, Mapper.Map<HospitalOutputDto>, nameof(HospitalsController), nameof(this.GetByCode), (mapped) => new { code = mapped.Code });
     }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateHospitalCommand updateHospitalCommand)
+    [HttpPut("{code}")]
+    public async Task<IActionResult> Update(string code, [FromBody] UpdateHospitalCommand updateHospitalCommand)
     {
-        if (updateHospitalCommand.Id != id)
+        if (updateHospitalCommand.Code != code)
         {
-            return ToBadRequest(new ValidationResult([new ValidationFailure("Id", "Invalid id")]));
+            return ToBadRequest(new ValidationResult([new ValidationFailure("Code", "Invalid code")]));
         }
 
         var result = await Mediator.Send(updateHospitalCommand);
 
-        return ToNoContent(result);
+        return ToOk(result, Mapper.Map<HospitalOutputDto>);
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id)
+    [HttpDelete("{code}")]
+    public async Task<IActionResult> Delete(string code)
     {
         var command = new DeleteHospitalCommand()
         {
-            Id = id
+            Code = code
         };
 
         var result = await Mediator.Send(command);
 
-        return ToNoContent(result);
+        return ToOk(result, Mapper.Map<HospitalOutputDto>);
     }
 }

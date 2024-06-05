@@ -21,14 +21,12 @@ public static class DependecyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<EntityInterceptor>();
         services.AddSingleton<AuditableInterceptor>();
         services.AddSingleton<SoftDeletableInterceptor>();
 
         services.AddDbContext<OpmeContext>((sp, opt) =>
         {
             opt.AddInterceptors(
-                sp.GetRequiredService<EntityInterceptor>(),
                 sp.GetRequiredService<AuditableInterceptor>(),
                 sp.GetRequiredService<SoftDeletableInterceptor>()
             );

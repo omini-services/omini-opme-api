@@ -41,9 +41,9 @@ public record CreateItemCommand : ICommand<Item>
             //}
 
             var item = new Item(
+                code: request.Code,
                 anvisaCode: request.AnvisaCode,
                 anvisaDueDate: request.AnvisaDueDate,
-                code: request.Code,
                 cst: request.Cst,
                 description: request.Description,
                 name: request.Name,

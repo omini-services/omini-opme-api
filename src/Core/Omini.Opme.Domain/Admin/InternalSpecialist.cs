@@ -1,8 +1,9 @@
-using Omini.Opme.Domain.Entities;
+using Omini.Opme.Domain.Common;
+using Omini.Opme.Domain.ValueObjects;
 
 namespace Omini.Opme.Domain.Admin;
 
-public sealed class InternalSpecialist : Auditable
+public sealed class InternalSpecialist : MasterEntity
 {
-    public PersonName Name { get; set; }
+    public new PersonName Name { get; set; }
 }

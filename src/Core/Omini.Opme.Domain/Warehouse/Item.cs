@@ -1,8 +1,8 @@
-using Omini.Opme.Domain.Entities;
+using Omini.Opme.Domain.Common;
 
 namespace Omini.Opme.Domain.Warehouse;
 
-public sealed class Item : Auditable
+public sealed class Item : MasterEntity
 {
     private Item() { }
     
@@ -21,8 +21,6 @@ public sealed class Item : Auditable
         SetData(code, name, salesName, description, uom, anvisaCode, anvisaDueDate, supplierCode, cst, susCode, ncmCode);
     }
 
-    public string Code { get; private set; }
-    public string Name { get; private set; }
     public string? SalesName { get; private set; }
     public string Description { get; private set; }
     public string? Uom { get; private set; }

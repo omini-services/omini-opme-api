@@ -1,16 +1,16 @@
 using FluentValidation.Results;
 using Omini.Opme.Application.Abstractions.Messaging;
-using Omini.Opme.Domain;
 using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Domain.Transactions;
+using Omini.Opme.Domain.ValueObjects;
 using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Business.Commands;
 
 public record UpdateInsuranceCompanyCommand : ICommand<InsuranceCompany>
 {
-    public Guid Id { get; set; }
+    public string Code { get; set; }
     public string LegalName { get; set; }
     public string TradeName { get; set; }
     public string Cnpj { get; set; }
@@ -28,13 +28,15 @@ public record UpdateInsuranceCompanyCommand : ICommand<InsuranceCompany>
 
         public async Task<Result<InsuranceCompany, ValidationResult>> Handle(UpdateInsuranceCompanyCommand request, CancellationToken cancellationToken)
         {
-            var insuranceCompany = await _insuranceCompanyRepository.GetById(request.Id, cancellationToken);
+            var insuranceCompany = await _insuranceCompanyRepository.GetByCode(request.Code, cancellationToken);
             if (insuranceCompany is null)
             {
-                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+                return new ValidationResult([new ValidationFailure(nameof(request.Code), "Invalid id")]);
             }
 
-            insuranceCompany.SetData(new CompanyName(request.LegalName, request.TradeName),
+            insuranceCompany.SetData(
+                code: request.Code,
+                new CompanyName(request.LegalName, request.TradeName),
                 cnpj: request.Cnpj,
                 comments: request.Comments
             );

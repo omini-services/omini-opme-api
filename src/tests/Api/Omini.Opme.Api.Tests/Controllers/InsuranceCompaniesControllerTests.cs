@@ -21,10 +21,7 @@ public class InsuranceCompaniesControllerTests : IntegrationTest
         //assert
         response.StatusCode.Should().Be(StatusCodes.Status201Created);
 
-        fakeInsuranceCompany.Should().BeEquivalentTo(insuranceCompanyOutputDto,
-            options =>
-                options.Excluding(p => p.Id)
-        );
+        fakeInsuranceCompany.Should().BeEquivalentTo(insuranceCompanyOutputDto);
     }
 
     [Fact]
@@ -36,15 +33,17 @@ public class InsuranceCompaniesControllerTests : IntegrationTest
         //act
         var insuranceCompany = (await TestClient.Request("/api/insurancecompanies").AsAuthenticated().PostJsonAsync(fakeInsuranceCompany).ReceiveJson<ResponseDto<InsuranceCompanyOutputDto>>()).Data;
 
-        var insuranceCompanyUpdateCommand = InsuranceCompanyFaker.GetFakeInsuranceCompanyUpdateCommand(insuranceCompany.Id);
+        var insuranceCompanyUpdateCommand = InsuranceCompanyFaker.GetFakeInsuranceCompanyUpdateCommand(insuranceCompany.Code);
 
-        var updateInsuranceCompanyResponse = await TestClient.Request($"/api/insurancecompanies/{insuranceCompany.Id}").AsAuthenticated().PutJsonAsync(insuranceCompanyUpdateCommand);
-        var insuranceCompanyAfterUpdate = (await TestClient.Request($"/api/insurancecompanies/{insuranceCompany.Id}").AsAuthenticated().GetAsync().ReceiveJson<ResponseDto<InsuranceCompanyOutputDto>>()).Data;
+        var updateInsuranceCompanyResponse = await TestClient.Request($"/api/insurancecompanies/{insuranceCompany.Code}").AsAuthenticated().PutJsonAsync(insuranceCompanyUpdateCommand);
+        var updateInsuranceCompanyData = (await updateInsuranceCompanyResponse.GetJsonAsync<ResponseDto<InsuranceCompanyOutputDto>>()).Data;
+        var insuranceCompanyAfterUpdate = (await TestClient.Request($"/api/insurancecompanies/{insuranceCompany.Code}").AsAuthenticated().GetAsync().ReceiveJson<ResponseDto<InsuranceCompanyOutputDto>>()).Data;
 
         //assert
-        updateInsuranceCompanyResponse.StatusCode.Should().Be(StatusCodes.Status204NoContent);
-        insuranceCompanyAfterUpdate.Should().BeEquivalentTo(insuranceCompanyUpdateCommand);
-    }   
+        updateInsuranceCompanyResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
+        insuranceCompanyAfterUpdate.Should().BeEquivalentTo(updateInsuranceCompanyData);
+        insuranceCompanyUpdateCommand.Should().BeEquivalentTo(updateInsuranceCompanyData);
+    }
 
     [Fact]
     public async void Should_DeleteInsuranceCompanies_When_ValidDataProvided()
@@ -55,11 +54,14 @@ public class InsuranceCompaniesControllerTests : IntegrationTest
         //act
         var insuranceCompany = (await TestClient.Request("/api/insurancecompanies").AsAuthenticated().PostJsonAsync(fakeInsuranceCompany).ReceiveJson<ResponseDto<InsuranceCompanyOutputDto>>()).Data;
 
-        var deleteInsuranceCompanyResponse = await TestClient.Request($"/api/insurancecompanies/{insuranceCompany.Id}").AsAuthenticated().DeleteAsync();
-        var insuranceCompanyAfterDeleteResponse = await TestClient.Request($"/api/insurancecompanies/{insuranceCompany.Id}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
+        var deleteInsuranceCompanyResponse = await TestClient.Request($"/api/insurancecompanies/{insuranceCompany.Code}").AsAuthenticated().DeleteAsync();
+        var deleteInsuranceCompanyData = (await deleteInsuranceCompanyResponse.GetJsonAsync<ResponseDto<InsuranceCompanyOutputDto>>()).Data;
+        var insuranceCompanyAfterDeleteResponse = await TestClient.Request($"/api/insurancecompanies/{insuranceCompany.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
 
         //assert
-        deleteInsuranceCompanyResponse.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+        deleteInsuranceCompanyResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
+        fakeInsuranceCompany.Should().BeEquivalentTo(deleteInsuranceCompanyData);
+        
         insuranceCompanyAfterDeleteResponse.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
@@ -71,7 +73,7 @@ public class InsuranceCompaniesControllerTests : IntegrationTest
 
         //act
         var insuranceCompany = (await TestClient.Request("/api/insurancecompanies").AsAuthenticated().PostJsonAsync(fakeInsuranceCompany).ReceiveJson<ResponseDto<InsuranceCompanyOutputDto>>()).Data;
-        var insuranceCompanyResponse = await TestClient.Request($"/api/insurancecompanies/{insuranceCompany.Id}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
+        var insuranceCompanyResponse = await TestClient.Request($"/api/insurancecompanies/{insuranceCompany.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
         var insuranceCompanyData = (await insuranceCompanyResponse.GetJsonAsync<ResponseDto<InsuranceCompanyOutputDto>>()).Data;
 
         //assert
@@ -92,7 +94,7 @@ public class InsuranceCompaniesControllerTests : IntegrationTest
         var secondInsuranceCompany = (await TestClient.Request("/api/insurancecompanies").AsAuthenticated().PostJsonAsync(fakeSecondInsuranceCompany).ReceiveJson<ResponseDto<InsuranceCompanyOutputDto>>()).Data;
 
         var insuranceCompanyResponse = await TestClient.Request($"/api/insurancecompanies").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
-        var insuranceCompanyData = (await insuranceCompanyResponse.GetJsonAsync<ResponseDto<List<InsuranceCompanyOutputDto>>>()).Data;
+        var insuranceCompanyData = (await insuranceCompanyResponse.GetJsonAsync<ResponsePagedDto<InsuranceCompanyOutputDto>>()).Data;
 
         //assert
         insuranceCompanyResponse.StatusCode.Should().Be(StatusCodes.Status200OK);

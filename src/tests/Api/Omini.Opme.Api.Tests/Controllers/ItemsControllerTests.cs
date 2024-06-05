@@ -21,10 +21,7 @@ public class ItemsControllerTests : IntegrationTest
         //assert
         response.StatusCode.Should().Be(StatusCodes.Status201Created);
 
-        fakeItem.Should().BeEquivalentTo(itemOutputDto,
-            options =>
-                options.Excluding(p => p.Id)
-        );
+        fakeItem.Should().BeEquivalentTo(itemOutputDto);
     }
 
     [Fact]
@@ -37,15 +34,17 @@ public class ItemsControllerTests : IntegrationTest
         var item = (await TestClient.Request("/api/items").AsAuthenticated().PostJsonAsync(fakeItem).ReceiveJson<ResponseDto<ItemOutputDto>>()).Data;
 
         var itemUpdateCommand = ItemFaker.GetFakerItemUpdateCommand().Generate();
-        itemUpdateCommand.Id = item.Id;
+        itemUpdateCommand.Code = item.Code;
 
-        var updateItemResponse = await TestClient.Request($"/api/items/{item.Id}").AsAuthenticated().PutJsonAsync(itemUpdateCommand);
-        var itemAfterUpdate = (await TestClient.Request($"/api/items/{item.Id}").AsAuthenticated().GetAsync().ReceiveJson<ResponseDto<ItemOutputDto>>()).Data;
+        var updateItemResponse = await TestClient.Request($"/api/items/{item.Code}").AsAuthenticated().PutJsonAsync(itemUpdateCommand);
+        var updateItemData = (await updateItemResponse.GetJsonAsync<ResponseDto<ItemOutputDto>>()).Data;
+        var itemAfterUpdate = (await TestClient.Request($"/api/items/{item.Code}").AsAuthenticated().GetAsync().ReceiveJson<ResponseDto<ItemOutputDto>>()).Data;
 
         //assert
-        updateItemResponse.StatusCode.Should().Be(StatusCodes.Status204NoContent);
-        itemAfterUpdate.Should().BeEquivalentTo(itemUpdateCommand,
+        updateItemResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
+        itemAfterUpdate.Should().BeEquivalentTo(updateItemData,
             options => options.Excluding(p => p.AnvisaDueDate));
+        itemUpdateCommand.Should().BeEquivalentTo(updateItemData);
     }
 
     [Fact]
@@ -57,11 +56,15 @@ public class ItemsControllerTests : IntegrationTest
         //act
         var item = (await TestClient.Request("/api/items").AsAuthenticated().PostJsonAsync(fakeItem).ReceiveJson<ResponseDto<ItemOutputDto>>()).Data;
 
-        var deleteItemResponse = await TestClient.Request($"/api/items/{item.Id}").AsAuthenticated().DeleteAsync();
-        var itemAfterDeleteResponse = await TestClient.Request($"/api/items/{item.Id}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
+        var deleteItemResponse = await TestClient.Request($"/api/items/{item.Code}").AsAuthenticated().DeleteAsync();
+        var deleteItemData = (await deleteItemResponse.GetJsonAsync<ResponseDto<ItemOutputDto>>()).Data;
+        var itemAfterDeleteResponse = await TestClient.Request($"/api/items/{item.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
 
         //assert
-        deleteItemResponse.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+        deleteItemResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
+        fakeItem.Should().BeEquivalentTo(deleteItemData,
+            options => options.Excluding(p => p.AnvisaDueDate));
+
         itemAfterDeleteResponse.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
@@ -73,7 +76,7 @@ public class ItemsControllerTests : IntegrationTest
 
         //act
         var item = (await TestClient.Request("/api/items").AsAuthenticated().PostJsonAsync(fakeItem).ReceiveJson<ResponseDto<ItemOutputDto>>()).Data;
-        var itemResponse = await TestClient.Request($"/api/items/{item.Id}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
+        var itemResponse = await TestClient.Request($"/api/items/{item.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
         var itemData = (await itemResponse.GetJsonAsync<ResponseDto<ItemOutputDto>>()).Data;
 
         //assert

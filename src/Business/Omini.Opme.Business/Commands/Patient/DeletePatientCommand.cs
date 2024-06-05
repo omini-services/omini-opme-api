@@ -9,7 +9,7 @@ namespace Omini.Opme.Business.Commands;
 
 public record DeletePatientCommand : ICommand<Patient>
 {
-    public Guid Id { get; init; }
+    public string Code { get; init; }
 
     public class DeletePatientCommandHandler : ICommandHandler<DeletePatientCommand, Patient>
     {
@@ -24,10 +24,10 @@ public record DeletePatientCommand : ICommand<Patient>
 
         public async Task<Result<Patient, ValidationResult>> Handle(DeletePatientCommand request, CancellationToken cancellationToken)
         {
-            var patient = await _patientRepository.GetById(request.Id, cancellationToken);
+            var patient = await _patientRepository.GetByCode(request.Code, cancellationToken);
             if (patient is null)
             {
-                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+                return new ValidationResult([new ValidationFailure(nameof(request.Code), "Invalid code")]);
             }
 
             _patientRepository.Delete(patient, cancellationToken);
