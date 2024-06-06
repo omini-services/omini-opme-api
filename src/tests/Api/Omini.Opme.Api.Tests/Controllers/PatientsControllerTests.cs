@@ -22,7 +22,10 @@ public class PatientsControllerTests : IntegrationTest
         //assert
         response.StatusCode.Should().Be(StatusCodes.Status201Created);
 
-        fakePatient.Should().BeEquivalentTo(patientOutputDto);
+        fakePatient.Should().BeEquivalentTo(patientOutputDto,
+            options =>
+                options.Excluding(p => p.Code)
+        );
     }
 
     [Fact]
@@ -61,7 +64,10 @@ public class PatientsControllerTests : IntegrationTest
 
         //assert
         deletePatientResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
-        fakePatient.Should().BeEquivalentTo(deletePatientData);
+        fakePatient.Should().BeEquivalentTo(deletePatientData,
+            options =>
+                options.Excluding(p => p.Code)
+        );
 
         patientAfterDeleteResponse.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }

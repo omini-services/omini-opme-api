@@ -11,7 +11,6 @@ public static class PatientFaker
         var personName = PersonNameFaker.PersonName();
 
         return new Faker<CreatePatientCommand>()
-            .RuleFor(o => o.Code, f => Guid.NewGuid().ToString())
             .RuleFor(o => o.FirstName, f => personName.FirstName)
             .RuleFor(o => o.LastName, f => personName.LastName)
             .RuleFor(o => o.MiddleName, f => personName.MiddleName)

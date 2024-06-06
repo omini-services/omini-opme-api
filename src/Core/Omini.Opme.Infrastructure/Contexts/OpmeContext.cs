@@ -25,12 +25,15 @@ internal sealed class OpmeContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.CreateSequences();
+
         //builder.Ignore<Notification>();
         builder.ApplyConfigurationsFromAssembly(typeof(OpmeContext).Assembly);
 
         builder.EnableSoftDelete();
 
         builder.ApplyDefaultRules();
+        builder.Seed();
 
         base.OnModelCreating(builder);
     }

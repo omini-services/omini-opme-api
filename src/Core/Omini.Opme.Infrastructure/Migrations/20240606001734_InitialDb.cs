@@ -4,6 +4,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Omini.Opme.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -12,11 +14,29 @@ namespace Omini.Opme.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateSequence(
+                name: "hospitalcode_sequence");
+
+            migrationBuilder.CreateSequence(
+                name: "insurancecompanycode_sequence");
+
+            migrationBuilder.CreateSequence(
+                name: "internalspecialistcode_sequence");
+
+            migrationBuilder.CreateSequence(
+                name: "itemcode_sequence");
+
+            migrationBuilder.CreateSequence(
+                name: "patientcode_sequence");
+
+            migrationBuilder.CreateSequence(
+                name: "physiciancode_sequence");
+
             migrationBuilder.CreateTable(
                 name: "Hospitals",
                 columns: table => new
                 {
-                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false, defaultValueSql: "nextval ('hospitalcode_sequence')"),
                     LegalName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     TradeName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Cnpj = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -35,7 +55,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                 name: "InsuranceCompanies",
                 columns: table => new
                 {
-                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false, defaultValueSql: "nextval ('insurancecompanycode_sequence')"),
                     LegalName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     TradeName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Cnpj = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -54,10 +74,12 @@ namespace Omini.Opme.Infrastructure.Migrations
                 name: "InternalSpecialists",
                 columns: table => new
                 {
-                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false, defaultValueSql: "nextval ('internalspecialistcode_sequence')"),
                     FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     MiddleName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Telefone = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true),
@@ -72,7 +94,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                 name: "Items",
                 columns: table => new
                 {
-                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false, defaultValueSql: "nextval ('itemcode_sequence')"),
                     SalesName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     Uom = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
@@ -116,7 +138,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                 name: "Patients",
                 columns: table => new
                 {
-                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false, defaultValueSql: "nextval ('patientcode_sequence')"),
                     FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     MiddleName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
@@ -136,7 +158,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                 name: "Physicians",
                 columns: table => new
                 {
-                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false, defaultValueSql: "nextval ('physiciancode_sequence')"),
                     FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     MiddleName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
@@ -244,6 +266,20 @@ namespace Omini.Opme.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "InternalSpecialists",
+                columns: new[] { "Code", "CreatedBy", "CreatedOn", "Email", "Telefone", "UpdatedBy", "UpdatedOn", "FirstName", "LastName", "MiddleName" },
+                values: new object[] { "1", new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(5950), "comercial@fratermedical.com.br", "(11) 3829-9400", null, null, "Nathália", "Camelo", null });
+
+            migrationBuilder.InsertData(
+                table: "OpmeUsers",
+                columns: new[] { "Id", "CreatedBy", "CreatedOn", "DeletedBy", "DeletedOn", "Email", "IsDeleted", "UpdatedBy", "UpdatedOn" },
+                values: new object[,]
+                {
+                    { new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"), new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6110), null, null, "guilherme_or@outlook.com", false, new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6110) },
+                    { new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"), new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6100), null, null, "dacceto@gmail.com", false, new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6110) }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_QuotationItems_ItemCode",
                 table: "QuotationItems",
@@ -299,6 +335,24 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Physicians");
+
+            migrationBuilder.DropSequence(
+                name: "hospitalcode_sequence");
+
+            migrationBuilder.DropSequence(
+                name: "insurancecompanycode_sequence");
+
+            migrationBuilder.DropSequence(
+                name: "internalspecialistcode_sequence");
+
+            migrationBuilder.DropSequence(
+                name: "itemcode_sequence");
+
+            migrationBuilder.DropSequence(
+                name: "patientcode_sequence");
+
+            migrationBuilder.DropSequence(
+                name: "physiciancode_sequence");
         }
     }
 }

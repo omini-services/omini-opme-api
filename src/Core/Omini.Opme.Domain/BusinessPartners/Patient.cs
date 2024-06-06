@@ -14,14 +14,13 @@ public sealed class Patient : MasterEntity
     {
     }
 
-    public Patient(string code, PersonName name, string cpf, string comments)
+    public Patient(PersonName name, string cpf, string comments)
     {
-        SetData(code, name, cpf, comments);
+        SetData(name, cpf, comments);
     }
 
-    public void SetData(string code, PersonName name, string cpf, string comments)
+    public void SetData(PersonName name, string cpf, string comments)
     {
-        Code = code;
         Name = name;
         Cpf = Formatters.FormatCpf(cpf);
         Comments = comments;

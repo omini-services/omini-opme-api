@@ -36,7 +36,6 @@ public record UpdateHospitalCommand : ICommand<Hospital>
             }
 
             hospital.SetData(
-                code: request.Code,
                 name: new CompanyName(request.LegalName, request.TradeName),
                 cnpj: request.Cnpj,
                 comments: request.Comments);

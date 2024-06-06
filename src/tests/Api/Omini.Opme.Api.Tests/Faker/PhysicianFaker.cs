@@ -10,7 +10,6 @@ public static class PhysicianFaker
         var personName = PersonNameFaker.PersonName();
 
         return new Faker<CreatePhysicianCommand>()
-            .RuleFor(o => o.Code, f => Guid.NewGuid().ToString())
             .RuleFor(o => o.FirstName, f => personName.FirstName)
             .RuleFor(o => o.LastName, f => personName.LastName)
             .RuleFor(o => o.MiddleName, f => personName.MiddleName)

@@ -12,7 +12,7 @@ using Omini.Opme.Infrastructure.Contexts;
 namespace Omini.Opme.Infrastructure.Migrations
 {
     [DbContext(typeof(OpmeContext))]
-    [Migration("20240605021935_InitialDb")]
+    [Migration("20240606001734_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -25,17 +25,41 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.HasSequence("hospitalcode_sequence");
+
+            modelBuilder.HasSequence("insurancecompanycode_sequence");
+
+            modelBuilder.HasSequence("internalspecialistcode_sequence");
+
+            modelBuilder.HasSequence("itemcode_sequence");
+
+            modelBuilder.HasSequence("patientcode_sequence");
+
+            modelBuilder.HasSequence("physiciancode_sequence");
+
             modelBuilder.Entity("Omini.Opme.Domain.Admin.InternalSpecialist", b =>
                 {
                     b.Property<string>("Code")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasDefaultValueSql("nextval ('internalspecialistcode_sequence')");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -46,6 +70,16 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.HasKey("Code");
 
                     b.ToTable("InternalSpecialists", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Code = "1",
+                            CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
+                            CreatedOn = new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(5950),
+                            Email = "comercial@fratermedical.com.br",
+                            Telefone = "(11) 3829-9400"
+                        });
                 });
 
             modelBuilder.Entity("Omini.Opme.Domain.Admin.OpmeUser", b =>
@@ -83,13 +117,37 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OpmeUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"),
+                            CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
+                            CreatedOn = new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6100),
+                            Email = "dacceto@gmail.com",
+                            IsDeleted = false,
+                            UpdatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
+                            UpdatedOn = new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6110)
+                        },
+                        new
+                        {
+                            Id = new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"),
+                            CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
+                            CreatedOn = new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6110),
+                            Email = "guilherme_or@outlook.com",
+                            IsDeleted = false,
+                            UpdatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
+                            UpdatedOn = new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6110)
+                        });
                 });
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Hospital", b =>
                 {
                     b.Property<string>("Code")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasDefaultValueSql("nextval ('hospitalcode_sequence')");
 
                     b.Property<string>("Cnpj")
                         .IsRequired()
@@ -121,8 +179,10 @@ namespace Omini.Opme.Infrastructure.Migrations
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.InsuranceCompany", b =>
                 {
                     b.Property<string>("Code")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasDefaultValueSql("nextval ('insurancecompanycode_sequence')");
 
                     b.Property<string>("Cnpj")
                         .IsRequired()
@@ -154,8 +214,10 @@ namespace Omini.Opme.Infrastructure.Migrations
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Patient", b =>
                 {
                     b.Property<string>("Code")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasDefaultValueSql("nextval ('patientcode_sequence')");
 
                     b.Property<string>("Comments")
                         .IsRequired()
@@ -187,8 +249,10 @@ namespace Omini.Opme.Infrastructure.Migrations
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Physician", b =>
                 {
                     b.Property<string>("Code")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasDefaultValueSql("nextval ('physiciancode_sequence')");
 
                     b.Property<string>("Comments")
                         .IsRequired()
@@ -378,8 +442,10 @@ namespace Omini.Opme.Infrastructure.Migrations
             modelBuilder.Entity("Omini.Opme.Domain.Warehouse.Item", b =>
                 {
                     b.Property<string>("Code")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasDefaultValueSql("nextval ('itemcode_sequence')");
 
                     b.Property<string>("AnvisaCode")
                         .HasMaxLength(100)
@@ -444,6 +510,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.OwnsOne("Omini.Opme.Domain.ValueObjects.PersonName", "Name", b1 =>
                         {
                             b1.Property<string>("InternalSpecialistCode")
+                                .ValueGeneratedOnAdd()
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("FirstName")
@@ -469,6 +536,14 @@ namespace Omini.Opme.Infrastructure.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("InternalSpecialistCode");
+
+                            b1.HasData(
+                                new
+                                {
+                                    InternalSpecialistCode = "1",
+                                    FirstName = "Nathália",
+                                    LastName = "Camelo"
+                                });
                         });
 
                     b.Navigation("Name")
@@ -480,6 +555,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.OwnsOne("Omini.Opme.Domain.ValueObjects.CompanyName", "Name", b1 =>
                         {
                             b1.Property<string>("HospitalCode")
+                                .ValueGeneratedOnAdd()
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("LegalName")
@@ -511,6 +587,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.OwnsOne("Omini.Opme.Domain.ValueObjects.CompanyName", "Name", b1 =>
                         {
                             b1.Property<string>("InsuranceCompanyCode")
+                                .ValueGeneratedOnAdd()
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("LegalName")
@@ -542,6 +619,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.OwnsOne("Omini.Opme.Domain.ValueObjects.PersonName", "Name", b1 =>
                         {
                             b1.Property<string>("PatientCode")
+                                .ValueGeneratedOnAdd()
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("FirstName")
@@ -578,6 +656,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.OwnsOne("Omini.Opme.Domain.ValueObjects.PersonName", "Name", b1 =>
                         {
                             b1.Property<string>("PhysicianCode")
+                                .ValueGeneratedOnAdd()
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("FirstName")

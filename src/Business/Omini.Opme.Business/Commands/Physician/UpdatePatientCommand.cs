@@ -38,7 +38,6 @@ public record UpdatePhysicianCommand : ICommand<Physician>
             }
 
             physician.SetData(
-                code: request.Code,
                 name: new PersonName(request.FirstName, request.LastName, request.MiddleName),
                 cro: request.Cro,
                 crm: request.Crm,

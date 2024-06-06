@@ -9,7 +9,6 @@ public static class ItemFaker
     public static Faker<CreateItemCommand> GetFakerItemCreateCommand()
     {
         return new Faker<CreateItemCommand>()
-            .RuleFor(o => o.Code, f => f.Random.AlphaNumeric(8))
             .RuleFor(o => o.Name, f => f.Commerce.ProductName())
             .RuleFor(o => o.SalesName, f => f.Commerce.ProductMaterial())
             .RuleFor(o => o.Description, f => f.Commerce.ProductDescription())

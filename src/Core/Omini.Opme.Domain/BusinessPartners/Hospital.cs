@@ -12,14 +12,13 @@ public sealed class Hospital : MasterEntity
 
     private Hospital() { }
 
-    public Hospital(string code, CompanyName name, string cnpj, string comments)
+    public Hospital(CompanyName name, string cnpj, string comments)
     {
-        SetData(code, name, cnpj, comments);
+        SetData(name, cnpj, comments);
     }
 
-    public Hospital SetData(string code, CompanyName name, string cnpj, string comments)
+    public Hospital SetData(CompanyName name, string cnpj, string comments)
     {
-        Code = code;
         Name = name;
         Cnpj = Formatters.FormatCnpj(cnpj);
         Comments = comments;

@@ -36,7 +36,6 @@ public record UpdatePatientCommand : ICommand<Patient>
             }
 
             patient.SetData(
-                code: request.Code,
                 name: new PersonName(request.FirstName, request.LastName, request.MiddleName),
                 cpf: request.Cpf,
                 comments: request.Comments);

@@ -11,7 +11,6 @@ public static class HospitalFaker
         var companyName = CompanyFaker.CompanyName();
 
         return new Faker<CreateHospitalCommand>()
-            .RuleFor(o => o.Code, f => Guid.NewGuid().ToString())
             .RuleFor(o => o.LegalName, f => companyName.LegalName)
             .RuleFor(o => o.TradeName, f => companyName.TradeName)
             .RuleFor(o => o.Cnpj, f => f.Company.Cnpj())

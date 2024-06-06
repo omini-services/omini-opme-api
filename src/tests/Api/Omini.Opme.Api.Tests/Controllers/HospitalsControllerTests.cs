@@ -21,7 +21,10 @@ public class HospitalResponseControllerTests : IntegrationTest
         //assert
         response.StatusCode.Should().Be(StatusCodes.Status201Created);
 
-        fakeHospital.Should().BeEquivalentTo(hospitalOutputDto);
+        fakeHospital.Should().BeEquivalentTo(hospitalOutputDto,
+            options =>
+                options.Excluding(p => p.Code)
+        );
     }
 
     [Fact]
@@ -60,7 +63,10 @@ public class HospitalResponseControllerTests : IntegrationTest
 
         //assert
         deleteHospitalResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
-        fakeHospital.Should().BeEquivalentTo(deleteHospitalData);
+        fakeHospital.Should().BeEquivalentTo(deleteHospitalData,
+            options =>
+                options.Excluding(p => p.Code)
+        );
 
         hospitalAfterDelete.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }

@@ -21,7 +21,10 @@ public class ItemsControllerTests : IntegrationTest
         //assert
         response.StatusCode.Should().Be(StatusCodes.Status201Created);
 
-        fakeItem.Should().BeEquivalentTo(itemOutputDto);
+        fakeItem.Should().BeEquivalentTo(itemOutputDto,
+            options =>
+                options.Excluding(p => p.Code)
+        );
     }
 
     [Fact]
@@ -63,7 +66,7 @@ public class ItemsControllerTests : IntegrationTest
         //assert
         deleteItemResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
         fakeItem.Should().BeEquivalentTo(deleteItemData,
-            options => options.Excluding(p => p.AnvisaDueDate));
+            options => options.Excluding(p => p.AnvisaDueDate).Excluding(p => p.Code));
 
         itemAfterDeleteResponse.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -103,7 +106,7 @@ public class ItemsControllerTests : IntegrationTest
         //assert
         itemsResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
 
-        itemsData.Should().ContainEquivalentOf(firstItem, options=> options.Excluding(p=>p.AnvisaDueDate)); 
-        itemsData.Should().ContainEquivalentOf(secondItem, options=> options.Excluding(p=>p.AnvisaDueDate));
+        itemsData.Should().ContainEquivalentOf(firstItem, options => options.Excluding(p => p.AnvisaDueDate));
+        itemsData.Should().ContainEquivalentOf(secondItem, options => options.Excluding(p => p.AnvisaDueDate));
     }
 }

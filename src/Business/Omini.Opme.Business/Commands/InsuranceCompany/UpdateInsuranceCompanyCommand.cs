@@ -35,7 +35,6 @@ public record UpdateInsuranceCompanyCommand : ICommand<InsuranceCompany>
             }
 
             insuranceCompany.SetData(
-                code: request.Code,
                 new CompanyName(request.LegalName, request.TradeName),
                 cnpj: request.Cnpj,
                 comments: request.Comments

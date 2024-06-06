@@ -8,7 +8,6 @@ using Omini.Opme.Shared.Entities;
 namespace Omini.Opme.Business.Commands;
 public record CreateItemCommand : ICommand<Item>
 {
-    public string Code { get; init; }
     public string Name { get; init; }
     public string SalesName { get; init; }
     public string Description { get; init; }
@@ -41,7 +40,6 @@ public record CreateItemCommand : ICommand<Item>
             //}
 
             var item = new Item(
-                code: request.Code,
                 anvisaCode: request.AnvisaCode,
                 anvisaDueDate: request.AnvisaDueDate,
                 cst: request.Cst,

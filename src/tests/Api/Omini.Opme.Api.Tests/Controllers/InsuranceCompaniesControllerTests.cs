@@ -21,7 +21,10 @@ public class InsuranceCompaniesControllerTests : IntegrationTest
         //assert
         response.StatusCode.Should().Be(StatusCodes.Status201Created);
 
-        fakeInsuranceCompany.Should().BeEquivalentTo(insuranceCompanyOutputDto);
+        fakeInsuranceCompany.Should().BeEquivalentTo(insuranceCompanyOutputDto,
+            options =>
+                options.Excluding(p => p.Code)
+        );
     }
 
     [Fact]
@@ -60,7 +63,10 @@ public class InsuranceCompaniesControllerTests : IntegrationTest
 
         //assert
         deleteInsuranceCompanyResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
-        fakeInsuranceCompany.Should().BeEquivalentTo(deleteInsuranceCompanyData);
+        fakeInsuranceCompany.Should().BeEquivalentTo(deleteInsuranceCompanyData,
+            options =>
+                options.Excluding(p => p.Code)
+        );
         
         insuranceCompanyAfterDeleteResponse.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }

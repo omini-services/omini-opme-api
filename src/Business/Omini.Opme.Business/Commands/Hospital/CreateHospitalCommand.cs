@@ -10,7 +10,6 @@ namespace Omini.Opme.Business.Commands;
 
 public sealed record CreateHospitalCommand : ICommand<Hospital>
 {
-    public string Code { get; set; }
     public string LegalName { get; set; }
     public string TradeName { get; set; }
     public string Cnpj { get; set; }
@@ -29,7 +28,6 @@ public sealed record CreateHospitalCommand : ICommand<Hospital>
         public async Task<Result<Hospital, ValidationResult>> Handle(CreateHospitalCommand request, CancellationToken cancellationToken)
         {
             var hospital = new Hospital(
-                code: request.Code,
                 name: new CompanyName(request.LegalName, request.TradeName),
                 cnpj: request.Cnpj,
                 comments: request.Comments

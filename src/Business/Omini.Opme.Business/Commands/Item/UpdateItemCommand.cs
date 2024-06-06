@@ -41,7 +41,6 @@ public record UpdateItemCommand : ICommand<Item>
             }
 
             item.SetData(
-                code: request.Code,
                 name: request.Name,
                 salesName: request.SalesName,
                 description: request.Description,

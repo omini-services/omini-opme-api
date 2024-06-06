@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Omini.Opme.Domain.Admin;
+using Omini.Opme.Domain.ValueObjects;
+using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
@@ -12,6 +14,7 @@ internal class InternalSpecialistMapping : IEntityTypeConfiguration<InternalSpec
 
         builder.Property(x => x.Code)
             .HasMaxLength(50)
+            .HasDefaultValueSql($"nextval ('{ModelBuilderExtensions.InternalSpecialistCodeSequence}')")
             .IsRequired();
 
         builder.OwnsOne(x => x.Name)

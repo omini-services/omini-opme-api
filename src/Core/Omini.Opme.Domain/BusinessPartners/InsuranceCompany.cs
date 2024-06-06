@@ -14,14 +14,13 @@ public sealed class InsuranceCompany : MasterEntity
     {
     }
 
-    public InsuranceCompany(string code, CompanyName name, string cnpj, string comments)
+    public InsuranceCompany(CompanyName name, string cnpj, string comments)
     {
-        SetData(code, name, cnpj, comments);
+        SetData(name, cnpj, comments);
     }
 
-    public InsuranceCompany SetData(string code, CompanyName name, string cnpj, string comments)
+    public InsuranceCompany SetData(CompanyName name, string cnpj, string comments)
     {
-        Code = code;
         Name = name;
         Cnpj = Formatters.FormatCnpj(cnpj);
         Comments = comments;

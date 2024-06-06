@@ -10,7 +10,6 @@ namespace Omini.Opme.Business.Commands;
 
 public record CreatePatientCommand : ICommand<Patient>
 {
-    public string Code { get; set; }
     public string FirstName { get; init; }
     public string LastName { get; set; }
     public string? MiddleName { get; init; }
@@ -30,7 +29,6 @@ public record CreatePatientCommand : ICommand<Patient>
         public async Task<Result<Patient, ValidationResult>> Handle(CreatePatientCommand request, CancellationToken cancellationToken)
         {
             var patient = new Patient(
-                code: request.Code,
                 name: new PersonName(request.FirstName, request.LastName, request.MiddleName),
                 cpf: request.Cpf,
                 comments: request.Comments

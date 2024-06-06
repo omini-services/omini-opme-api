@@ -21,7 +21,10 @@ public class PhysiciansControllerTests : IntegrationTest
         //assert
         response.StatusCode.Should().Be(StatusCodes.Status201Created);
 
-        fakePhysician.Should().BeEquivalentTo(physicianOutputDto);
+        fakePhysician.Should().BeEquivalentTo(physicianOutputDto,
+            options =>
+                options.Excluding(p => p.Code)
+        );
     }
 
     [Fact]
@@ -41,9 +44,9 @@ public class PhysiciansControllerTests : IntegrationTest
 
         //assert
         updatePhysicianResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
-        physicianAfterUpdate.Should().BeEquivalentTo(updatePhysicianData);        
+        physicianAfterUpdate.Should().BeEquivalentTo(updatePhysicianData);
         physicianUpdateCommand.Should().BeEquivalentTo(updatePhysicianData);
-    }   
+    }
 
     [Fact]
     public async void Should_DeletePhysician_When_ValidDataProvided()
@@ -54,11 +57,17 @@ public class PhysiciansControllerTests : IntegrationTest
         //act
         var physician = (await TestClient.Request("/api/physicians").AsAuthenticated().PostJsonAsync(fakePhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
 
-        var deleteHospitalResponse = await TestClient.Request($"/api/physicians/{physician.Code}").AsAuthenticated().DeleteAsync();
+        var deletePhysicianResponse = await TestClient.Request($"/api/physicians/{physician.Code}").AsAuthenticated().DeleteAsync();
+        var deletePhysicianData = (await deletePhysicianResponse.GetJsonAsync<ResponseDto<PhysicianOutputDto>>()).Data;
         var physicianAfterDeleteResponse = await TestClient.Request($"/api/physicians/{physician.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
 
         //assert
-        deleteHospitalResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
+        deletePhysicianResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
+        fakePhysician.Should().BeEquivalentTo(deletePhysicianData,
+            options =>
+                options.Excluding(p => p.Code)
+        );
+
         physicianAfterDeleteResponse.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 

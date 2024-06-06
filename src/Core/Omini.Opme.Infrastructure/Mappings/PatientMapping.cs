@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Omini.Opme.Domain.BusinessPartners;
+using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
@@ -12,6 +13,7 @@ internal class PatientMapping : IEntityTypeConfiguration<Patient>
 
         builder.Property(x => x.Code)
             .HasMaxLength(50)
+            .HasDefaultValueSql($"nextval ('{ModelBuilderExtensions.PatientCodeSequence}')")
             .IsRequired();
 
         builder.OwnsOne(x => x.Name)
