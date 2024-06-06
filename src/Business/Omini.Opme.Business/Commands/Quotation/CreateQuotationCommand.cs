@@ -93,7 +93,7 @@ public record CreateQuotationCommand : ICommand<Quotation>
                 physicianCode: physician.Code, physicianName: request.PhysicianName,
                 hospitalCode: hospital.Code, hospitalName: request.HospitalName,
                 insuranceCompanyCode: insuranceCompany.Code, insuranceCompanyName: request.InsuranceCompanyName,
-                internalSpecialistCode: "", 
+                internalSpecialistCode: "1", 
                 payingSourceType: request.PayingSourceType, payingSourceCode: request.PayingSourceCode, payingSourceName: request.PayingSourceName,                
                 dueDate: request.DueDate
             );
