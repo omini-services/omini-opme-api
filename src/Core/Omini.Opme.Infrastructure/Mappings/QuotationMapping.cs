@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Domain.Common;
 using Omini.Opme.Domain.Sales;
 using Omini.Opme.Domain.Warehouse;
@@ -21,26 +22,57 @@ internal class QuotationMapping : IEntityTypeConfiguration<Quotation>
                 v => (PayingSourceType)Enum.Parse(typeof(PayingSourceType), v))
             .IsRequired();
 
-        builder.Ignore(p => p.PayingSource);
-
         builder.Property(x => x.PayingSourceCode)
             .HasMaxLength(50)
             .IsRequired();
 
-        builder.HasOne(x => x.Patient)
+        builder.OwnsOne(x => x.PatientName)
+            .Property(x => x.FirstName)
+            .HasColumnName("PatientFirstName")
+            .IsRequired();
+
+        builder.OwnsOne(x => x.PatientName)
+            .Property(x => x.MiddleName)
+            .HasColumnName("PatientMiddleName");
+
+        builder.OwnsOne(x => x.PatientName)
+            .Property(x => x.LastName)
+            .HasColumnName("PatientLastName")
+            .IsRequired();
+
+        builder.HasOne<Patient>()
             .WithMany()
             .HasForeignKey(x => x.PatientCode)
             .IsRequired();
 
-        builder.HasOne(x => x.Physician)
+        builder.OwnsOne(x => x.PhysicianName)
+            .Property(x => x.FirstName)
+            .HasColumnName("PhysicianFirstName")
+            .IsRequired();
+
+        builder.OwnsOne(x => x.PhysicianName)
+            .Property(x => x.MiddleName)
+            .HasColumnName("PhysicianMiddleName");
+
+        builder.OwnsOne(x => x.PhysicianName)
+            .Property(x => x.LastName)
+            .HasColumnName("PhysicianLastName")
+            .IsRequired();    
+
+        builder.HasOne<Physician>()
             .WithMany()
             .HasForeignKey(x => x.PhysicianCode)
             .IsRequired();
 
-        builder.HasOne(x => x.Hospital)
+        builder.HasOne<Hospital>()
             .WithMany()
             .HasForeignKey(x => x.HospitalCode)
-            .IsRequired();  
+            .IsRequired();
+
+        builder.HasOne<InsuranceCompany>()
+            .WithMany()
+            .HasForeignKey(x => x.InsuranceCompanyCode)
+            .IsRequired();
 
         // builder.HasOne(x => x.InsuranceCompany)
         //     .WithMany()
@@ -59,11 +91,11 @@ internal class QuotationItemMapping : IEntityTypeConfiguration<QuotationItem>
 {
     public void Configure(EntityTypeBuilder<QuotationItem> builder)
     {
-        builder.HasKey(x => new { x.QuotationId, x.LineId });
+        builder.HasKey(x => new { x.DocumentId, x.LineId });
 
         builder.HasOne<Quotation>()
             .WithMany(x => x.Items)
-            .HasForeignKey(x => x.QuotationId)
+            .HasForeignKey(x => x.DocumentId)
             .IsRequired();
 
         builder.HasOne<Item>()

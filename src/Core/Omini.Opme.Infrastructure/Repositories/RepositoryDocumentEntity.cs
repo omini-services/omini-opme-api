@@ -9,7 +9,6 @@ namespace Omini.Opme.Infrastructure;
 
 internal abstract class RepositoryDocumentEntity<TEntity> : IRespositoryDocumentEntity<TEntity> where TEntity : DocumentEntity
 {
-    const string DefaultCodeFieldName = "Code";
     protected readonly OpmeContext Db;
     protected readonly DbSet<TEntity> DbSet;
 
@@ -21,17 +20,17 @@ internal abstract class RepositoryDocumentEntity<TEntity> : IRespositoryDocument
 
     public async Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
-        return await DbSet.Where(predicate).AsNoTracking().ToListAsync(cancellationToken);
+        return await DbSet.AsNoTracking().Where(predicate).ToListAsync(cancellationToken);
     }
 
     public virtual async Task<TEntity?> GetByNumber(long number, CancellationToken cancellationToken = default)
     {
-        return await DbSet.Where(p => p.Number == number).AsNoTracking().SingleOrDefaultAsync(cancellationToken);
+        return await DbSet.AsNoTracking().Where(p => p.Number == number).SingleOrDefaultAsync(cancellationToken);
     }
 
     public virtual async Task<TEntity?> GetById(Guid id, CancellationToken cancellationToken = default)
     {
-        return await DbSet.Where(p => p.Id == id).AsNoTracking().SingleOrDefaultAsync(cancellationToken);
+        return await DbSet.Where(p => p.Id == id).SingleOrDefaultAsync(cancellationToken);
     }
 
     public async Task<Shared.Entities.PagedResult<TEntity>> GetPagedResult(IQueryable<TEntity> query, int currentPage = 1, int pageSize = 100, CancellationToken cancellationToken = default)
@@ -98,6 +97,4 @@ internal abstract class RepositoryDocumentEntity<TEntity> : IRespositoryDocument
     {
         Db?.Dispose();
     }
-
-
 }

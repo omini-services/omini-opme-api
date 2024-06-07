@@ -1,28 +1,25 @@
 using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Domain.Common;
 using Omini.Opme.Domain.Exceptions;
+using Omini.Opme.Domain.ValueObjects;
 
 namespace Omini.Opme.Domain.Sales;
 
 public sealed class Quotation : DocumentEntity
 {
     public string PatientCode { get; private set; }
-    public string PatientName { get; private set; }
-    public Patient Patient { get; private set; }
+    public PersonName PatientName { get; private set; }
     public string PhysicianCode { get; private set; }
-    public string PhysicianName { get; private set; }
-    public Physician Physician { get; private set; }
+    public PersonName PhysicianName { get; private set; }
     public string HospitalCode { get; private set; }
     public string HospitalName { get; private set; }
-    public Hospital Hospital { get; private set; }
     public string InsuranceCompanyCode { get; private set; }
     public string InsuranceCompanyName { get; private set; }
-    public InsuranceCompany InsuranceCompany { get; private set; }
     public string InternalSpecialistCode { get; private set; }
     public PayingSourceType PayingSourceType { get; private set; }
     public string PayingSourceCode { get; private set; }
     public string PayingSourceName { get; private set; }
-    public PayingSource PayingSource { get; set; }
+    //public PayingSource PayingSource { get; set; }
     // public InternalSpecialist InternalSpecialist { get; private set; }
     private DateTime _dueDate;
     public DateTime DueDate { get { return _dueDate; } private set { _dueDate = value.ToUniversalTime(); } }
@@ -32,8 +29,8 @@ public sealed class Quotation : DocumentEntity
 
     private Quotation() { }
 
-    public Quotation(string patientCode, string patientName,
-                     string physicianCode, string physicianName,
+    public Quotation(string patientCode, PersonName patientName,
+                     string physicianCode, PersonName physicianName,
                      string hospitalCode, string hospitalName,
                      string insuranceCompanyCode, string insuranceCompanyName,
                      string internalSpecialistCode,
@@ -53,8 +50,8 @@ public sealed class Quotation : DocumentEntity
         SetTotal();
     }
 
-    public void SetData(string patientCode, string patientName,
-                        string physicianCode, string physicianName,
+    public void SetData(string patientCode, PersonName patientName,
+                        string physicianCode, PersonName physicianName,
                         string hospitalCode, string hospitalName,
                         string insuranceCompanyCode, string insuranceCompanyName,
                         string internalSpecialistCode,
@@ -81,7 +78,7 @@ public sealed class Quotation : DocumentEntity
     public void AddItem(string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, decimal unitPrice, decimal quantity, int? lineOrder = null)
     {
         var newItem = new QuotationItem(
-            quotationId: Id,
+            documentID: Id,
             lineOrder: lineOrder ?? LastLineOrder,
             lineId: LastLineId,
             itemCode: itemCode,
@@ -105,7 +102,7 @@ public sealed class Quotation : DocumentEntity
 
         updateAction(item);
 
-        if (item.QuotationId != Id || item.LineId != lineId)
+        if (item.DocumentId != Id || item.LineId != lineId)
         {
             throw new MissMatchIdException();
         }
@@ -128,11 +125,8 @@ public sealed class Quotation : DocumentEntity
     private int LastLineId => _items.Any() ? _items.Max(p => p.LineId) + 1 : 0;
 }
 
-public sealed class QuotationItem
+public sealed class QuotationItem : DocumentRowEntity
 {
-    public Guid QuotationId { get; private set; }
-    public int LineId { get; private set; }
-    public int LineOrder { get; private set; }
     public string ItemCode { get; private set; }
     public string ItemName { get; private set; }
     public string ReferenceCode { get; private set; }
@@ -146,9 +140,9 @@ public sealed class QuotationItem
 
     private QuotationItem() { }
 
-    public QuotationItem(Guid quotationId, int lineId, string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, decimal unitPrice, decimal quantity, int? lineOrder = null)
+    public QuotationItem(Guid documentID, int lineId, string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, decimal unitPrice, decimal quantity, int? lineOrder = null)
     {
-        QuotationId = quotationId;
+        DocumentId = documentID;
         LineId = lineId;
 
         SetData(itemCode, itemName, referenceCode, anvisaCode, anvisaDueDate, unitPrice, quantity, lineOrder);

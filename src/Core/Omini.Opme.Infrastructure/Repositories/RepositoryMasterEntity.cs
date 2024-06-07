@@ -21,12 +21,12 @@ internal abstract class RepositoryMasterEntity<TEntity> : IRespositoryMasterEnti
 
     public async Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
-        return await DbSet.Where(predicate).AsNoTracking().ToListAsync(cancellationToken);
+        return await DbSet.AsNoTracking().Where(predicate).ToListAsync(cancellationToken);
     }
 
     public virtual async Task<TEntity?> GetByCode(string code, CancellationToken cancellationToken = default)
     {
-        return await DbSet.Where(p => p.Code == code).AsNoTracking().SingleOrDefaultAsync(cancellationToken);
+        return await DbSet.AsNoTracking().Where(p => p.Code == code).SingleOrDefaultAsync(cancellationToken);
     }
 
     public virtual async Task<Shared.Entities.PagedResult<TEntity>> GetAll(int currentPage = 1, int pageSize = 100, string? orderByField = null, SortDirection sortDirection = SortDirection.Asc, string? queryField = null, string? queryValue = null, CancellationToken cancellationToken = default)

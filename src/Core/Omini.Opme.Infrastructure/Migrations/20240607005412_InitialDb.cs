@@ -181,9 +181,13 @@ namespace Omini.Opme.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     PatientCode = table.Column<string>(type: "character varying(50)", nullable: false),
-                    PatientName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PatientFirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PatientLastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PatientMiddleName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     PhysicianCode = table.Column<string>(type: "character varying(50)", nullable: false),
-                    PhysicianName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PhysicianFirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PhysicianLastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PhysicianMiddleName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     HospitalCode = table.Column<string>(type: "character varying(50)", nullable: false),
                     HospitalName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     InsuranceCompanyCode = table.Column<string>(type: "character varying(50)", nullable: false),
@@ -237,9 +241,8 @@ namespace Omini.Opme.Infrastructure.Migrations
                 name: "QuotationItems",
                 columns: table => new
                 {
-                    QuotationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DocumentId = table.Column<Guid>(type: "uuid", nullable: false),
                     LineId = table.Column<int>(type: "integer", nullable: false),
-                    LineOrder = table.Column<int>(type: "integer", nullable: false),
                     ItemCode = table.Column<string>(type: "character varying(50)", nullable: false),
                     ItemName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     ReferenceCode = table.Column<string>(type: "text", nullable: false),
@@ -247,11 +250,12 @@ namespace Omini.Opme.Infrastructure.Migrations
                     AnvisaDueDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UnitPrice = table.Column<decimal>(type: "numeric", nullable: false),
                     Quantity = table.Column<decimal>(type: "numeric", nullable: false),
-                    LineTotal = table.Column<decimal>(type: "numeric", nullable: false)
+                    LineTotal = table.Column<decimal>(type: "numeric", nullable: false),
+                    LineOrder = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_QuotationItems", x => new { x.QuotationId, x.LineId });
+                    table.PrimaryKey("PK_QuotationItems", x => new { x.DocumentId, x.LineId });
                     table.ForeignKey(
                         name: "FK_QuotationItems_Items_ItemCode",
                         column: x => x.ItemCode,
@@ -259,8 +263,8 @@ namespace Omini.Opme.Infrastructure.Migrations
                         principalColumn: "Code",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_QuotationItems_Quotations_QuotationId",
-                        column: x => x.QuotationId,
+                        name: "FK_QuotationItems_Quotations_DocumentId",
+                        column: x => x.DocumentId,
                         principalTable: "Quotations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -269,15 +273,15 @@ namespace Omini.Opme.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "InternalSpecialists",
                 columns: new[] { "Code", "CreatedBy", "CreatedOn", "Email", "Telefone", "UpdatedBy", "UpdatedOn", "FirstName", "LastName", "MiddleName" },
-                values: new object[] { "1", new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(5950), "comercial@fratermedical.com.br", "(11) 3829-9400", null, null, "Nathália", "Camelo", null });
+                values: new object[] { "1", new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6300), "comercial@fratermedical.com.br", "(11) 3829-9400", null, null, "Nathália", "Camelo", null });
 
             migrationBuilder.InsertData(
                 table: "OpmeUsers",
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "DeletedBy", "DeletedOn", "Email", "IsDeleted", "UpdatedBy", "UpdatedOn" },
                 values: new object[,]
                 {
-                    { new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"), new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6110), null, null, "guilherme_or@outlook.com", false, new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6110) },
-                    { new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"), new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6100), null, null, "dacceto@gmail.com", false, new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6110) }
+                    { new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"), new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6500), null, null, "guilherme_or@outlook.com", false, new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6500) },
+                    { new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"), new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6490), null, null, "dacceto@gmail.com", false, new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6490) }
                 });
 
             migrationBuilder.CreateIndex(

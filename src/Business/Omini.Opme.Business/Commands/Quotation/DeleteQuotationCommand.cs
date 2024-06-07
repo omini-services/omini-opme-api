@@ -16,10 +16,10 @@ public record DeleteQuotationCommand : ICommand<Quotation>
         private readonly IUnitOfWork _unitOfWork;
         private readonly IQuotationRepository _quotationRepository;
 
-        public DeleteQuotationCommandHandler(IUnitOfWork unitOfWork, IQuotationRepository hospitalRepository)
+        public DeleteQuotationCommandHandler(IUnitOfWork unitOfWork, IQuotationRepository quotationRepository)
         {
             _unitOfWork = unitOfWork;
-            _quotationRepository = hospitalRepository;
+            _quotationRepository = quotationRepository;
         }
 
         public async Task<Result<Quotation, ValidationResult>> Handle(DeleteQuotationCommand request, CancellationToken cancellationToken)

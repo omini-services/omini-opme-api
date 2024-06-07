@@ -24,9 +24,4 @@ public sealed class Hospital : MasterEntity
         Comments = comments;
         return this;
     }
-
-    public override string GetSearchableString()
-    {
-        return Name.LegalName;
-    }
 }

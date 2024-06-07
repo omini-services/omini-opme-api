@@ -16,16 +16,12 @@ internal class QuotationRepository : RepositoryDocumentEntity<Quotation>, IQuota
     public override async Task<Quotation?> GetById(Guid id, CancellationToken cancellationToken = default)
     {
         var quotation = await DbSet.Include(p => p.Items)
-                          .Include(p => p.Patient)
-                          .Include(p => p.Hospital)
-                          .Include(p => p.Physician)
-                          .Include(p => p.InsuranceCompany)
                           .Where(p => p.Id == id)
                           .SingleOrDefaultAsync(cancellationToken);
 
         if (quotation is not null)
         {
-            quotation.PayingSource = new PayingSource() { Name = GetPaymentSource(quotation) };
+            //quotation.PayingSource = new PayingSource() { Name = GetPaymentSource(quotation) };
         }
 
         return quotation;
@@ -33,17 +29,13 @@ internal class QuotationRepository : RepositoryDocumentEntity<Quotation>, IQuota
 
     public override async Task<Quotation?> GetByNumber(long number, CancellationToken cancellationToken = default)
     {
-        var quotation = await DbSet.Include(p => p.Items)
-                          .Include(p => p.Patient)
-                          .Include(p => p.Hospital)
-                          .Include(p => p.Physician)
-                          .Include(p => p.InsuranceCompany)
+        var quotation = await DbSet.Include(p => p.Items).AsNoTracking()
                           .Where(p => p.Number == number)
                           .SingleOrDefaultAsync(cancellationToken);
 
         if (quotation is not null)
         {
-            quotation.PayingSource = new PayingSource() { Name = GetPaymentSource(quotation) };
+            //quotation.PayingSource = new PayingSource() { Name = GetPaymentSource(quotation) };
         }
 
         return quotation;
@@ -76,5 +68,13 @@ internal class QuotationRepository : RepositoryDocumentEntity<Quotation>, IQuota
         }
 
         return payingSource;
+    }
+}
+
+
+internal class QuotationItemRepository : RepositoryDocumentRowEntity<QuotationItem>, IQuotationItemRepository
+{
+    public QuotationItemRepository(OpmeContext context) : base(context)
+    {
     }
 }

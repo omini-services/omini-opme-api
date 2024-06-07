@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Omini.Opme.Domain.Admin;
 using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Domain.Sales;
@@ -12,7 +13,10 @@ internal sealed class OpmeContext : DbContext
     public OpmeContext(DbContextOptions<OpmeContext> options)
         : base(options)
     {
+        ChangeTracker.CascadeDeleteTiming = CascadeTiming.OnSaveChanges;
+        ChangeTracker.DeleteOrphansTiming = CascadeTiming.OnSaveChanges;
     }
+    
     public DbSet<OpmeUser> OpmeUsers { get; set; }
     public DbSet<Item> Items { get; set; }
     public DbSet<Hospital> Hospitals { get; set; }

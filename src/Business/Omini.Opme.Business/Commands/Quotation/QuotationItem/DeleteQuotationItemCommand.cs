@@ -44,6 +44,7 @@ public record DeleteQuotationItemCommand : ICommand<Quotation>
             }
 
             quotation.RemoveItem(quotationItem!);
+          //  _quotationItemRepository.Delete(quotationItem!);
 
             _quotationRepository.Update(quotation, cancellationToken);
             await _unitOfWork.Commit(cancellationToken);

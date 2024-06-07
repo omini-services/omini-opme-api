@@ -28,12 +28,18 @@ public class QuotationsControllerTests : IntegrationTest
         var quotationCreateCommand = QuotationFaker.GetFakeQuotationCreateCommand(itemOutputDtos);
         quotationCreateCommand.HospitalCode = hospitalOutputDto.Data.Code;
         quotationCreateCommand.HospitalName = hospitalOutputDto.Data.TradeName;
+
         quotationCreateCommand.InsuranceCompanyCode = insuranceCompanyOutputDto.Data.Code;
         quotationCreateCommand.InsuranceCompanyName = insuranceCompanyOutputDto.Data.TradeName;
+
         quotationCreateCommand.PhysicianCode = physicianOutputDto.Data.Code;
-        quotationCreateCommand.PhysicianName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PhysicianFirstName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PhysicianLastName = physicianOutputDto.Data.LastName;
+
         quotationCreateCommand.PatientCode = patientOutputDto.Data.Code;
-        quotationCreateCommand.PatientName = patientOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientFirstName = patientOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientLastName = patientOutputDto.Data.LastName;
+
         quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
         quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
         quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
@@ -78,12 +84,18 @@ public class QuotationsControllerTests : IntegrationTest
         var quotationCreateCommand = QuotationFaker.GetFakeQuotationCreateCommand(itemOutputDtos);
         quotationCreateCommand.HospitalCode = hospitalOutputDto.Data.Code;
         quotationCreateCommand.HospitalName = hospitalOutputDto.Data.TradeName;
+
         quotationCreateCommand.InsuranceCompanyCode = insuranceCompanyOutputDto.Data.Code;
         quotationCreateCommand.InsuranceCompanyName = insuranceCompanyOutputDto.Data.TradeName;
+
         quotationCreateCommand.PhysicianCode = physicianOutputDto.Data.Code;
-        quotationCreateCommand.PhysicianName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PhysicianFirstName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PhysicianLastName = physicianOutputDto.Data.LastName;
+
         quotationCreateCommand.PatientCode = patientOutputDto.Data.Code;
-        quotationCreateCommand.PatientName = patientOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientFirstName = patientOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientLastName = patientOutputDto.Data.LastName;
+
         quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
         quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
         quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
@@ -110,12 +122,18 @@ public class QuotationsControllerTests : IntegrationTest
         var quotationCreateCommand = QuotationFaker.GetFakeQuotationCreateCommand(itemOutputDtos);
         quotationCreateCommand.HospitalCode = hospitalOutputDto.Data.Code;
         quotationCreateCommand.HospitalName = hospitalOutputDto.Data.TradeName;
+
         quotationCreateCommand.InsuranceCompanyCode = insuranceCompanyOutputDto.Data.Code;
         quotationCreateCommand.InsuranceCompanyName = insuranceCompanyOutputDto.Data.TradeName;
+
         quotationCreateCommand.PhysicianCode = physicianOutputDto.Data.Code;
-        quotationCreateCommand.PhysicianName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PhysicianFirstName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PhysicianLastName = physicianOutputDto.Data.LastName;
+
         quotationCreateCommand.PatientCode = patientOutputDto.Data.Code;
-        quotationCreateCommand.PatientName = patientOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientFirstName = patientOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientLastName = patientOutputDto.Data.LastName;
+        
         quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
         quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
         quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
@@ -165,12 +183,18 @@ public class QuotationsControllerTests : IntegrationTest
         var quotationCreateCommand = QuotationFaker.GetFakeQuotationCreateCommand(itemOutputDtos);
         quotationCreateCommand.HospitalCode = hospitalOutputDto.Data.Code;
         quotationCreateCommand.HospitalName = hospitalOutputDto.Data.TradeName;
+        
         quotationCreateCommand.InsuranceCompanyCode = insuranceCompanyOutputDto.Data.Code;
         quotationCreateCommand.InsuranceCompanyName = insuranceCompanyOutputDto.Data.TradeName;
+        
         quotationCreateCommand.PhysicianCode = physicianOutputDto.Data.Code;
-        quotationCreateCommand.PhysicianName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PhysicianFirstName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PhysicianLastName = physicianOutputDto.Data.LastName;
+
         quotationCreateCommand.PatientCode = patientOutputDto.Data.Code;
-        quotationCreateCommand.PatientName = patientOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientFirstName = patientOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientLastName = patientOutputDto.Data.LastName;
+
         quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
         quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
         quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
@@ -221,9 +245,11 @@ public class QuotationsControllerTests : IntegrationTest
         quotationCreateCommand.InsuranceCompanyCode = insuranceCompanyOutputDto.Data.Code;
         quotationCreateCommand.InsuranceCompanyName = insuranceCompanyOutputDto.Data.TradeName;
         quotationCreateCommand.PhysicianCode = physicianOutputDto.Data.Code;
-        quotationCreateCommand.PhysicianName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PhysicianFirstName = physicianOutputDto.Data.FirstName;
+        quotationCreateCommand.PhysicianLastName = physicianOutputDto.Data.LastName;
         quotationCreateCommand.PatientCode = patientOutputDto.Data.Code;
-        quotationCreateCommand.PatientName = patientOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientFirstName = patientOutputDto.Data.FirstName;
+        quotationCreateCommand.PatientLastName = patientOutputDto.Data.LastName;
         quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
         quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
         quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
@@ -232,21 +258,21 @@ public class QuotationsControllerTests : IntegrationTest
 
         //act
 
-        var updateQuotationResponse = await TestClient.Request($"/api/quotations/{quotation.Id}/items/{quotation.Items[0].LineId}").AsAuthenticated().DeleteAsync();
-        var quotationAfterUpdateResponse = await TestClient.Request($"/api/quotations/{quotation.Id}").AsAuthenticated().GetJsonAsync<ResponseDto<QuotationOutputDto>>();
-        var quotationAfterUpdate = quotationAfterUpdateResponse.Data;
+        var deleteQuotationItemResponse = await TestClient.Request($"/api/quotations/{quotation.Id}/items/{quotation.Items[0].LineId}").AsAuthenticated().DeleteAsync();
+        var quotationAfterDeleteItemResponse = await TestClient.Request($"/api/quotations/{quotation.Id}").AsAuthenticated().GetJsonAsync<ResponseDto<QuotationOutputDto>>();
+        var quotationAfterUpdateItem = quotationAfterDeleteItemResponse.Data;
 
         //assert
-        updateQuotationResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
+        deleteQuotationItemResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
 
-        quotationAfterUpdate.Items.Should().HaveCount(quotation.Items.Count - 1);
+        quotationAfterUpdateItem.Items.Should().HaveCount(quotation.Items.Count - 1);
 
-        quotationAfterUpdate.Items.Should()
+        quotationAfterUpdateItem.Items.Should()
                                      .OnlyHaveUniqueItems(p => p.LineId).And
                                      .OnlyHaveUniqueItems(p => p.LineOrder).And
                                      .AllSatisfy(p => p.LineTotal.Should().BeGreaterThanOrEqualTo(0));
 
-        quotationAfterUpdate.Items.Should().NotContain(quotation.Items[0]);
+        quotationAfterUpdateItem.Items.Should().NotContain(quotation.Items[0]);
     }
 
     private async Task Seed()

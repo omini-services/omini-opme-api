@@ -51,7 +51,7 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
 
                 page.Footer().Height(60).Element(e => ComposeFooter(e));
             });
-        }).GeneratePdf();        
+        }).GeneratePdf();
     }
 
     private void ComposeHeader(IContainer container, Quotation quotation)
@@ -130,19 +130,19 @@ public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
             .DefaultTextStyle(TextStyle.Default.FontSize(10))
             .Column(col =>
             {
-                AddLabelAndContent(col, "Paciente:", quotation.Patient.Name.FullName);
+                AddLabelAndContent(col, "Paciente:", quotation.PatientName.FullName);
                 AddHorizontalLine(col);
 
-                AddLabelAndContent(col, "Cirurgiã(o):", quotation.Physician.Name.FullName);
+                AddLabelAndContent(col, "Cirurgiã(o):", quotation.PhysicianName.FullName);
                 AddHorizontalLine(col);
 
-                AddLabelAndContent(col, "Hospital:", quotation.Hospital.Name.TradeName);
+                AddLabelAndContent(col, "Hospital:", quotation.HospitalName);
                 AddHorizontalLine(col);
 
-                AddLabelAndContent(col, "Convênio:", quotation.InsuranceCompany.Name.TradeName);
+                AddLabelAndContent(col, "Convênio:", quotation.InsuranceCompanyName);
                 AddHorizontalLine(col);
 
-                AddLabelAndContent(col, "Fonte Pagadora:", quotation.PayingSource.Name);
+                AddLabelAndContent(col, "Fonte Pagadora:", quotation.PayingSourceName);
                 AddHorizontalLine(col);
 
                 col.Item().PaddingTop(20).Row(row =>

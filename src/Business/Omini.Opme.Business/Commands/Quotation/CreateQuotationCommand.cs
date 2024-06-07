@@ -5,15 +5,20 @@ using Omini.Opme.Domain.Sales;
 using Omini.Opme.Shared.Entities;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Domain.Transactions;
+using Omini.Opme.Domain.ValueObjects;
 
 namespace Omini.Opme.Business.Commands;
 
 public record CreateQuotationCommand : ICommand<Quotation>
 {
     public string PatientCode { get; set; }
-    public string PatientName { get; set; }
+    public string PatientFirstName { get; set; }
+    public string PatientMiddleName { get; set; }
+    public string PatientLastName { get; set; }
     public string PhysicianCode { get; set; }
-    public string PhysicianName { get; set; }
+    public string PhysicianFirstName { get; set; }
+    public string PhysicianMiddleName { get; set; }
+    public string PhysicianLastName { get; set; }
     public string HospitalCode { get; set; }
     public string HospitalName { get; set; }
     public string InsuranceCompanyCode { get; set; }
@@ -88,13 +93,16 @@ public record CreateQuotationCommand : ICommand<Quotation>
 
             var items = await _itemRepository.Get(p => request.Items.Select(x => x.ItemCode).Contains(p.Code));
 
+            var patientName = new PersonName(firstName: request.PatientFirstName, lastName: request.PatientLastName, middleName: request.PatientMiddleName);
+            var physicianName = new PersonName(firstName: request.PhysicianFirstName, lastName: request.PhysicianLastName, middleName: request.PhysicianMiddleName);
+
             var quotation = new Quotation(
-                patientCode: patient.Code, patientName: request.PatientName,
-                physicianCode: physician.Code, physicianName: request.PhysicianName,
+                patientCode: patient.Code, patientName: patientName,
+                physicianCode: physician.Code, physicianName: physicianName,
                 hospitalCode: hospital.Code, hospitalName: request.HospitalName,
                 insuranceCompanyCode: insuranceCompany.Code, insuranceCompanyName: request.InsuranceCompanyName,
-                internalSpecialistCode: "1", 
-                payingSourceType: request.PayingSourceType, payingSourceCode: request.PayingSourceCode, payingSourceName: request.PayingSourceName,                
+                internalSpecialistCode: "1",
+                payingSourceType: request.PayingSourceType, payingSourceCode: request.PayingSourceCode, payingSourceName: request.PayingSourceName,
                 dueDate: request.DueDate
             );
 

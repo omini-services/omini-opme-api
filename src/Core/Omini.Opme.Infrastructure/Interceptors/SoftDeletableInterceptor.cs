@@ -46,9 +46,9 @@ public sealed class SoftDeletableInterceptor : SaveChangesInterceptor
 
         foreach (var softDeletable in softDeletables)
         {
+            softDeletable.State = EntityState.Modified;
             var auditableEntity = softDeletable.Entity as ISoftDeletable;
 
-            softDeletable.State = EntityState.Modified;
             auditableEntity.DeletedBy = opmeUserId.Value;
             auditableEntity.DeletedOn = DateTime.UtcNow;
             auditableEntity.IsDeleted = true;

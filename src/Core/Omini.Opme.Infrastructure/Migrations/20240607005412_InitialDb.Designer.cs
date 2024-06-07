@@ -12,7 +12,7 @@ using Omini.Opme.Infrastructure.Contexts;
 namespace Omini.Opme.Infrastructure.Migrations
 {
     [DbContext(typeof(OpmeContext))]
-    [Migration("20240606001734_InitialDb")]
+    [Migration("20240607005412_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -76,7 +76,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                         {
                             Code = "1",
                             CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                            CreatedOn = new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(5950),
+                            CreatedOn = new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6300),
                             Email = "comercial@fratermedical.com.br",
                             Telefone = "(11) 3829-9400"
                         });
@@ -123,21 +123,21 @@ namespace Omini.Opme.Infrastructure.Migrations
                         {
                             Id = new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"),
                             CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                            CreatedOn = new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6100),
+                            CreatedOn = new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6490),
                             Email = "dacceto@gmail.com",
                             IsDeleted = false,
                             UpdatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                            UpdatedOn = new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6110)
+                            UpdatedOn = new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6490)
                         },
                         new
                         {
                             Id = new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"),
                             CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                            CreatedOn = new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6110),
+                            CreatedOn = new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6500),
                             Email = "guilherme_or@outlook.com",
                             IsDeleted = false,
                             UpdatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                            UpdatedOn = new DateTime(2024, 6, 6, 0, 17, 34, 177, DateTimeKind.Utc).AddTicks(6110)
+                            UpdatedOn = new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6500)
                         });
                 });
 
@@ -342,11 +342,6 @@ namespace Omini.Opme.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("PatientName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.Property<string>("PayingSourceCode")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -364,11 +359,6 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.Property<string>("PhysicianCode")
                         .IsRequired()
                         .HasColumnType("character varying(50)");
-
-                    b.Property<string>("PhysicianName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("numeric");
@@ -394,7 +384,7 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             modelBuilder.Entity("Omini.Opme.Domain.Sales.QuotationItem", b =>
                 {
-                    b.Property<Guid>("QuotationId")
+                    b.Property<Guid>("DocumentId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("LineId")
@@ -432,7 +422,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("numeric");
 
-                    b.HasKey("QuotationId", "LineId");
+                    b.HasKey("DocumentId", "LineId");
 
                     b.HasIndex("ItemCode");
 
@@ -690,50 +680,108 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             modelBuilder.Entity("Omini.Opme.Domain.Sales.Quotation", b =>
                 {
-                    b.HasOne("Omini.Opme.Domain.BusinessPartners.Hospital", "Hospital")
+                    b.HasOne("Omini.Opme.Domain.BusinessPartners.Hospital", null)
                         .WithMany()
                         .HasForeignKey("HospitalCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Omini.Opme.Domain.BusinessPartners.InsuranceCompany", "InsuranceCompany")
+                    b.HasOne("Omini.Opme.Domain.BusinessPartners.InsuranceCompany", null)
                         .WithMany()
                         .HasForeignKey("InsuranceCompanyCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Omini.Opme.Domain.BusinessPartners.Patient", "Patient")
+                    b.HasOne("Omini.Opme.Domain.BusinessPartners.Patient", null)
                         .WithMany()
                         .HasForeignKey("PatientCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Omini.Opme.Domain.BusinessPartners.Physician", "Physician")
+                    b.HasOne("Omini.Opme.Domain.BusinessPartners.Physician", null)
                         .WithMany()
                         .HasForeignKey("PhysicianCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Hospital");
+                    b.OwnsOne("Omini.Opme.Domain.ValueObjects.PersonName", "PatientName", b1 =>
+                        {
+                            b1.Property<Guid>("QuotationId")
+                                .HasColumnType("uuid");
 
-                    b.Navigation("InsuranceCompany");
+                            b1.Property<string>("FirstName")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("PatientFirstName");
 
-                    b.Navigation("Patient");
+                            b1.Property<string>("LastName")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("PatientLastName");
 
-                    b.Navigation("Physician");
+                            b1.Property<string>("MiddleName")
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("PatientMiddleName");
+
+                            b1.HasKey("QuotationId");
+
+                            b1.ToTable("Quotations");
+
+                            b1.WithOwner()
+                                .HasForeignKey("QuotationId");
+                        });
+
+                    b.OwnsOne("Omini.Opme.Domain.ValueObjects.PersonName", "PhysicianName", b1 =>
+                        {
+                            b1.Property<Guid>("QuotationId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("FirstName")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("PhysicianFirstName");
+
+                            b1.Property<string>("LastName")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("PhysicianLastName");
+
+                            b1.Property<string>("MiddleName")
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("PhysicianMiddleName");
+
+                            b1.HasKey("QuotationId");
+
+                            b1.ToTable("Quotations");
+
+                            b1.WithOwner()
+                                .HasForeignKey("QuotationId");
+                        });
+
+                    b.Navigation("PatientName")
+                        .IsRequired();
+
+                    b.Navigation("PhysicianName")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Omini.Opme.Domain.Sales.QuotationItem", b =>
                 {
-                    b.HasOne("Omini.Opme.Domain.Warehouse.Item", null)
-                        .WithMany()
-                        .HasForeignKey("ItemCode")
+                    b.HasOne("Omini.Opme.Domain.Sales.Quotation", null)
+                        .WithMany("Items")
+                        .HasForeignKey("DocumentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Omini.Opme.Domain.Sales.Quotation", null)
-                        .WithMany("Items")
-                        .HasForeignKey("QuotationId")
+                    b.HasOne("Omini.Opme.Domain.Warehouse.Item", null)
+                        .WithMany()
+                        .HasForeignKey("ItemCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
