@@ -57,7 +57,7 @@ runs:
         ARM_USE_OIDC: true
       shell: bash
       run: |
-        terraform plan -no-color -out=tfplan
+        terraform plan -no-color -var-file=./tfvars/dev.tfvars -out=tfplan
 
     - name: Save Artifact
       id: save-artifact
