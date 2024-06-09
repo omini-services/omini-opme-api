@@ -13,7 +13,6 @@ resource "azurerm_linux_function_app" "function_auth" {
   service_plan_id             = azurerm_service_plan.function_auth_serviceplan.id
   storage_account_name        = azurerm_storage_account.storage.name
   storage_account_access_key  = azurerm_storage_account.storage.primary_access_key
-  functions_extension_version = "~4"
 
   site_config {
     application_stack {

@@ -48,7 +48,7 @@ namespace AuthenticationConnector
                 {
                     version = "1.0.0",
                     action = "Continue",
-                    extension_d15b661baae146e39b5fd6f0941313ec_Opmeuserid = opmeUser.Id
+                    extension_5e6693937c3e42a9a1fd478a37ec370a_Opmeuserid = opmeUser.Id
                 }, response.StatusCode);
             }
             else
