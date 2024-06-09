@@ -4,13 +4,6 @@
 name: Build and deploy ASP.Net Core app to Azure Web App - omi-app-api-dev-useast-rg
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'src/Api/**' 
-      - 'src/Business/**'
-      - 'src/Core/**'
   workflow_dispatch:
 
 jobs:

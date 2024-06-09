@@ -4,13 +4,6 @@
 name: Build and deploy dotnet core project to Azure Function App - omi-fn-auth-dev-useast
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'src/Core/**'
-      - 'src/Functions/AuthenticationConnector' 
-
   workflow_dispatch:
 
 env:
