@@ -22,11 +22,12 @@ resource "azurerm_linux_web_app" "appservice" {
   }
 
   app_settings = {
-    "AzureAd__ClientId"              = "25c1f96b-1d38-42de-a3ac-051c80189600"
-    "AzureAd__Domain"                = "b2comniopme.onmicrosoft.com"
-    "AzureAd__Instance"              = "https://b2comniopme.b2clogin.com"
-    "AzureAd__SignedOutCallbackPath" = "/signout/B2C_1_SignUp_SignIn"
-    "AzureAd__SignUpSignInPolicyId"  = "B2C_1_SignUp_SignIn"
-    "DOTNET_ENVIRONMENT"             = "Development"
+    "AzureAd__AllowWebApiToBeAuthorizedByACL" = true
+    "AzureAd__ClientId"                       = "43ea57b0-e39b-4222-8a37-ca419c33171e" //API CLIENT ID APP REGISTRATION
+    "AzureAd__Domain"                         = "b2comniopme.onmicrosoft.com"
+    "AzureAd__Instance"                       = "https://b2comniopme.b2clogin.com"
+    "AzureAd__SignedOutCallbackPath"          = "/signout/B2C_1_SignUp_SignIn"
+    "AzureAd__SignUpSignInPolicyId"           = "B2C_1_SignUp_SignIn"
+    "DOTNET_ENVIRONMENT"                      = "Development"
   }
 }
