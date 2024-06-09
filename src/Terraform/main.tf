@@ -21,11 +21,11 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg_app" {
-  name     = var.common_settings.resource_group
-  location = var.common_settings.location
+  name     = local.common_settings.resource_group
+  location = local.common_settings.location
 }
 
 # resource "azurerm_resource_group" "rg_b2c" {
-#   name     = var.b2c_settings.resource_group
-#   location = var.b2c_settings.location
+#   name     = local.b2c_settings.resource_group
+#   location = local.b2c_settings.location
 # }
