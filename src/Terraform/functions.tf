@@ -7,14 +7,19 @@ resource "azurerm_service_plan" "function_auth_serviceplan" {
 }
 
 resource "azurerm_linux_function_app" "function_auth" {
-  name                       = "func-omni-opme-auth-eastus"
-  location                   = azurerm_resource_group.rg.location
-  resource_group_name        = azurerm_resource_group.rg.name
-  service_plan_id            = azurerm_service_plan.function_auth_serviceplan.id
-  storage_account_name       = azurerm_storage_account.storage.name
-  storage_account_access_key = azurerm_storage_account.storage.primary_access_key
+  name                        = "func-omni-opme-auth-eastus"
+  location                    = azurerm_resource_group.rg.location
+  resource_group_name         = azurerm_resource_group.rg.name
+  service_plan_id             = azurerm_service_plan.function_auth_serviceplan.id
+  storage_account_name        = azurerm_storage_account.storage.name
+  storage_account_access_key  = azurerm_storage_account.storage.primary_access_key
+  functions_extension_version = "~4"
 
-  site_config {}
+  site_config {
+    application_stack {
+      use_dotnet_isolated_runtime = true
+    }
+  }
 
   app_settings = {
     "APIConnectors__ClientId"                                 = "25c1f96b-1d38-42de-a3ac-051c80189600"
