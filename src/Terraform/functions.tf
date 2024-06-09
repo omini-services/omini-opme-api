@@ -18,6 +18,7 @@ resource "azurerm_linux_function_app" "function_auth" {
   site_config {
     application_stack {
       use_dotnet_isolated_runtime = true
+      dotnet_version              = "8.0"
     }
   }
 
