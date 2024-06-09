@@ -1,14 +1,14 @@
 resource "azurerm_service_plan" "appserviceplan" {
   name                = "asp-omni-opme-api-eastus"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg_app.name
+  location            = azurerm_resource_group.rg_app.location
   os_type             = "Linux"
   sku_name            = "F1"
 }
 
 resource "azurerm_linux_web_app" "appservice" {
   name                = "appsvc-omni-opme-eastus"
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.rg_app.name
   location            = azurerm_service_plan.appserviceplan.location
   service_plan_id     = azurerm_service_plan.appserviceplan.id
 
@@ -29,5 +29,11 @@ resource "azurerm_linux_web_app" "appservice" {
     "AzureAd__SignedOutCallbackPath"          = "/signout/B2C_1_SignUp_SignIn"
     "AzureAd__SignUpSignInPolicyId"           = "B2C_1_SignUp_SignIn"
     "DOTNET_ENVIRONMENT"                      = "Development"
+  }
+
+  lifecycle {
+    ignore_changes = [
+      app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"]
+    ]
   }
 }
