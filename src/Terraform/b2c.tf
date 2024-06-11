@@ -4,6 +4,12 @@
 # #CUSTOM CLAIMS
 # # CHANGES TO B2C NEEDS TO BE APPLIED MANUALLY
 
+# Create api app, expose it with some scope
+# Create app app, give it permission to the scope created previously
+# Create API_Connectors connected to functions
+# Create User Flow 
+# Link user flow to function
+
 # resource "azurerm_aadb2c_directory" "b2c" {
 #   data_residency_location = "United States"
 #   domain_name             = local.b2c_settings.domain
