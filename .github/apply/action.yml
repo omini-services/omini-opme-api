@@ -17,8 +17,6 @@ inputs:
     description: 'Terraform Version'
     required: true
     default: 1.8.4
-  b2c_tenant_id: 
-    required: true
 
 runs:
   using: "composite"
@@ -46,7 +44,6 @@ runs:
         ARM_TENANT_ID: ${{ inputs.azure_tenant_id }}
         ARM_SUBSCRIPTION_ID: ${{ inputs.azure_subscription_id }}
         ARM_USE_OIDC: true
-        TF_VAR_b2c_tenant_id: ${{ inputs.b2c_tenant_id }}
       run: |
         terraform init
 
@@ -65,7 +62,6 @@ runs:
         ARM_TENANT_ID: ${{ inputs.azure_tenant_id }}
         ARM_SUBSCRIPTION_ID: ${{ inputs.azure_subscription_id }}
         ARM_USE_OIDC: true
-        TF_VAR_b2c_tenant_id: ${{ inputs.b2c_tenant_id }}
       shell: bash
       run: |
         terraform apply tfplan/tfplan

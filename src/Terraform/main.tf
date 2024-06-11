@@ -20,11 +20,6 @@ provider "azurerm" {
   features {}
 }
 
-provider "azuread" {
-  tenant_id = var.b2c_tenant_id
-  alias = "b2c"
-} 
-
 resource "azurerm_resource_group" "rg_app" {
   name     = local.common_settings.resource_group
   location = local.common_settings.location

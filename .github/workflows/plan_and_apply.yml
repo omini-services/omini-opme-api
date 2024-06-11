@@ -32,7 +32,6 @@ jobs:
           azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
           azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          b2c_tenant_id : ${{ secrets.B2C_TENANT_ID }}
 
         #   pr_id: ${{ steps.pr-id.outputs.PR_NUMBER }}
   terraform_apply:
@@ -51,4 +50,3 @@ jobs:
             azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
             azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
             azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-            b2c_tenant_id : ${{ secrets.B2C_TENANT_ID }}
