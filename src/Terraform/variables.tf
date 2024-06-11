@@ -13,6 +13,6 @@
 #   })
 # }
 
-variable "tenant_id" {
+variable "b2c_tenant_id" {
   type = string
 }

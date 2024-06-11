@@ -21,7 +21,7 @@ provider "azurerm" {
 }
 
 provider "azuread" {
-  tenant_id = var.tenant_id
+  tenant_id = var.b2c_tenant_id
   alias = "b2c"
 } 
 
