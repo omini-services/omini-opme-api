@@ -33,7 +33,8 @@ resource "azurerm_linux_web_app" "appservice" {
 
   lifecycle {
     ignore_changes = [
-      app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"]
+      app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
+      connection_string
     ]
   }
 }
