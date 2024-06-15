@@ -20,7 +20,7 @@ namespace AuthenticationConnector
 
         public EnrichToken(ILoggerFactory loggerFactory, IOpmeUserRepository opmeUserRepository)
         {
-            _logger = loggerFactory.CreateLogger<BeforeSignUp>();
+            _logger = loggerFactory.CreateLogger<CreateOpmeUser>();
             _opmeUserRepository = opmeUserRepository;
         }
 
