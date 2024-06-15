@@ -9,38 +9,38 @@ using Omini.Opme.Domain.Transactions;
 
 namespace AuthenticationConnector
 {
-    public class UserSignUpRequest
+    public class User
     {
         public string Email { get; set; }
-        public List<Identity> Identities { get; set; }
+        public string FamilyName { get; set; }
+        public string GivenName { get; set; }
+        public string Name { get; set; }
+        public string Nickname { get; set; }
+        public string Picture { get; set; }
+        public Dictionary<string, object> UserMetadata { get; set; }
+        public string Username { get; set; }
+        public string PhoneNumber { get; set; }
     }
 
-    public class Identity
-    {
-        public string SignInType { get; set; }
-        public string Issuer { get; set; }
-        public string IssuerAssignedId { get; set; }
-    }
-
-    public class BeforeSignUp
+    public class CreateOpmeUser
     {
         private readonly ILogger _logger;
         private readonly IOpmeUserRepository _opmeUserRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public BeforeSignUp(ILoggerFactory loggerFactory, IOpmeUserRepository opmeUserRepository, IUnitOfWork unitOfWork)
+        public CreateOpmeUser(ILoggerFactory loggerFactory, IOpmeUserRepository opmeUserRepository, IUnitOfWork unitOfWork)
         {
-            _logger = loggerFactory.CreateLogger<BeforeSignUp>();
+            _logger = loggerFactory.CreateLogger<CreateOpmeUser>();
             _opmeUserRepository = opmeUserRepository;
             _unitOfWork = unitOfWork;
         }
 
-        [Function("BeforeSignUp")]
+        [Function("CreateOpmeUser")]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
         {
-            _logger.LogInformation("C# HTTP trigger function beforeSignUp");
+            _logger.LogInformation("C# HTTP trigger function create opme user");
 
-            var data = await JsonSerializer.DeserializeAsync<UserSignUpRequest>(req.Body,
+            var data = await JsonSerializer.DeserializeAsync<User>(req.Body,
                 new JsonSerializerOptions()
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase

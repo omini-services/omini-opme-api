@@ -74,27 +74,27 @@ internal static class ModelBuilderExtensions
             }
         );
 
-        builder.Entity<OpmeUser>().HasData(
-            new OpmeUser
-            {
-                Id = new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"),
-                Email = "dacceto@gmail.com",
-                CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                CreatedOn = DateTime.UtcNow,
-                UpdatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                UpdatedOn = DateTime.UtcNow,
-                IsDeleted = false
-            },
-            new OpmeUser
-            {
-                Id = new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"),
-                Email = "guilherme_or@outlook.com",
-                CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                CreatedOn = DateTime.UtcNow,
-                UpdatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                UpdatedOn = DateTime.UtcNow,
-                IsDeleted = false
-            }
-        );
+        // builder.Entity<OpmeUser>().HasData(
+        //     new OpmeUser
+        //     {
+        //         Id = new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"),
+        //         Email = "dacceto@gmail.com",
+        //         CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
+        //         CreatedOn = DateTime.UtcNow,
+        //         UpdatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
+        //         UpdatedOn = DateTime.UtcNow,
+        //         IsDeleted = false
+        //     },
+        //     new OpmeUser
+        //     {
+        //         Id = new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"),
+        //         Email = "guilherme_or@outlook.com",
+        //         CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
+        //         CreatedOn = DateTime.UtcNow,
+        //         UpdatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
+        //         UpdatedOn = DateTime.UtcNow,
+        //         IsDeleted = false
+        //     }
+        // );
     }
 }

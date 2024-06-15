@@ -1,4 +1,3 @@
-using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Domain.Common;
 using Omini.Opme.Domain.Exceptions;
 using Omini.Opme.Domain.ValueObjects;

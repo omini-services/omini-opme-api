@@ -73,7 +73,7 @@ namespace Omini.Opme.Infrastructure.Migrations
                         {
                             Code = "1",
                             CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                            CreatedOn = new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6300),
+                            CreatedOn = new DateTime(2024, 6, 15, 1, 18, 24, 277, DateTimeKind.Utc).AddTicks(4820),
                             Email = "comercial@fratermedical.com.br",
                             Telefone = "(11) 3829-9400"
                         });
@@ -114,28 +114,6 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OpmeUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"),
-                            CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                            CreatedOn = new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6490),
-                            Email = "dacceto@gmail.com",
-                            IsDeleted = false,
-                            UpdatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                            UpdatedOn = new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6490)
-                        },
-                        new
-                        {
-                            Id = new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"),
-                            CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                            CreatedOn = new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6500),
-                            Email = "guilherme_or@outlook.com",
-                            IsDeleted = false,
-                            UpdatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                            UpdatedOn = new DateTime(2024, 6, 7, 0, 54, 11, 814, DateTimeKind.Utc).AddTicks(6500)
-                        });
                 });
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Hospital", b =>

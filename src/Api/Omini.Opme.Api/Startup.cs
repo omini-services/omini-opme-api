@@ -34,6 +34,7 @@ internal class Startup
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
 
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IClaimsService, ClaimsService>();
 
         services.AddEndpointsApiExplorer();
