@@ -44,20 +44,27 @@ namespace AuthenticationConnector
             if (opmeUser is not null)
             {
                 response = req.CreateResponse(HttpStatusCode.OK);
-                await response.WriteAsJsonAsync(new
+                var claims = new Dictionary<string, string>()
                 {
-                    version = "1.0.0",
-                    action = "Continue",
-                    extension_5e6693937c3e42a9a1fd478a37ec370a_Opmeuserid = opmeUser.Id
-                }, response.StatusCode);
+                    {"opmeUserId", opmeUser.Id.ToString()}
+                };
+
+                var transformedClaims = claims.Select(entry => new
+                {
+                    key = entry.Key,
+                    value = entry.Value
+                }).ToArray();
+
+                await response.WriteAsJsonAsync(
+                    transformedClaims.ToArray(),
+                    response.StatusCode
+                );
             }
             else
             {
                 response = req.CreateResponse(HttpStatusCode.InternalServerError);
                 await response.WriteAsJsonAsync(new
                 {
-                    version = "1.0.0",
-                    action = "ValidationError",
                     userMessage = "Could not find user in Opme"
                 }, response.StatusCode);
             }
