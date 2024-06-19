@@ -19,6 +19,10 @@ resource "azurerm_linux_web_app" "appservice" {
     application_stack {
       dotnet_version = "8.0"
     }
+
+    cors {
+      allowed_origins = "*"
+    }
   }
 
   app_settings = {
