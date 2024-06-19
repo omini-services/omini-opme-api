@@ -24,8 +24,3 @@ resource "azurerm_resource_group" "rg_app" {
   name     = local.common_settings.resource_group
   location = local.common_settings.location
 }
-
-resource "azurerm_resource_group" "rg_b2c" {
-  name     = local.b2c_settings.resource_group
-  location = local.b2c_settings.location
-}
