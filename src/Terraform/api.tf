@@ -21,7 +21,7 @@ resource "azurerm_linux_web_app" "appservice" {
     }
 
     cors {
-      allowed_origins = "*"
+      allowed_origins = ["*"]
     }
   }
 
