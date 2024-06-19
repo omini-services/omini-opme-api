@@ -5,10 +5,12 @@ using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
-internal class PhysicianMapping : IEntityTypeConfiguration<Physician>
+internal class PhysicianMapping : MasterEntityMapping<Physician>
 {
-    public void Configure(EntityTypeBuilder<Physician> builder)
+    public override void Configure(EntityTypeBuilder<Physician> builder)
     {
+        base.Configure(builder);
+        
         builder.HasKey(x => x.Code);
 
         builder.Property(x => x.Code)

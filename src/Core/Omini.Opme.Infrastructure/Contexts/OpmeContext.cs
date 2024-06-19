@@ -31,7 +31,6 @@ internal sealed class OpmeContext : DbContext
     {
         builder.CreateSequences();
 
-        //builder.Ignore<Notification>();
         builder.ApplyConfigurationsFromAssembly(typeof(OpmeContext).Assembly);
 
         builder.EnableSoftDelete();
@@ -47,18 +46,3 @@ internal sealed class OpmeContext : DbContext
         return await base.SaveChangesAsync(cancellationToken);
     }
 }
-// private void UpdateCompanyId(EntityEntry entry)
-// {
-//     if (ShouldUpdateCompanyId(entry))
-//     {
-//         if (entry.State == EntityState.Added)
-//             entry.Property("CompanyId").CurrentValue = _userService.GetCompanyId();
-//         else if (entry.State == EntityState.Modified)
-//             entry.Property("CompanyId").IsModified = false;
-//     }
-// }
-
-// private static bool ShouldUpdateCompanyId(EntityEntry entry)
-// {
-//     return entry.Entity.GetType().GetProperty("CompanyId") != null;
-// }

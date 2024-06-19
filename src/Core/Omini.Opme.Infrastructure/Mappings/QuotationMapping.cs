@@ -7,10 +7,12 @@ using Omini.Opme.Domain.Warehouse;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
-internal class QuotationMapping : IEntityTypeConfiguration<Quotation>
+internal class QuotationMapping : DocumentEntityMapping<Quotation>
 {
-    public void Configure(EntityTypeBuilder<Quotation> builder)
+    public override void Configure(EntityTypeBuilder<Quotation> builder)
     {
+        base.Configure(builder);
+
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Number)
@@ -57,7 +59,7 @@ internal class QuotationMapping : IEntityTypeConfiguration<Quotation>
         builder.OwnsOne(x => x.PhysicianName)
             .Property(x => x.LastName)
             .HasColumnName("PhysicianLastName")
-            .IsRequired();    
+            .IsRequired();
 
         builder.HasOne<Physician>()
             .WithMany()

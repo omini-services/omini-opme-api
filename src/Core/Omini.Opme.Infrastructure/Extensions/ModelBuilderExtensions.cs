@@ -54,13 +54,39 @@ internal static class ModelBuilderExtensions
 
     public static void Seed(this ModelBuilder builder)
     {
+        var rootUserGuid = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29");
+
+        builder.Entity<OpmeUser>().HasData(
+            new OpmeUser
+            {
+                Id = rootUserGuid,
+                Email = "test@invalid.com",
+                CreatedBy = rootUserGuid,
+                CreatedOn = DateTime.UtcNow,
+            },
+            new OpmeUser
+            {
+                Id = new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"),
+                Email = "dacceto@gmail.com",
+                CreatedBy = rootUserGuid,
+                CreatedOn = DateTime.UtcNow,
+            },
+            new OpmeUser
+            {
+                Id = new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"),
+                Email = "guilherme_or@outlook.com",
+                CreatedBy = rootUserGuid,
+                CreatedOn = DateTime.UtcNow,
+            }
+        );
+
         builder.Entity<InternalSpecialist>().HasData(
             new
             {
                 Code = "1",
                 Email = "comercial@fratermedical.com.br",
                 Telefone = "(11) 3829-9400",
-                CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
+                CreatedBy = rootUserGuid,
                 CreatedOn = DateTime.UtcNow,
             }
         );
@@ -70,31 +96,8 @@ internal static class ModelBuilderExtensions
             {
                 InternalSpecialistCode = "1",
                 FirstName = "Nathália",
-                LastName = "Camelo"
+                LastName = "Camelo",
             }
         );
-
-        // builder.Entity<OpmeUser>().HasData(
-        //     new OpmeUser
-        //     {
-        //         Id = new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"),
-        //         Email = "dacceto@gmail.com",
-        //         CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-        //         CreatedOn = DateTime.UtcNow,
-        //         UpdatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-        //         UpdatedOn = DateTime.UtcNow,
-        //         IsDeleted = false
-        //     },
-        //     new OpmeUser
-        //     {
-        //         Id = new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"),
-        //         Email = "guilherme_or@outlook.com",
-        //         CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-        //         CreatedOn = DateTime.UtcNow,
-        //         UpdatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-        //         UpdatedOn = DateTime.UtcNow,
-        //         IsDeleted = false
-        //     }
-        // );
     }
 }

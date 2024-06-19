@@ -5,10 +5,12 @@ using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
-internal class InsuranceCompanyMapping : IEntityTypeConfiguration<InsuranceCompany>
+internal class InsuranceCompanyMapping : MasterEntityMapping<InsuranceCompany>
 {
-    public void Configure(EntityTypeBuilder<InsuranceCompany> builder)
+    public override void Configure(EntityTypeBuilder<InsuranceCompany> builder)
     {
+        base.Configure(builder);
+        
         builder.HasKey(x => x.Code);
 
         builder.Property(x => x.Code)
@@ -29,6 +31,6 @@ internal class InsuranceCompanyMapping : IEntityTypeConfiguration<InsuranceCompa
         builder.Property(x => x.Cnpj)
             .HasMaxLength(18);
 
-        builder.ToTable("InsuranceCompanies");       
+        builder.ToTable("InsuranceCompanies");
     }
 }

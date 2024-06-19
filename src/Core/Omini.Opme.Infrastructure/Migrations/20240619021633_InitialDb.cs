@@ -4,6 +4,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Omini.Opme.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -31,6 +33,25 @@ namespace Omini.Opme.Infrastructure.Migrations
                 name: "physiciancode_sequence");
 
             migrationBuilder.CreateTable(
+                name: "OpmeUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    DeletedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OpmeUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Hospitals",
                 columns: table => new
                 {
@@ -47,6 +68,17 @@ namespace Omini.Opme.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Hospitals", x => x.Code);
+                    table.ForeignKey(
+                        name: "FK_Hospitals_OpmeUsers_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "OpmeUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Hospitals_OpmeUsers_UpdatedBy",
+                        column: x => x.UpdatedBy,
+                        principalTable: "OpmeUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -66,6 +98,17 @@ namespace Omini.Opme.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_InsuranceCompanies", x => x.Code);
+                    table.ForeignKey(
+                        name: "FK_InsuranceCompanies_OpmeUsers_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "OpmeUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_InsuranceCompanies_OpmeUsers_UpdatedBy",
+                        column: x => x.UpdatedBy,
+                        principalTable: "OpmeUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -86,6 +129,17 @@ namespace Omini.Opme.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_InternalSpecialists", x => x.Code);
+                    table.ForeignKey(
+                        name: "FK_InternalSpecialists_OpmeUsers_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "OpmeUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_InternalSpecialists_OpmeUsers_UpdatedBy",
+                        column: x => x.UpdatedBy,
+                        principalTable: "OpmeUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -111,25 +165,17 @@ namespace Omini.Opme.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Items", x => x.Code);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OpmeUsers",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    DeletedBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    UpdatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OpmeUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Items_OpmeUsers_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "OpmeUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Items_OpmeUsers_UpdatedBy",
+                        column: x => x.UpdatedBy,
+                        principalTable: "OpmeUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -150,6 +196,17 @@ namespace Omini.Opme.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Patients", x => x.Code);
+                    table.ForeignKey(
+                        name: "FK_Patients_OpmeUsers_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "OpmeUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Patients_OpmeUsers_UpdatedBy",
+                        column: x => x.UpdatedBy,
+                        principalTable: "OpmeUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -171,6 +228,17 @@ namespace Omini.Opme.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Physicians", x => x.Code);
+                    table.ForeignKey(
+                        name: "FK_Physicians_OpmeUsers_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "OpmeUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Physicians_OpmeUsers_UpdatedBy",
+                        column: x => x.UpdatedBy,
+                        principalTable: "OpmeUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -222,6 +290,17 @@ namespace Omini.Opme.Infrastructure.Migrations
                         principalColumn: "Code",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_Quotations_OpmeUsers_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "OpmeUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Quotations_OpmeUsers_UpdatedBy",
+                        column: x => x.UpdatedBy,
+                        principalTable: "OpmeUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Quotations_Patients_PatientCode",
                         column: x => x.PatientCode,
                         principalTable: "Patients",
@@ -269,14 +348,89 @@ namespace Omini.Opme.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "OpmeUsers",
+                columns: new[] { "Id", "CreatedBy", "CreatedOn", "DeletedBy", "DeletedOn", "Email", "IsDeleted", "UpdatedBy", "UpdatedOn" },
+                values: new object[,]
+                {
+                    { new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"), new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 6, 19, 2, 16, 33, 365, DateTimeKind.Utc).AddTicks(4700), null, null, "guilherme_or@outlook.com", false, null, null },
+                    { new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 6, 19, 2, 16, 33, 365, DateTimeKind.Utc).AddTicks(4700), null, null, "test@invalid.com", false, null, null },
+                    { new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"), new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 6, 19, 2, 16, 33, 365, DateTimeKind.Utc).AddTicks(4700), null, null, "dacceto@gmail.com", false, null, null }
+                });
+
+            migrationBuilder.InsertData(
                 table: "InternalSpecialists",
                 columns: new[] { "Code", "CreatedBy", "CreatedOn", "Email", "Telefone", "UpdatedBy", "UpdatedOn", "FirstName", "LastName", "MiddleName" },
-                values: new object[] { "1", new Guid("93191413-db51-4cc8-bc58-cc80e180a551"), new DateTime(2024, 6, 15, 1, 18, 24, 277, DateTimeKind.Utc).AddTicks(4820), "comercial@fratermedical.com.br", "(11) 3829-9400", null, null, "Nathália", "Camelo", null });
+                values: new object[] { "1", new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 6, 19, 2, 16, 33, 365, DateTimeKind.Utc).AddTicks(4790), "comercial@fratermedical.com.br", "(11) 3829-9400", null, null, "Nathália", "Camelo", null });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Hospitals_CreatedBy",
+                table: "Hospitals",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Hospitals_UpdatedBy",
+                table: "Hospitals",
+                column: "UpdatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InsuranceCompanies_CreatedBy",
+                table: "InsuranceCompanies",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InsuranceCompanies_UpdatedBy",
+                table: "InsuranceCompanies",
+                column: "UpdatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InternalSpecialists_CreatedBy",
+                table: "InternalSpecialists",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InternalSpecialists_UpdatedBy",
+                table: "InternalSpecialists",
+                column: "UpdatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Items_CreatedBy",
+                table: "Items",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Items_UpdatedBy",
+                table: "Items",
+                column: "UpdatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_CreatedBy",
+                table: "Patients",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_UpdatedBy",
+                table: "Patients",
+                column: "UpdatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Physicians_CreatedBy",
+                table: "Physicians",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Physicians_UpdatedBy",
+                table: "Physicians",
+                column: "UpdatedBy");
 
             migrationBuilder.CreateIndex(
                 name: "IX_QuotationItems_ItemCode",
                 table: "QuotationItems",
                 column: "ItemCode");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Quotations_CreatedBy",
+                table: "Quotations",
+                column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Quotations_HospitalCode",
@@ -297,6 +451,11 @@ namespace Omini.Opme.Infrastructure.Migrations
                 name: "IX_Quotations_PhysicianCode",
                 table: "Quotations",
                 column: "PhysicianCode");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Quotations_UpdatedBy",
+                table: "Quotations",
+                column: "UpdatedBy");
         }
 
         /// <inheritdoc />
@@ -304,9 +463,6 @@ namespace Omini.Opme.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "InternalSpecialists");
-
-            migrationBuilder.DropTable(
-                name: "OpmeUsers");
 
             migrationBuilder.DropTable(
                 name: "QuotationItems");
@@ -328,6 +484,9 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Physicians");
+
+            migrationBuilder.DropTable(
+                name: "OpmeUsers");
 
             migrationBuilder.DropSequence(
                 name: "hospitalcode_sequence");

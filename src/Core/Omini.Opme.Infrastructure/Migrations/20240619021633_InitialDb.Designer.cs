@@ -12,7 +12,7 @@ using Omini.Opme.Infrastructure.Contexts;
 namespace Omini.Opme.Infrastructure.Migrations
 {
     [DbContext(typeof(OpmeContext))]
-    [Migration("20240615011824_InitialDb")]
+    [Migration("20240619021633_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -69,14 +69,18 @@ namespace Omini.Opme.Infrastructure.Migrations
 
                     b.HasKey("Code");
 
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("UpdatedBy");
+
                     b.ToTable("InternalSpecialists", (string)null);
 
                     b.HasData(
                         new
                         {
                             Code = "1",
-                            CreatedBy = new Guid("93191413-db51-4cc8-bc58-cc80e180a551"),
-                            CreatedOn = new DateTime(2024, 6, 15, 1, 18, 24, 277, DateTimeKind.Utc).AddTicks(4820),
+                            CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
+                            CreatedOn = new DateTime(2024, 6, 19, 2, 16, 33, 365, DateTimeKind.Utc).AddTicks(4790),
                             Email = "comercial@fratermedical.com.br",
                             Telefone = "(11) 3829-9400"
                         });
@@ -117,6 +121,32 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OpmeUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
+                            CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
+                            CreatedOn = new DateTime(2024, 6, 19, 2, 16, 33, 365, DateTimeKind.Utc).AddTicks(4700),
+                            Email = "test@invalid.com",
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            Id = new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"),
+                            CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
+                            CreatedOn = new DateTime(2024, 6, 19, 2, 16, 33, 365, DateTimeKind.Utc).AddTicks(4700),
+                            Email = "dacceto@gmail.com",
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            Id = new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"),
+                            CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
+                            CreatedOn = new DateTime(2024, 6, 19, 2, 16, 33, 365, DateTimeKind.Utc).AddTicks(4700),
+                            Email = "guilherme_or@outlook.com",
+                            IsDeleted = false
+                        });
                 });
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Hospital", b =>
@@ -150,6 +180,10 @@ namespace Omini.Opme.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Code");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("UpdatedBy");
 
                     b.ToTable("Hospitals", (string)null);
                 });
@@ -186,6 +220,10 @@ namespace Omini.Opme.Infrastructure.Migrations
 
                     b.HasKey("Code");
 
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("UpdatedBy");
+
                     b.ToTable("InsuranceCompanies", (string)null);
                 });
 
@@ -220,6 +258,10 @@ namespace Omini.Opme.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Code");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("UpdatedBy");
 
                     b.ToTable("Patients", (string)null);
                 });
@@ -260,6 +302,10 @@ namespace Omini.Opme.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Code");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("UpdatedBy");
 
                     b.ToTable("Physicians", (string)null);
                 });
@@ -349,6 +395,8 @@ namespace Omini.Opme.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedBy");
+
                     b.HasIndex("HospitalCode");
 
                     b.HasIndex("InsuranceCompanyCode");
@@ -356,6 +404,8 @@ namespace Omini.Opme.Infrastructure.Migrations
                     b.HasIndex("PatientCode");
 
                     b.HasIndex("PhysicianCode");
+
+                    b.HasIndex("UpdatedBy");
 
                     b.ToTable("Quotations", (string)null);
                 });
@@ -470,11 +520,25 @@ namespace Omini.Opme.Infrastructure.Migrations
 
                     b.HasKey("Code");
 
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("UpdatedBy");
+
                     b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("Omini.Opme.Domain.Admin.InternalSpecialist", b =>
                 {
+                    b.HasOne("Omini.Opme.Domain.Admin.OpmeUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Omini.Opme.Domain.Admin.OpmeUser", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy");
+
                     b.OwnsOne("Omini.Opme.Domain.ValueObjects.PersonName", "Name", b1 =>
                         {
                             b1.Property<string>("InternalSpecialistCode")
@@ -520,6 +584,16 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Hospital", b =>
                 {
+                    b.HasOne("Omini.Opme.Domain.Admin.OpmeUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Omini.Opme.Domain.Admin.OpmeUser", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy");
+
                     b.OwnsOne("Omini.Opme.Domain.ValueObjects.CompanyName", "Name", b1 =>
                         {
                             b1.Property<string>("HospitalCode")
@@ -552,6 +626,16 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.InsuranceCompany", b =>
                 {
+                    b.HasOne("Omini.Opme.Domain.Admin.OpmeUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Omini.Opme.Domain.Admin.OpmeUser", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy");
+
                     b.OwnsOne("Omini.Opme.Domain.ValueObjects.CompanyName", "Name", b1 =>
                         {
                             b1.Property<string>("InsuranceCompanyCode")
@@ -584,6 +668,16 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Patient", b =>
                 {
+                    b.HasOne("Omini.Opme.Domain.Admin.OpmeUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Omini.Opme.Domain.Admin.OpmeUser", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy");
+
                     b.OwnsOne("Omini.Opme.Domain.ValueObjects.PersonName", "Name", b1 =>
                         {
                             b1.Property<string>("PatientCode")
@@ -621,6 +715,16 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Physician", b =>
                 {
+                    b.HasOne("Omini.Opme.Domain.Admin.OpmeUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Omini.Opme.Domain.Admin.OpmeUser", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy");
+
                     b.OwnsOne("Omini.Opme.Domain.ValueObjects.PersonName", "Name", b1 =>
                         {
                             b1.Property<string>("PhysicianCode")
@@ -658,6 +762,12 @@ namespace Omini.Opme.Infrastructure.Migrations
 
             modelBuilder.Entity("Omini.Opme.Domain.Sales.Quotation", b =>
                 {
+                    b.HasOne("Omini.Opme.Domain.Admin.OpmeUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Omini.Opme.Domain.BusinessPartners.Hospital", null)
                         .WithMany()
                         .HasForeignKey("HospitalCode")
@@ -681,6 +791,10 @@ namespace Omini.Opme.Infrastructure.Migrations
                         .HasForeignKey("PhysicianCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Omini.Opme.Domain.Admin.OpmeUser", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy");
 
                     b.OwnsOne("Omini.Opme.Domain.ValueObjects.PersonName", "PatientName", b1 =>
                         {
@@ -762,6 +876,19 @@ namespace Omini.Opme.Infrastructure.Migrations
                         .HasForeignKey("ItemCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Omini.Opme.Domain.Warehouse.Item", b =>
+                {
+                    b.HasOne("Omini.Opme.Domain.Admin.OpmeUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Omini.Opme.Domain.Admin.OpmeUser", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy");
                 });
 
             modelBuilder.Entity("Omini.Opme.Domain.Sales.Quotation", b =>

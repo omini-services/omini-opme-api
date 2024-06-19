@@ -5,10 +5,12 @@ using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
-internal class PatientMapping : IEntityTypeConfiguration<Patient>
+internal class PatientMapping : MasterEntityMapping<Patient>
 {
-    public void Configure(EntityTypeBuilder<Patient> builder)
+    public override void Configure(EntityTypeBuilder<Patient> builder)
     {
+        base.Configure(builder);
+        
         builder.HasKey(x => x.Code);
 
         builder.Property(x => x.Code)
@@ -16,21 +18,21 @@ internal class PatientMapping : IEntityTypeConfiguration<Patient>
             .HasDefaultValueSql($"nextval ('{ModelBuilderExtensions.PatientCodeSequence}')")
             .IsRequired();
 
-        builder.OwnsOne(x => x.Name)
-            .Property(x => x.FirstName)
-            .HasColumnName("FirstName")
-            .IsRequired();
+        builder.OwnsOne(x => x.Name, name =>
+        {
+            name.Property(n => n.FirstName)
+                .HasColumnName("FirstName")
+                .IsRequired();
 
-        builder.OwnsOne(x => x.Name)
-            .Property(x => x.MiddleName)
-            .HasColumnName("MiddleName");
+            name.Property(n => n.MiddleName)
+                .HasColumnName("MiddleName");
 
-        builder.OwnsOne(x => x.Name)
-            .Property(x => x.LastName)
-            .HasColumnName("LastName")
-            .IsRequired();
+            name.Property(n => n.LastName)
+                .HasColumnName("LastName")
+                .IsRequired();
+        });
 
-        builder.Property(x=>x.Cpf)
+        builder.Property(x => x.Cpf)
             .HasMaxLength(14);
 
         builder.ToTable("Patients");

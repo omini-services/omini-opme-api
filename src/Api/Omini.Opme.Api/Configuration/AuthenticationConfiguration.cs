@@ -13,8 +13,8 @@ internal static class AuthenticationConfiguration
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(options =>
         {
-            options.Authority = "https://dev-amo5k5tptruva3yj.us.auth0.com/";
-            options.Audience = "https://omini-opme-api-dev.endpoint";
+            options.Authority = configuration["Auth0:Authority"];
+            options.Audience = configuration["Auth0:Audience"];
         });
 
         return services;

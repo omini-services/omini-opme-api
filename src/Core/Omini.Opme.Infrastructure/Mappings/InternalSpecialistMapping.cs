@@ -6,10 +6,12 @@ using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
-internal class InternalSpecialistMapping : IEntityTypeConfiguration<InternalSpecialist>
+internal class InternalSpecialistMapping : MasterEntityMapping<InternalSpecialist>
 {
-    public void Configure(EntityTypeBuilder<InternalSpecialist> builder)
+    public override void Configure(EntityTypeBuilder<InternalSpecialist> builder)
     {
+        base.Configure(builder);
+        
         builder.HasKey(x => x.Code);
 
         builder.Property(x => x.Code)

@@ -9,7 +9,7 @@
         "DefaultConnection": "Host=peppy-orc-7035.g8z.gcp-us-east1.cockroachlabs.cloud;Port=26257;Database=defaultdb;Username=dk;Password=rQjN27iNUWiqEBNosrrlqQ;SSL Mode=Require;Trust Server Certificate=true"
     },
     "APIConnectors": {
-        "ClientId": "93191413-db51-4cc8-bc58-cc80e180a551",
+        "ClientId": "c8c5ce24-820f-41ba-8560-d7a282d80d29",
         "SignInSignUpExtension": {
             "BasicAuthUsername": "admin",
             "BasicAuthPassword": "admin"

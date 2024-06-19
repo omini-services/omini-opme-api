@@ -5,10 +5,12 @@ using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
-internal class ItemMapping : IEntityTypeConfiguration<Item>
+internal class ItemMapping : MasterEntityMapping<Item>
 {
-    public void Configure(EntityTypeBuilder<Item> builder)
+    public override void Configure(EntityTypeBuilder<Item> builder)
     {
+        base.Configure(builder);
+        
         builder.HasKey(x => x.Code);
 
         builder.Property(x => x.Code)

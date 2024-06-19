@@ -22,7 +22,7 @@ resource "azurerm_linux_function_app" "function_auth" {
   }
 
   app_settings = {
-    "APIConnectors__ClientId"                                 = "25c1f96b-1d38-42de-a3ac-051c80189600"
+    "APIConnectors__ClientId"                                 = "c8c5ce24-820f-41ba-8560-d7a282d80d29"
     "APIConnectors__SignInSignUpExtension__BasicAuthPassword" = "admin"
     "APIConnectors__SignInSignUpExtension__BasicAuthUsername" = "admin"
     "FUNCTIONS_WORKER_RUNTIME"                                = "dotnet-isolated"

@@ -1,14 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Omini.Opme.Domain.Admin;
 using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
-internal class HospitalMapping : IEntityTypeConfiguration<Hospital>
+internal class HospitalMapping : MasterEntityMapping<Hospital>
 {
-    public void Configure(EntityTypeBuilder<Hospital> builder)
+    public override void Configure(EntityTypeBuilder<Hospital> builder)
     {
+        base.Configure(builder);
+
         builder.HasKey(x => x.Code);
 
         builder.Property(x => x.Code)
@@ -16,15 +19,15 @@ internal class HospitalMapping : IEntityTypeConfiguration<Hospital>
             .HasDefaultValueSql($"nextval ('{ModelBuilderExtensions.HospitalCodeSequence}')")
             .IsRequired();
 
-        builder.OwnsOne(x => x.Name)
-            .Property(x => x.TradeName)
-            .HasColumnName("TradeName")
-            .IsRequired();
+        builder.OwnsOne(x => x.Name, name => {
+            name.Property(n => n.TradeName)
+                .HasColumnName("TradeName")
+                .IsRequired();
 
-        builder.OwnsOne(x => x.Name)
-            .Property(x => x.LegalName)
-            .HasColumnName("LegalName")
-            .IsRequired();
+            name.Property(n => n.LegalName)
+                .HasColumnName("LegalName")
+                .IsRequired();
+        });
 
         builder.Property(x => x.Cnpj)
             .HasMaxLength(18);
