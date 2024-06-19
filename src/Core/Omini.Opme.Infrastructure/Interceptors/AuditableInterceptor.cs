@@ -41,14 +41,14 @@ public sealed class AuditableInterceptor : SaveChangesInterceptor
 
         var auditables =
                     eventData
-                        .Context
+                        .Context!
                         .ChangeTracker.Entries()
                         .Where(e => typeof(IAuditable).IsAssignableFrom(e.Entity.GetType()) && e.State == EntityState.Added);
 
         foreach (var auditable in auditables)
         {
             var auditableEntity = auditable.Entity as IAuditable;
-            auditableEntity.CreatedBy = opmeUserId.Value;
+            auditableEntity!.CreatedBy = opmeUserId.Value;
             auditableEntity.CreatedOn = DateTime.UtcNow;
         }
     }
@@ -63,14 +63,14 @@ public sealed class AuditableInterceptor : SaveChangesInterceptor
 
         var auditables =
                     eventData
-                        .Context
+                        .Context!
                         .ChangeTracker.Entries()
                         .Where(e => typeof(IAuditable).IsAssignableFrom(e.Entity.GetType()) && e.State == EntityState.Modified);
 
         foreach (var auditable in auditables)
         {
             var auditableEntity = auditable.Entity as IAuditable;
-            auditableEntity.UpdatedBy = opmeUserId.Value;
+            auditableEntity!.UpdatedBy = opmeUserId.Value;
             auditableEntity.UpdatedOn = DateTime.UtcNow;
         }
     }

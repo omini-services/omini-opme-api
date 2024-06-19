@@ -10,6 +10,7 @@ using Omini.Opme.Infrastructure;
 using Omini.Opme.Api.Services.Security;
 using Omini.Opme.Shared.Services.Security;
 using FluentValidation.AspNetCore;
+using Serilog;
 
 internal class Startup
 {
@@ -63,7 +64,7 @@ internal class Startup
         }
 
         //app.UseHttpsRedirection();
-
+        app.UseSerilogRequestLogging();
         app.UseLoggingMiddleware();
         app.UseExceptionMiddleware();
 
