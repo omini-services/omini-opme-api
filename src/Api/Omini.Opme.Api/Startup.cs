@@ -41,7 +41,7 @@ internal class Startup
         services.AddSingleton<IClaimsService, ClaimsService>();
 
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerConfiguration();
+        services.AddSwaggerConfiguration(Configuration);
 
         services.AddAuthenticationConfiguration(Configuration);
 
@@ -67,9 +67,9 @@ internal class Startup
             app.UseSwaggerUI(c =>
             {
                 c.OAuthUsePkce();
-                c.OAuthClientId("WJMSo5SujECazknxLbXXI3mGyje9eVco");
+                c.OAuthClientId(Configuration["Auth0:ClientId"]);
                 c.OAuthAppName("Swagger Api Calls");
-                c.OAuthScopes("openid", "api:full");
+                c.OAuthScopes(Configuration.GetSection("Auth0:Scopes").Get<string[]>());
 
                 var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 

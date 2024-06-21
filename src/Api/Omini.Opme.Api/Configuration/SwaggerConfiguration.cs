@@ -10,14 +10,15 @@ namespace Omini.Opme.Api.Configuration;
 
 internal static class SwaggerConfiguration
 {
-    public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services)
+    public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+
+        var scopes = configuration.GetSection("Auth0:Scopes").Get<List<string>>()!.ToDictionary(p => p, v => string.Empty);
 
         services.AddSwaggerGen(c =>
             {
                 //c.OperationFilter<SwaggerDefaultValues>();
-
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "Insert your bearer token as: Bearer {your token}",
@@ -29,12 +30,9 @@ internal static class SwaggerConfiguration
                     {
                         AuthorizationCode = new OpenApiOAuthFlow()
                         {
-                            AuthorizationUrl = new Uri("https://dev-amo5k5tptruva3yj.us.auth0.com/authorize?audience=https://omini-opme-api-dev.endpoint"),
-                            TokenUrl = new Uri("https://dev-amo5k5tptruva3yj.us.auth0.com/oauth/token"),
-                            Scopes = new Dictionary<string, string>(){
-                                { "openid", "" },
-                                { "api:full", ""}
-                            },
+                            AuthorizationUrl = new Uri($"{configuration["Auth0:Authority"]}/authorize?audience={configuration["Auth0:Audience"]}"),
+                            TokenUrl = new Uri($"{configuration["Auth0:Authority"]}/oauth/token"),
+                            Scopes = scopes
                         },
                     },
                 });
@@ -50,7 +48,7 @@ internal static class SwaggerConfiguration
                                     Id = "Bearer"
                                 },
                             },
-                            ["openid", "api:full"]
+                            scopes.Keys.ToArray()
                         }
                     });
             });
