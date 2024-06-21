@@ -11,6 +11,8 @@ using Omini.Opme.Api.Services.Security;
 using Omini.Opme.Shared.Services.Security;
 using FluentValidation.AspNetCore;
 using Serilog;
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 
 internal class Startup
 {
@@ -39,7 +41,7 @@ internal class Startup
         services.AddSingleton<IClaimsService, ClaimsService>();
 
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerConfiguration();
 
         services.AddAuthenticationConfiguration(Configuration);
 
@@ -53,6 +55,8 @@ internal class Startup
         });
 
         services.AddAutoMapper(typeof(Startup));
+        services.AddVersionConfiguration();
+
     }
     public void Configure(WebApplication app, IWebHostEnvironment env)
     {
@@ -60,7 +64,21 @@ internal class Startup
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(c =>
+            {
+                c.OAuthUsePkce();
+                c.OAuthClientId("WJMSo5SujECazknxLbXXI3mGyje9eVco");
+                c.OAuthAppName("Swagger Api Calls");
+                c.OAuthScopes("openid", "api:full");
+
+                var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    c.DocumentTitle = "opme-api";
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                }
+            });
         }
 
         //app.UseHttpsRedirection();

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Http;
 using Omini.Opme.Api.Dtos;
 using Omini.Opme.Api.Tests.Extensions;
 
-namespace Omini.Opme.Api.Tests.Controllers;
+namespace Omini.Opme.Api.Tests.Controllers.V1;
 
-public class HospitalResponseControllerTests : IntegrationTest
+public class HospitalsV1ControllerTests : IntegrationTest
 {
     [Fact]
     public async void Should_CreateHospital_When_ValidDataProvided()
@@ -15,7 +15,7 @@ public class HospitalResponseControllerTests : IntegrationTest
         var fakeHospital = HospitalFaker.GetFakeHospitalCreateCommand();
 
         //act
-        var response = await TestClient.Request("/api/hospitals").AsAuthenticated().PostJsonAsync(fakeHospital);
+        var response = await TestClient.Request("/api/v1/hospitals").AsAuthenticated().PostJsonAsync(fakeHospital);
         var hospitalOutputDto = (await response.GetJsonAsync<ResponseDto<HospitalOutputDto>>()).Data;
 
         //assert
@@ -34,13 +34,13 @@ public class HospitalResponseControllerTests : IntegrationTest
         var fakeHospital = HospitalFaker.GetFakeHospitalCreateCommand();
 
         //act
-        var hospital = (await TestClient.Request("/api/hospitals").AsAuthenticated().PostJsonAsync(fakeHospital).ReceiveJson<ResponseDto<HospitalOutputDto>>()).Data;
+        var hospital = (await TestClient.Request("/api/v1/hospitals").AsAuthenticated().PostJsonAsync(fakeHospital).ReceiveJson<ResponseDto<HospitalOutputDto>>()).Data;
 
         var hospitalUpdateCommand = HospitalFaker.GetFakeHospitalUpdateCommand(hospital.Code);
 
-        var updateHospitalResponse = await TestClient.Request($"/api/hospitals/{hospital.Code}").AsAuthenticated().PutJsonAsync(hospitalUpdateCommand);
+        var updateHospitalResponse = await TestClient.Request($"/api/v1/hospitals/{hospital.Code}").AsAuthenticated().PutJsonAsync(hospitalUpdateCommand);
         var updateHospitalData = (await updateHospitalResponse.GetJsonAsync<ResponseDto<HospitalOutputDto>>()).Data;
-        var hospitalAfterUpdate = (await TestClient.Request($"/api/hospitals/{hospital.Code}").AsAuthenticated().GetAsync().ReceiveJson<ResponseDto<HospitalOutputDto>>()).Data;
+        var hospitalAfterUpdate = (await TestClient.Request($"/api/v1/hospitals/{hospital.Code}").AsAuthenticated().GetAsync().ReceiveJson<ResponseDto<HospitalOutputDto>>()).Data;
 
         //assert
         updateHospitalResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -55,11 +55,11 @@ public class HospitalResponseControllerTests : IntegrationTest
         var fakeHospital = HospitalFaker.GetFakeHospitalCreateCommand();
 
         //act
-        var hospital = (await TestClient.Request("/api/hospitals").AsAuthenticated().PostJsonAsync(fakeHospital).ReceiveJson<ResponseDto<HospitalOutputDto>>()).Data;
+        var hospital = (await TestClient.Request("/api/v1/hospitals").AsAuthenticated().PostJsonAsync(fakeHospital).ReceiveJson<ResponseDto<HospitalOutputDto>>()).Data;
 
-        var deleteHospitalResponse = await TestClient.Request($"/api/hospitals/{hospital.Code}").AsAuthenticated().DeleteAsync();
+        var deleteHospitalResponse = await TestClient.Request($"/api/v1/hospitals/{hospital.Code}").AsAuthenticated().DeleteAsync();
         var deleteHospitalData = (await deleteHospitalResponse.GetJsonAsync<ResponseDto<HospitalOutputDto>>()).Data;
-        var hospitalAfterDelete = await TestClient.Request($"/api/hospitals/{hospital.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
+        var hospitalAfterDelete = await TestClient.Request($"/api/v1/hospitals/{hospital.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
 
         //assert
         deleteHospitalResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -78,8 +78,8 @@ public class HospitalResponseControllerTests : IntegrationTest
         var fakeHospital = HospitalFaker.GetFakeHospitalCreateCommand();
 
         //act
-        var hospital = (await TestClient.Request("/api/hospitals").AsAuthenticated().PostJsonAsync(fakeHospital).ReceiveJson<ResponseDto<HospitalOutputDto>>()).Data;
-        var hospitalResponse = await TestClient.Request($"/api/hospitals/{hospital.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
+        var hospital = (await TestClient.Request("/api/v1/hospitals").AsAuthenticated().PostJsonAsync(fakeHospital).ReceiveJson<ResponseDto<HospitalOutputDto>>()).Data;
+        var hospitalResponse = await TestClient.Request($"/api/v1/hospitals/{hospital.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
         var hospitalData = (await hospitalResponse.GetJsonAsync<ResponseDto<HospitalOutputDto>>()).Data;
 
         //assert
@@ -96,10 +96,10 @@ public class HospitalResponseControllerTests : IntegrationTest
         var fakeSecondHospital = HospitalFaker.GetFakeHospitalCreateCommand();
 
         //act
-        var firstHospital = (await TestClient.Request("/api/hospitals").AsAuthenticated().PostJsonAsync(fakeFirstHospital).ReceiveJson<ResponseDto<HospitalOutputDto>>()).Data;
-        var secondHospital = (await TestClient.Request("/api/hospitals").AsAuthenticated().PostJsonAsync(fakeSecondHospital).ReceiveJson<ResponseDto<HospitalOutputDto>>()).Data;
+        var firstHospital = (await TestClient.Request("/api/v1/hospitals").AsAuthenticated().PostJsonAsync(fakeFirstHospital).ReceiveJson<ResponseDto<HospitalOutputDto>>()).Data;
+        var secondHospital = (await TestClient.Request("/api/v1/hospitals").AsAuthenticated().PostJsonAsync(fakeSecondHospital).ReceiveJson<ResponseDto<HospitalOutputDto>>()).Data;
 
-        var hospitalsResponse = await TestClient.Request($"/api/hospitals").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
+        var hospitalsResponse = await TestClient.Request($"/api/v1/hospitals").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
         var hospitalsData = (await hospitalsResponse.GetJsonAsync<ResponseDto<List<HospitalOutputDto>>>()).Data;
 
         //assert

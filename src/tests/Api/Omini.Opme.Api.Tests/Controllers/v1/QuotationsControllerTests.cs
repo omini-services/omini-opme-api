@@ -7,9 +7,9 @@ using Omini.Opme.Api.Tests.Extensions;
 using Omini.Opme.Business.Commands;
 using Omini.Opme.Domain.Common;
 
-namespace Omini.Opme.Api.Tests.Controllers;
+namespace Omini.Opme.Api.Tests.Controllers.V1;
 
-public class QuotationsControllerTests : IntegrationTest
+public class QuotationsV1ControllerTests : IntegrationTest
 {
     private ResponseDto<HospitalOutputDto> hospitalOutputDto;
     private ResponseDto<PatientOutputDto> patientOutputDto;
@@ -45,7 +45,7 @@ public class QuotationsControllerTests : IntegrationTest
         quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
 
         //act
-        var response = await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand);
+        var response = await TestClient.Request("/api/v1/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand);
         var quotationOutputDto = (await response.GetJsonAsync<ResponseDto<QuotationOutputDto>>()).Data;
 
         //assert
@@ -102,11 +102,11 @@ public class QuotationsControllerTests : IntegrationTest
 
 
         //act
-        var quotation = (await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
+        var quotation = (await TestClient.Request("/api/v1/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
 
-        var deleteQuotationResponse = await TestClient.Request($"/api/quotations/{quotation.Id}").AsAuthenticated().DeleteAsync();
+        var deleteQuotationResponse = await TestClient.Request($"/api/v1/quotations/{quotation.Id}").AsAuthenticated().DeleteAsync();
         var deleteQuotationData = (await deleteQuotationResponse.GetJsonAsync<ResponseDto<QuotationOutputDto>>()).Data;
-        var quotationAfterDeleteResponse = await TestClient.Request($"/api/quotations/{quotation.Id}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
+        var quotationAfterDeleteResponse = await TestClient.Request($"/api/v1/quotations/{quotation.Id}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
 
         //assert
         deleteQuotationResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -138,10 +138,10 @@ public class QuotationsControllerTests : IntegrationTest
         quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
         quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
 
-        var quotation = (await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
+        var quotation = (await TestClient.Request("/api/v1/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
 
         var fakeItem = ItemFaker.GetFakerItemCreateCommand().Generate();
-        var newItem = (await TestClient.Request("/api/items").AsAuthenticated().PostJsonAsync(fakeItem).ReceiveJson<ResponseDto<ItemOutputDto>>()).Data;
+        var newItem = (await TestClient.Request("/api/v1/items").AsAuthenticated().PostJsonAsync(fakeItem).ReceiveJson<ResponseDto<ItemOutputDto>>()).Data;
 
         //act        
         var faker = new Faker();
@@ -153,8 +153,8 @@ public class QuotationsControllerTests : IntegrationTest
             UnitPrice = Math.Round(faker.Random.Decimal(0, 100), 2),
         };
 
-        var updateQuotationResponse = await TestClient.Request($"/api/quotations/{quotation.Id}/items").AsAuthenticated().PostJsonAsync(quotationCreateItemCommand);
-        var quotationAfterUpdate = (await TestClient.Request($"/api/quotations/{quotation.Id}").AsAuthenticated().GetJsonAsync<ResponseDto<QuotationOutputDto>>()).Data;
+        var updateQuotationResponse = await TestClient.Request($"/api/v1/quotations/{quotation.Id}/items").AsAuthenticated().PostJsonAsync(quotationCreateItemCommand);
+        var quotationAfterUpdate = (await TestClient.Request($"/api/v1/quotations/{quotation.Id}").AsAuthenticated().GetJsonAsync<ResponseDto<QuotationOutputDto>>()).Data;
 
         //assert
         updateQuotationResponse.StatusCode.Should().Be(StatusCodes.Status201Created);
@@ -199,7 +199,7 @@ public class QuotationsControllerTests : IntegrationTest
         quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
         quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
 
-        var quotation = (await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
+        var quotation = (await TestClient.Request("/api/v1/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
         var lineIdToUpdate = quotation.Items[0].LineId;
 
         var totalCreate = quotationCreateCommand.Items.Sum(p => p.UnitPrice * p.Quantity);
@@ -215,8 +215,8 @@ public class QuotationsControllerTests : IntegrationTest
             UnitPrice = quotation.Items[1].UnitPrice,
         };
 
-        var updateQuotationResponse = await TestClient.Request($"/api/quotations/{quotation.Id}/items/{quotation.Items[0].LineId}").AsAuthenticated().PutJsonAsync(quotationUpdateItemCommand);
-        var quotationAfterUpdate = (await TestClient.Request($"/api/quotations/{quotation.Id}").AsAuthenticated().GetJsonAsync<ResponseDto<QuotationOutputDto>>()).Data;
+        var updateQuotationResponse = await TestClient.Request($"/api/v1/quotations/{quotation.Id}/items/{quotation.Items[0].LineId}").AsAuthenticated().PutJsonAsync(quotationUpdateItemCommand);
+        var quotationAfterUpdate = (await TestClient.Request($"/api/v1/quotations/{quotation.Id}").AsAuthenticated().GetJsonAsync<ResponseDto<QuotationOutputDto>>()).Data;
 
         //assert
         updateQuotationResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -254,12 +254,12 @@ public class QuotationsControllerTests : IntegrationTest
         quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
         quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
 
-        var quotation = (await TestClient.Request("/api/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
+        var quotation = (await TestClient.Request("/api/v1/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
 
         //act
 
-        var deleteQuotationItemResponse = await TestClient.Request($"/api/quotations/{quotation.Id}/items/{quotation.Items[0].LineId}").AsAuthenticated().DeleteAsync();
-        var quotationAfterDeleteItemResponse = await TestClient.Request($"/api/quotations/{quotation.Id}").AsAuthenticated().GetJsonAsync<ResponseDto<QuotationOutputDto>>();
+        var deleteQuotationItemResponse = await TestClient.Request($"/api/v1/quotations/{quotation.Id}/items/{quotation.Items[0].LineId}").AsAuthenticated().DeleteAsync();
+        var quotationAfterDeleteItemResponse = await TestClient.Request($"/api/v1/quotations/{quotation.Id}").AsAuthenticated().GetJsonAsync<ResponseDto<QuotationOutputDto>>();
         var quotationAfterUpdateItem = quotationAfterDeleteItemResponse.Data;
 
         //assert
@@ -280,20 +280,20 @@ public class QuotationsControllerTests : IntegrationTest
         var fakeItems = ItemFaker.GetFakerItemCreateCommand().Generate(5);
         foreach (var fakeItem in fakeItems)
         {
-            var response = await TestClient.Request("/api/items").AsAuthenticated().PostJsonAsync(fakeItem).ReceiveJson<ResponseDto<ItemOutputDto>>();
+            var response = await TestClient.Request("/api/v1/items").AsAuthenticated().PostJsonAsync(fakeItem).ReceiveJson<ResponseDto<ItemOutputDto>>();
             itemOutputDtos.Add(response);
         }
 
         var fakeHospital = HospitalFaker.GetFakeHospitalCreateCommand();
-        hospitalOutputDto = await TestClient.Request("/api/hospitals").AsAuthenticated().PostJsonAsync(fakeHospital).ReceiveJson<ResponseDto<HospitalOutputDto>>();
+        hospitalOutputDto = await TestClient.Request("/api/v1/hospitals").AsAuthenticated().PostJsonAsync(fakeHospital).ReceiveJson<ResponseDto<HospitalOutputDto>>();
 
         var fakePatient = PatientFaker.GetFakePatientCreateCommand();
-        patientOutputDto = await TestClient.Request("/api/patients").AsAuthenticated().PostJsonAsync(fakePatient).ReceiveJson<ResponseDto<PatientOutputDto>>();
+        patientOutputDto = await TestClient.Request("/api/v1/patients").AsAuthenticated().PostJsonAsync(fakePatient).ReceiveJson<ResponseDto<PatientOutputDto>>();
 
         var fakeInsuranceCompany = InsuranceCompanyFaker.GetFakeInsuranceCompanyCreateCommand();
-        insuranceCompanyOutputDto = await TestClient.Request("/api/insurancecompanies").AsAuthenticated().PostJsonAsync(fakeInsuranceCompany).ReceiveJson<ResponseDto<InsuranceCompanyOutputDto>>();
+        insuranceCompanyOutputDto = await TestClient.Request("/api/v1/insurancecompanies").AsAuthenticated().PostJsonAsync(fakeInsuranceCompany).ReceiveJson<ResponseDto<InsuranceCompanyOutputDto>>();
 
         var fakePhysician = PhysicianFaker.GetFakePhysicianCreateCommand();
-        physicianOutputDto = await TestClient.Request("/api/physicians").AsAuthenticated().PostJsonAsync(fakePhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>();
+        physicianOutputDto = await TestClient.Request("/api/v1/physicians").AsAuthenticated().PostJsonAsync(fakePhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>();
     }
 }

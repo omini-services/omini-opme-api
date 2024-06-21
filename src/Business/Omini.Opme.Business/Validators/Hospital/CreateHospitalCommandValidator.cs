@@ -8,6 +8,8 @@ internal class CreateHospitalCommandValidator : AbstractValidator<CreateHospital
 {
     public CreateHospitalCommandValidator()
     {
+        RuleFor(x => x.LegalName).NotEmpty();
+        RuleFor(x => x.TradeName).NotEmpty();
         RuleFor(x => x.Cnpj).Cnpj();
     }
 }

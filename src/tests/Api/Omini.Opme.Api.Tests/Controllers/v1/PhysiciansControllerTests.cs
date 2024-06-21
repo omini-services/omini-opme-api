@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Http;
 using Omini.Opme.Api.Dtos;
 using Omini.Opme.Api.Tests.Extensions;
 
-namespace Omini.Opme.Api.Tests.Controllers;
+namespace Omini.Opme.Api.Tests.Controllers.V1;
 
-public class PhysiciansControllerTests : IntegrationTest
+public class PhysiciansV1ControllerTests : IntegrationTest
 {
     [Fact]
     public async void Should_CreatePhysician_When_ValidDataProvided()
@@ -15,7 +15,7 @@ public class PhysiciansControllerTests : IntegrationTest
         var fakePhysician = PhysicianFaker.GetFakePhysicianCreateCommand();
 
         //act
-        var response = await TestClient.Request("/api/physicians").AsAuthenticated().PostJsonAsync(fakePhysician);
+        var response = await TestClient.Request("/api/v1/physicians").AsAuthenticated().PostJsonAsync(fakePhysician);
         var physicianOutputDto = (await response.GetJsonAsync<ResponseDto<PhysicianOutputDto>>()).Data;
 
         //assert
@@ -34,13 +34,13 @@ public class PhysiciansControllerTests : IntegrationTest
         var fakePhysician = PhysicianFaker.GetFakePhysicianCreateCommand();
 
         //act
-        var physician = (await TestClient.Request("/api/physicians").AsAuthenticated().PostJsonAsync(fakePhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
+        var physician = (await TestClient.Request("/api/v1/physicians").AsAuthenticated().PostJsonAsync(fakePhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
 
         var physicianUpdateCommand = PhysicianFaker.GetFakePhysicianUpdateCommand(physician.Code);
 
-        var updatePhysicianResponse = await TestClient.Request($"/api/physicians/{physician.Code}").AsAuthenticated().PutJsonAsync(physicianUpdateCommand);
+        var updatePhysicianResponse = await TestClient.Request($"/api/v1/physicians/{physician.Code}").AsAuthenticated().PutJsonAsync(physicianUpdateCommand);
         var updatePhysicianData = (await updatePhysicianResponse.GetJsonAsync<ResponseDto<PhysicianOutputDto>>()).Data;
-        var physicianAfterUpdate = (await TestClient.Request($"/api/physicians/{physician.Code}").AsAuthenticated().GetAsync().ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
+        var physicianAfterUpdate = (await TestClient.Request($"/api/v1/physicians/{physician.Code}").AsAuthenticated().GetAsync().ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
 
         //assert
         updatePhysicianResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -55,11 +55,11 @@ public class PhysiciansControllerTests : IntegrationTest
         var fakePhysician = PhysicianFaker.GetFakePhysicianCreateCommand();
 
         //act
-        var physician = (await TestClient.Request("/api/physicians").AsAuthenticated().PostJsonAsync(fakePhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
+        var physician = (await TestClient.Request("/api/v1/physicians").AsAuthenticated().PostJsonAsync(fakePhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
 
-        var deletePhysicianResponse = await TestClient.Request($"/api/physicians/{physician.Code}").AsAuthenticated().DeleteAsync();
+        var deletePhysicianResponse = await TestClient.Request($"/api/v1/physicians/{physician.Code}").AsAuthenticated().DeleteAsync();
         var deletePhysicianData = (await deletePhysicianResponse.GetJsonAsync<ResponseDto<PhysicianOutputDto>>()).Data;
-        var physicianAfterDeleteResponse = await TestClient.Request($"/api/physicians/{physician.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
+        var physicianAfterDeleteResponse = await TestClient.Request($"/api/v1/physicians/{physician.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
 
         //assert
         deletePhysicianResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -78,8 +78,8 @@ public class PhysiciansControllerTests : IntegrationTest
         var fakePhysician = PhysicianFaker.GetFakePhysicianCreateCommand();
 
         //act
-        var physician = (await TestClient.Request("/api/physicians").AsAuthenticated().PostJsonAsync(fakePhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
-        var physicianResponse = await TestClient.Request($"/api/physicians/{physician.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
+        var physician = (await TestClient.Request("/api/v1/physicians").AsAuthenticated().PostJsonAsync(fakePhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
+        var physicianResponse = await TestClient.Request($"/api/v1/physicians/{physician.Code}").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
         var physicianData = (await physicianResponse.GetJsonAsync<ResponseDto<PhysicianOutputDto>>()).Data;
 
         //assert
@@ -96,10 +96,10 @@ public class PhysiciansControllerTests : IntegrationTest
         var fakeSecondPhysician = PhysicianFaker.GetFakePhysicianCreateCommand();
 
         //act
-        var firstPhysician = (await TestClient.Request("/api/physicians").AsAuthenticated().PostJsonAsync(fakeFirstPhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
-        var secondPhysician = (await TestClient.Request("/api/physicians").AsAuthenticated().PostJsonAsync(fakeSecondPhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
+        var firstPhysician = (await TestClient.Request("/api/v1/physicians").AsAuthenticated().PostJsonAsync(fakeFirstPhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
+        var secondPhysician = (await TestClient.Request("/api/v1/physicians").AsAuthenticated().PostJsonAsync(fakeSecondPhysician).ReceiveJson<ResponseDto<PhysicianOutputDto>>()).Data;
 
-        var physiciansResponse = await TestClient.Request($"/api/physicians").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
+        var physiciansResponse = await TestClient.Request($"/api/v1/physicians").AsAuthenticated().AllowAnyHttpStatus().GetAsync();
         var physiciansData = (await physiciansResponse.GetJsonAsync<ResponseDto<List<PhysicianOutputDto>>>()).Data;
 
         //assert

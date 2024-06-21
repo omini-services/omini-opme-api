@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Omini.Opme.Api.Dtos;
@@ -6,10 +7,10 @@ using Omini.Opme.Business.Queries;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Shared.Entities;
 
-namespace Omini.Opme.Api.Controllers;
+namespace Omini.Opme.Api.Controllers.V1;
 
-[ApiController]
-[Route($"{Constants.ApiPath}/[controller]")]
+[ApiVersion(1)]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class ItemsController : MainController
 {
     private readonly ILogger<ItemsController> _logger;

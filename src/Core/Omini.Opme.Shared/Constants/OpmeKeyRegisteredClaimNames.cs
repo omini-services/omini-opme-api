@@ -2,5 +2,5 @@
 
 public static class OpmeKeyRegisteredClaimNames
 {
-    public const string OpmeUserId = "extension_OpmeUserId";
+    public const string OpmeUserId = "opmeUserId";
 }
