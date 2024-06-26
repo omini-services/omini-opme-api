@@ -11,8 +11,8 @@ using Omini.Opme.Api.Services.Security;
 using Omini.Opme.Shared.Services.Security;
 using FluentValidation.AspNetCore;
 using Serilog;
-using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Microsoft.FeatureManagement;
 
 internal class Startup
 {
@@ -25,6 +25,7 @@ internal class Startup
 
     public void ConfigureServices(WebApplicationBuilder app, IServiceCollection services)
     {
+        services.AddFeatureManagement();
         services.AddControllers(options =>
         {
             var policy = new AuthorizationPolicyBuilder()

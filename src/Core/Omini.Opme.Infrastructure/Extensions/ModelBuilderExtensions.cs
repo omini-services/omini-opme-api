@@ -15,7 +15,7 @@ internal static class ModelBuilderExtensions
     public const string InsuranceCompanyCodeSequence = "insurancecompanycode_sequence";
     public const string InternalSpecialistCodeSequence = "internalspecialistcode_sequence";
 
-    public static void EnableSoftDelete(this ModelBuilder builder)
+    public static void EnableSoftDeleteQuery(this ModelBuilder builder)
     {
         foreach (var entityType in builder.Model.GetEntityTypes()
             .Where(e => typeof(ISoftDeletable).IsAssignableFrom(e.ClrType)))

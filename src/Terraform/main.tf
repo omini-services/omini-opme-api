@@ -9,7 +9,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.83.0"
+      version = "< 3.90.0"
     }
   }
 
@@ -28,3 +28,5 @@ resource "azurerm_resource_group" "rg_app" {
   name     = local.common_settings.resource_group
   location = local.common_settings.location
 }
+
+data "azurerm_client_config" "current" {}

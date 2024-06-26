@@ -33,7 +33,7 @@ internal sealed class OpmeContext : DbContext
 
         builder.ApplyConfigurationsFromAssembly(typeof(OpmeContext).Assembly);
 
-        builder.EnableSoftDelete();
+        builder.EnableSoftDeleteQuery();
 
         builder.ApplyDefaultRules();
         builder.Seed();
