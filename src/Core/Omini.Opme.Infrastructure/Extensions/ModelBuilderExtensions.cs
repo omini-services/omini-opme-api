@@ -2,7 +2,6 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Omini.Opme.Domain.Admin;
 using Omini.Opme.Domain.Common;
-using Omini.Opme.Domain.ValueObjects;
 
 namespace Omini.Opme.Infrastructure.Extensions;
 

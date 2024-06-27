@@ -13,6 +13,8 @@ using FluentValidation.AspNetCore;
 using Serilog;
 using Asp.Versioning.ApiExplorer;
 using Microsoft.FeatureManagement;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
 
 internal class Startup
 {
@@ -57,7 +59,6 @@ internal class Startup
 
         services.AddAutoMapper(typeof(Startup));
         services.AddVersionConfiguration();
-
     }
     public void Configure(WebApplication app, IWebHostEnvironment env)
     {
@@ -83,6 +84,11 @@ internal class Startup
         }
 
         //app.UseHttpsRedirection();
+
+        app.MapHealthChecks("health", new HealthCheckOptions{
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
+        
         app.UseSerilogRequestLogging();
         app.UseLoggingMiddleware();
         app.UseExceptionMiddleware();

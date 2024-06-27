@@ -48,6 +48,9 @@ public static class DependecyInjection
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+        services.AddHealthChecks()
+                .AddDbContextCheck<OpmeContext>("Database");
+
         return services;
     }
 
