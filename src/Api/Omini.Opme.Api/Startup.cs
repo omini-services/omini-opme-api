@@ -27,7 +27,7 @@ internal class Startup
 
     public void ConfigureServices(WebApplicationBuilder app, IServiceCollection services)
     {
-        services.AddFeatureManagement();
+        //services.AddFeatureManagement();
         services.AddControllers(options =>
         {
             var policy = new AuthorizationPolicyBuilder()
