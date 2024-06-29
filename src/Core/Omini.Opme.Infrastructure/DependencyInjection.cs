@@ -24,6 +24,10 @@ public static class DependecyInjection
         services.AddSingleton<AuditableInterceptor>();
         services.AddSingleton<SoftDeletableInterceptor>();
 
+        foreach(var config in configuration.AsEnumerable()){
+            Console.WriteLine(config.Key + config.Value);
+        }
+
         services.AddDbContext<OpmeContext>((sp, opt) =>
         {
             opt.AddInterceptors(
