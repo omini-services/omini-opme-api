@@ -24,7 +24,7 @@ public class QuotationsController : MainController
     public async Task<ActionResult<PagedResult<QuotationOutputDto>>> Get([FromQuery] QueryFilter queryFilter, [FromQuery] PaginationFilter paginationFilter)
     {
         var quotations = await Mediator.Send(new GetAllQuotationsQuery(queryFilter, paginationFilter));
-        var result = Mapper.Map<PagedResult<HospitalOutputDto>>(quotations);
+        var result = Mapper.Map<PagedResult<QuotationOutputDto>>(quotations);
 
         return Ok(ResponseDto.ApiSuccess(result));
     }
