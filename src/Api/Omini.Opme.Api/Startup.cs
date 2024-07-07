@@ -39,7 +39,7 @@ internal class Startup
             options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
-
+        
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IClaimsService, ClaimsService>();
 
@@ -85,12 +85,13 @@ internal class Startup
 
         //app.UseHttpsRedirection();
 
-        app.MapHealthChecks("health", new HealthCheckOptions{
+        app.MapHealthChecks("health", new HealthCheckOptions
+        {
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
         });
-        
-        app.UseSerilogRequestLogging();
+
         app.UseLoggingMiddleware();
+        app.UseSerilogRequestLogging();
         app.UseExceptionMiddleware();
 
         app.UseQuestPdf((options) =>
