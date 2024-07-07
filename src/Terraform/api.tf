@@ -26,9 +26,17 @@ resource "azurerm_linux_web_app" "appservice" {
   }
 
   app_settings = {
-    "Auth0__Authority"   = "https://dev-amo5k5tptruva3yj.us.auth0.com/"
-    "Auth0__Audience"    = "https://omini-opme-api-dev.endpoint"
-    "DOTNET_ENVIRONMENT" = "Development"
+    "Auth0__Authority"         = "https://dev-amo5k5tptruva3yj.us.auth0.com"
+    "Auth0__Audience"          = "https://omini-opme-api-dev.endpoint"
+    "DOTNET_ENVIRONMENT"       = "Development"
+    "CORECLR_ENABLE_PROFILING" = 1
+    "CORECLR_ENABLE_PROFILING" = 1
+    "CORECLR_PROFILER"         = "{36032161-FFC0-4B61-B559-F6C5D41BAE5A}"
+    "CORECLR_PROFILER_PATH"    = "/home/site/wwwroot/newrelic/libNewRelicProfiler.so"
+    "CORECLR_NEWRELIC_HOME"    = "/home/site/wwwroot/newrelic"
+    "NEWRELIC_LOG_DIRECTORY"   = "/home/LogFiles/NewRelic"
+    "NEW_RELIC_LICENSE_KEY"    = var.new_relic_license_key
+    "NEW_RELIC_APP_NAME"       = "zenko-api-dev"
   }
 
   lifecycle {

@@ -68,11 +68,11 @@ internal abstract class RepositoryDocumentEntity<TEntity> : IRespositoryDocument
         if (orderByField is not null)
         {
             var orderBy = sortDirection == SortDirection.Desc ? "DESC" : "ASC";
-            query.OrderBy($"{orderByField} {orderBy}");
+            query = query.OrderBy($"{orderByField} {orderBy}");
         }
         else
         {
-            query.OrderBy(p => p.CreatedOn);
+            query = query.OrderBy(p => p.CreatedOn);
         }
 
         return await GetPagedResult(query, currentPage, pageSize, cancellationToken);

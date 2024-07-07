@@ -17,6 +17,12 @@ try
 {
     app.Run();
 }
+catch (Exception ex)
+{
+    Log.Error(
+        "The following {Exception} was thrown during application startup",
+        ex);
+}
 finally
 {
     Log.CloseAndFlush();

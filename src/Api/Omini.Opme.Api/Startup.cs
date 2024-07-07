@@ -90,9 +90,8 @@ internal class Startup
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
         });
 
-        app.UseLoggingMiddleware();
-        app.UseSerilogRequestLogging();
         app.UseExceptionMiddleware();
+        app.UseLoggingMiddleware();        
 
         app.UseQuestPdf((options) =>
         {
@@ -101,6 +100,9 @@ internal class Startup
 
         app.UseAuthentication();
         app.UseAuthorization();
+
+        app.UseSerilogRequestLogging();
+        app.UseRequestContextMiddleware();
 
         app.MapControllers();
     }

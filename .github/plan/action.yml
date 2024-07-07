@@ -10,6 +10,9 @@ inputs:
   azure_subscription_id:
     description: 'Azure subscription id'
     required: true
+  new_relic_license_key:
+    description: 'New relice license key'
+    required: true
   terraform_directory:
     description: 'Directory that holds Terraform code'
     required: true
@@ -55,6 +58,7 @@ runs:
         ARM_TENANT_ID: ${{ inputs.azure_tenant_id }}
         ARM_SUBSCRIPTION_ID: ${{ inputs.azure_subscription_id }}
         ARM_USE_OIDC: true
+        new_relic_license_key: ${{ inputs.new_relic_license_key }}
       shell: bash
       run: |
         terraform plan -no-color -out=tfplan

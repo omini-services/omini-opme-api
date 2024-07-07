@@ -20,11 +20,14 @@ public class ClaimsService : IClaimsService
 
     public Guid? OpmeUserId => ClaimsPrincipal.GetOpmeUserId();
 
+    public string? Email => ClaimsPrincipal.GetEmail();
+
     public ClaimsPrincipal GetClaimsPrincipal()
     {
         var claimsIdentity = new ClaimsIdentity(
             [
-                new Claim(OpmeKeyRegisteredClaimNames.OpmeUserId, _apiConnector.ClientId)
+                new Claim(OpmeKeyRegisteredClaimNames.OpmeUserId, _apiConnector.ClientId),
+                new Claim(ClaimTypes.Email, _apiConnector.ClientId)
             ]
         );
 

@@ -6,4 +6,5 @@ public interface IClaimsService
 {
     ClaimsPrincipal ClaimsPrincipal { get; }
     Guid? OpmeUserId { get; }
+    string? Email { get; }
 }

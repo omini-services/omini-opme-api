@@ -1,5 +1,8 @@
 
 
+using Omini.Opme.Shared.Services.Security;
+using Serilog;
+
 namespace Omini.Opme.Api.Middlewares;
 
 internal static class RequestContextMiddlewareExtensions
@@ -13,17 +16,22 @@ internal static class RequestContextMiddlewareExtensions
 internal class RequestContextMiddleware
 {
     private readonly RequestDelegate _next;
-    public RequestContextMiddleware(RequestDelegate next, ILogger<RequestContextMiddleware> logger)
+    private readonly ILogger<RequestContextMiddleware> _logger;
+    private readonly IDiagnosticContext _diagnosticContext;
+    private readonly IClaimsService _claimsService;
+    public RequestContextMiddleware(RequestDelegate next, ILogger<RequestContextMiddleware> logger, IDiagnosticContext diagnosticContext, IClaimsService claimsService)
     {
         _next = next;
+        _logger = logger;
+        _diagnosticContext = diagnosticContext;
+        _claimsService = claimsService;
     }
 
     public Task Invoke(HttpContext context)
     {
+        _diagnosticContext.Set("UserId", _claimsService.OpmeUserId);
+        _diagnosticContext.Set("UserEmail", _claimsService.Email);
+
         return _next(context);
-        // using (LogContext.PushProperty("correlationId", context.TraceIdentifier))
-        // {
-        //     return _next(context);
-        // }
     }
 }
