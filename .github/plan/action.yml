@@ -58,10 +58,9 @@ runs:
         ARM_TENANT_ID: ${{ inputs.azure_tenant_id }}
         ARM_SUBSCRIPTION_ID: ${{ inputs.azure_subscription_id }}
         ARM_USE_OIDC: true
-        new_relic_license_key: ${{ inputs.new_relic_license_key }}
       shell: bash
       run: |
-        terraform plan -no-color -out=tfplan
+        terraform plan -no-color -out=tfplan -var new_relic_license_key=${{ inputs.new_relic_license_key }}
 
     - name: Save Artifact
       id: save-artifact
