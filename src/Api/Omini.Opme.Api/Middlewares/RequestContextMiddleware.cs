@@ -31,6 +31,7 @@ internal class RequestContextMiddleware
     {
         _diagnosticContext.Set("UserId", _claimsService.OpmeUserId);
         _diagnosticContext.Set("UserEmail", _claimsService.Email);
+        
 
         return _next(context);
     }

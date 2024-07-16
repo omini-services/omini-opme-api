@@ -1,11 +1,23 @@
+using Omini.Opme.Api;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var startup = new Startup(builder.Configuration);
 
 builder.Host.UseSerilog((ctx, lc) => lc
-      .WriteTo.Console()
-      .ReadFrom.Configuration(ctx.Configuration));
+    .Enrich.With<HighlightLogEnricher>()
+    .Enrich.WithEnvironmentName()
+    .Enrich.FromLogContext()
+      .WriteTo.Async(async =>
+        async.OpenTelemetry(options =>
+        {
+            options.Endpoint = HighlightConfig.LogsEndpoint;
+            options.Protocol = HighlightConfig.Protocol;
+            options.ResourceAttributes = HighlightConfig.ResourceAttributes;
+        })
+    )
+    .ReadFrom.Configuration(ctx.Configuration));
+HighlightConfig.Configure(builder);
 
 builder.Configuration.AddAzureAppConfiguration(options =>
   options.Connect(builder.Configuration.GetConnectionString("AppConfig")).UseFeatureFlags(featureFlagOptions =>
