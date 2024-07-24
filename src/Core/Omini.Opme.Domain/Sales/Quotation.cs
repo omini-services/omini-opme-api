@@ -49,6 +49,14 @@ public sealed class Quotation : DocumentEntity
         SetTotal();
     }
 
+    private void SetTotal()
+    {
+        Total = _items.Any() ? _items.Sum(x => x.LineTotal) : 0;
+    }
+
+    private int LastLineOrder => _items.Any() ? _items.Max(p => p.LineOrder) + 1 : 0;
+    private int LastLineId => _items.Any() ? _items.Max(p => p.LineId) + 1 : 0;
+
     public void SetData(string patientCode, PersonName patientName,
                         string physicianCode, PersonName physicianName,
                         string hospitalCode, string hospitalName,
@@ -114,14 +122,6 @@ public sealed class Quotation : DocumentEntity
         _items.Remove(item);
         SetTotal();
     }
-
-    private void SetTotal()
-    {
-        Total = _items.Any() ? _items.Sum(x => x.LineTotal) : 0;
-    }
-
-    private int LastLineOrder => _items.Any() ? _items.Max(p => p.LineOrder) + 1 : 0;
-    private int LastLineId => _items.Any() ? _items.Max(p => p.LineId) + 1 : 0;
 }
 
 public sealed class QuotationItem : DocumentRowEntity

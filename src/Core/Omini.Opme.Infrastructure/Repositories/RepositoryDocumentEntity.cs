@@ -9,6 +9,7 @@ namespace Omini.Opme.Infrastructure;
 
 internal abstract class RepositoryDocumentEntity<TEntity> : IRespositoryDocumentEntity<TEntity> where TEntity : DocumentEntity
 {
+    private const int MaxPageSize = 100;
     protected readonly OpmeContext Db;
     protected readonly DbSet<TEntity> DbSet;
 
@@ -33,16 +34,16 @@ internal abstract class RepositoryDocumentEntity<TEntity> : IRespositoryDocument
         return await DbSet.Where(p => p.Id == id).SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<Shared.Entities.PagedResult<TEntity>> GetPagedResult(IQueryable<TEntity> query, int currentPage = 1, int pageSize = 100, CancellationToken cancellationToken = default)
+    public async Task<Shared.Entities.PagedResult<TEntity>> GetPagedResult(IQueryable<TEntity> query, int currentPage = 1, int pageSize = MaxPageSize, CancellationToken cancellationToken = default)
     {
         if (currentPage < 1)
         {
             currentPage = 1;
         }
 
-        if (pageSize == 0)
+        if (pageSize > 100 || pageSize == 0)
         {
-            pageSize = int.MaxValue;
+            pageSize = MaxPageSize;
         }
 
         var paginatedQuery = new
@@ -60,20 +61,7 @@ internal abstract class RepositoryDocumentEntity<TEntity> : IRespositoryDocument
     {
         var query = DbSet.AsNoTracking();
 
-        if (queryField is not null)
-        {
-            query.Where($"{queryField} = {queryValue}");
-        }
-
-        if (orderByField is not null)
-        {
-            var orderBy = sortDirection == SortDirection.Desc ? "DESC" : "ASC";
-            query = query.OrderBy($"{orderByField} {orderBy}");
-        }
-        else
-        {
-            query = query.OrderBy(p => p.CreatedOn);
-        }
+        query = OrderBy(query, orderByField, sortDirection, queryField, queryValue, cancellationToken);
 
         return await GetPagedResult(query, currentPage, pageSize, cancellationToken);
     }
@@ -96,5 +84,25 @@ internal abstract class RepositoryDocumentEntity<TEntity> : IRespositoryDocument
     public void Dispose()
     {
         Db?.Dispose();
+    }
+
+    public IQueryable<TEntity> OrderBy(IQueryable<TEntity> query, string? orderByField = null, SortDirection sortDirection = SortDirection.Asc, string? queryField = null, string? queryValue = null, CancellationToken cancellationToken = default)
+    {
+        if (queryField is not null)
+        {
+            query.Where($"{queryField} = {queryValue}");
+        }
+
+        if (orderByField is not null)
+        {
+            var orderBy = sortDirection == SortDirection.Desc ? "DESC" : "ASC";
+            query = query.OrderBy($"{orderByField} {orderBy}");
+        }
+        else
+        {
+            query = query.OrderBy(p => p.CreatedOn);
+        }
+
+        return query;
     }
 }
