@@ -1,7 +1,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
-using Omini.Opme.Application.Abstractions.Messaging;
+using Omini.Opme.Business.Abstractions.Messaging;
 using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Business.PipelineBehaviors;

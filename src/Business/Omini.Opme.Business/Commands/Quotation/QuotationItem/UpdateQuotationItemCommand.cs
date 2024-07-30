@@ -1,9 +1,9 @@
 using FluentValidation.Results;
-using Omini.Opme.Application.Abstractions.Messaging;
 using Omini.Opme.Domain.Sales;
 using Omini.Opme.Shared.Entities;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Domain.Transactions;
+using Omini.Opme.Business.Abstractions.Messaging;
 
 namespace Omini.Opme.Business.Commands;
 

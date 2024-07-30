@@ -1,4 +1,4 @@
-using Omini.Opme.Application.Abstractions.Messaging;
+using Omini.Opme.Business.Abstractions.Messaging;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Domain.Warehouse;
 using Omini.Opme.Shared.Entities;
