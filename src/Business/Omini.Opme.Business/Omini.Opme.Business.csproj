@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Omini.Opme.Shared\Omini.Opme.Shared.csproj" />
     <ProjectReference Include="..\..\Core\Omini.Opme.Domain\Omini.Opme.Domain.csproj" />
   </ItemGroup>
 
