@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Omini.Opme.Domain.Admin;
+using Omini.Opme.Domain.Authentication;
 using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Domain.Sales;
 using Omini.Opme.Domain.Warehouse;

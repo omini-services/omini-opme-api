@@ -1,4 +1,4 @@
-using Omini.Opme.Domain.Admin;
+using Omini.Opme.Domain.Authentication;
 
 namespace Omini.Opme.Domain.Repositories;
 

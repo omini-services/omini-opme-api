@@ -4,6 +4,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Omini.Opme.Domain.Admin;
+using Omini.Opme.Domain.Authentication;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Domain.Transactions;
 

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Omini.Opme.Domain.Admin;
+using Omini.Opme.Domain.Authentication;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 

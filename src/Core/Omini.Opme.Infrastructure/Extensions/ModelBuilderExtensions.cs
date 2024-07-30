@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Omini.Opme.Domain.Admin;
+using Omini.Opme.Domain.Authentication;
 using Omini.Opme.Domain.Common;
 
 namespace Omini.Opme.Infrastructure.Extensions;

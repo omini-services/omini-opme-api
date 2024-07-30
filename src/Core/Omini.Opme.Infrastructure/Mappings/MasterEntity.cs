@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Omini.Opme.Domain.Admin;
+using Omini.Opme.Domain.Authentication;
 using Omini.Opme.Domain.Common;
 
 internal abstract class MasterEntityMapping<T> : IEntityTypeConfiguration<T> where T : MasterEntity
