@@ -1,15 +1,38 @@
-version: '3'
-
 services:
-    opme:
+    zenko:
         build:
             context: .
             dockerfile: Dockerfile
-        ports:
-            - "8080:8080"
+        container_name: zenko-api
+        networks:
+            - zenko
+        image: dkasparian/zenko-api
         environment:
             - DOTNET_ENVIRONMENT=Development
             - DOTNET_NUGET_SIGNATURE_VERIFICATION=false
             - USER_SECRETS_ID=94bfec52-89be-4316-a97d-8dfb1d797edd
         volumes:
             - ~/.microsoft/usersecrets/$USER_SECRETS_ID:/root/.microsoft/usersecrets/$USER_SECRETS_ID
+    caddy:
+        image: caddy:latest
+        restart: unless-stopped
+        container_name: caddy
+        networks:
+            - zenko
+        ports:
+            - "80:80"
+            - "443:443"
+            - "443:443/udp"
+        volumes:
+            - ./caddyfile:/etc/caddy/Caddyfile
+            - ./site:/srv
+            - caddy_data:/data
+            - caddy_config:/config
+
+volumes:
+    caddy_data:
+    caddy_config:
+
+networks:
+    zenko:
+        driver: bridge
