@@ -36,7 +36,7 @@ public record CreatePhysicianCommand : ICommand<Physician>
                 comments: request.Comments
             );
 
-            await _physicianServicIPhysicianRepository.Add(physician, cancellationToken);
+            await _physicianServicIPhysicianRepository.Create(physician, cancellationToken);
             await _unitOfWork.Commit(cancellationToken);
 
             return physician;

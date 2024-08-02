@@ -1,5 +1,5 @@
 using FluentValidation;
-using Omini.Opme.Shared;
+using Omini.Opme.Shared.Formatters;
 
 namespace Omini.Opme.Business.Validators.Custom;
 

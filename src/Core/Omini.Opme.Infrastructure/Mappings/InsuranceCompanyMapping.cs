@@ -5,7 +5,7 @@ using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
-internal class InsuranceCompanyMapping : MasterEntityMapping<InsuranceCompany>
+internal sealed class InsuranceCompanyMapping : MasterEntityMapping<InsuranceCompany>
 {
     public override void Configure(EntityTypeBuilder<InsuranceCompany> builder)
     {

@@ -1,4 +1,4 @@
-namespace Omini.Opme.Shared;
+namespace Omini.Opme.Shared.Formatters;
 
 public static class Formatters
 {

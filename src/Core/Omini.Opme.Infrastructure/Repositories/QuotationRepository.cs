@@ -7,7 +7,7 @@ using Omini.Opme.Infrastructure.Contexts;
 
 namespace Omini.Opme.Infrastructure.Repositories;
 
-internal class QuotationRepository : RepositoryDocumentEntity<Quotation>, IQuotationRepository
+internal sealed class QuotationRepository : RepositoryDocumentEntity<Quotation>, IQuotationRepository
 {
     public QuotationRepository(OpmeContext context) : base(context)
     {

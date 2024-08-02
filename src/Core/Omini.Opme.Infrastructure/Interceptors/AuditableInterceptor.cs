@@ -6,7 +6,7 @@ using Omini.Opme.Shared.Services.Security;
 
 namespace Omini.Opme.Infrastructure.Interceptors;
 
-public sealed class AuditableInterceptor : SaveChangesInterceptor
+internal sealed class AuditableInterceptor : SaveChangesInterceptor
 {
     private readonly IClaimsService _claimsService;
     public AuditableInterceptor(IClaimsService claimsService)

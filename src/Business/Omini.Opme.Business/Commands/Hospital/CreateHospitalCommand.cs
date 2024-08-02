@@ -33,7 +33,7 @@ public sealed record CreateHospitalCommand : ICommand<Hospital>
                 comments: request.Comments
             );
 
-            await _hospitalRepository.Add(hospital, cancellationToken);
+            await _hospitalRepository.Create(hospital, cancellationToken);
             await _unitOfWork.Commit(cancellationToken);
 
             return hospital;

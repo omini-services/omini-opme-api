@@ -4,7 +4,7 @@ using QuestPDF.Infrastructure;
 
 namespace Omini.Opme.Infrastructure.Pdf;
 
-public static class DefaultContent
+internal static class DefaultContent
 {
     public static void LGPD(this IContainer container)
     {

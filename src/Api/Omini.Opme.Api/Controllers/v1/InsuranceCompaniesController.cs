@@ -9,7 +9,6 @@ using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Api.Controllers.V1;
 
-[ApiVersion(1)]
 [Route("api/v{version:apiVersion}/[controller]")]
 public class InsuranceCompaniesController : MainController
 {

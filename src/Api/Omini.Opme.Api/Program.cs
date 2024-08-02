@@ -19,13 +19,13 @@ builder.Host.UseSerilog((ctx, lc) => lc
     .ReadFrom.Configuration(ctx.Configuration));
 HighlightConfig.Configure(builder);
 
-builder.Configuration.AddAzureAppConfiguration(options =>
-  options.Connect(builder.Configuration.GetConnectionString("AppConfig")).UseFeatureFlags(featureFlagOptions =>
-  {
-      //featureFlagOptions.Select("TestApp:*", "dev");
-      featureFlagOptions.CacheExpirationInterval = TimeSpan.FromMinutes(60);
-  })
-);
+// builder.Configuration.AddAzureAppConfiguration(options =>
+//   options.Connect(builder.Configuration.GetConnectionString("AppConfig")).UseFeatureFlags(featureFlagOptions =>
+//   {
+//       //featureFlagOptions.Select("TestApp:*", "dev");
+//       featureFlagOptions.CacheExpirationInterval = TimeSpan.FromMinutes(60);
+//   })
+// );
 
 startup.ConfigureServices(builder, builder.Services);
 

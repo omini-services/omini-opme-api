@@ -4,7 +4,7 @@ using Omini.Opme.Domain.Authentication;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
-internal class IdentityOpmeUserMapping : IEntityTypeConfiguration<OpmeUser>
+internal sealed class IdentityOpmeUserMapping : IEntityTypeConfiguration<OpmeUser>
 {
     public void Configure(EntityTypeBuilder<OpmeUser> builder)
     {

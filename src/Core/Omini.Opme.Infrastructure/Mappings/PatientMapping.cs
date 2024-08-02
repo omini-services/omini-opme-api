@@ -5,7 +5,7 @@ using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
-internal class PatientMapping : MasterEntityMapping<Patient>
+internal sealed class PatientMapping : MasterEntityMapping<Patient>
 {
     public override void Configure(EntityTypeBuilder<Patient> builder)
     {

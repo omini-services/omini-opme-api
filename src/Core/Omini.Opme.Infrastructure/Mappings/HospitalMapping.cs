@@ -1,12 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Omini.Opme.Domain.Admin;
 using Omini.Opme.Domain.BusinessPartners;
 using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
-internal class HospitalMapping : MasterEntityMapping<Hospital>
+internal sealed class HospitalMapping : MasterEntityMapping<Hospital>
 {
     public override void Configure(EntityTypeBuilder<Hospital> builder)
     {

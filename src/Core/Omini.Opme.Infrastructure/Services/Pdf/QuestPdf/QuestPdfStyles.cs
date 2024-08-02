@@ -4,7 +4,7 @@ using QuestPDF.Infrastructure;
 
 namespace Omini.Opme.Infrastructure.Pdf.QuestPdf;
 
-public static class QuotationPdfStyles
+internal static class QuotationPdfStyles
 {
     public static IContainer HeaderTableTitleStyle(IContainer container)
     {

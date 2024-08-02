@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
@@ -9,6 +10,7 @@ using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Api.Controllers.V1;
 
+[ApiVersion(1)]
 [ApiController]
 public class MainController : ControllerBase
 {

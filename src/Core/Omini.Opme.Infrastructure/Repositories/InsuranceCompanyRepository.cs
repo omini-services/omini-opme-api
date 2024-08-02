@@ -4,7 +4,7 @@ using Omini.Opme.Infrastructure.Contexts;
 
 namespace Omini.Opme.Infrastructure.Repositories;
 
-internal class InsuranceCompanyRepository : RepositoryMasterEntity<InsuranceCompany>, IInsuranceCompanyRepository
+internal sealed class InsuranceCompanyRepository : RepositoryMasterEntity<InsuranceCompany>, IInsuranceCompanyRepository
 {
     public InsuranceCompanyRepository(OpmeContext context) : base(context)
     {

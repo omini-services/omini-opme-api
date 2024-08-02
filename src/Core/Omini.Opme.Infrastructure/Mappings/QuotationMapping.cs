@@ -7,7 +7,7 @@ using Omini.Opme.Domain.Warehouse;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
-internal class QuotationMapping : DocumentEntityMapping<Quotation>
+internal sealed class QuotationMapping : DocumentEntityMapping<Quotation>
 {
     public override void Configure(EntityTypeBuilder<Quotation> builder)
     {

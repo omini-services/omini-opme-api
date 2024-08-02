@@ -50,7 +50,7 @@ internal class Startup
 
         services.AddInfrastructure(Configuration);
 
-        services.AddApplication();
+        services.AddBusiness();
 
         services.AddFluentValidationAutoValidation(config =>
         {

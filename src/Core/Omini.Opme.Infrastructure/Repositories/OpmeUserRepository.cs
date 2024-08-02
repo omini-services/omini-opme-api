@@ -5,7 +5,7 @@ using Omini.Opme.Infrastructure.Contexts;
 
 namespace Omini.Opme.Infrastructure.Repositories;
 
-internal class OpmeUserRepository : IOpmeUserRepository
+internal sealed class OpmeUserRepository : IOpmeUserRepository
 {
     private readonly OpmeContext _context;
 

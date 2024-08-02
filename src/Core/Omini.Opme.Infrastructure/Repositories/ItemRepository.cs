@@ -4,7 +4,7 @@ using Omini.Opme.Infrastructure.Contexts;
 
 namespace Omini.Opme.Infrastructure.Repositories;
 
-internal class ItemRepository : RepositoryMasterEntity<Item>, IItemRepository
+internal sealed class ItemRepository : RepositoryMasterEntity<Item>, IItemRepository
 {
     public ItemRepository(OpmeContext context) : base(context)
     {

@@ -33,7 +33,7 @@ public record CreateInsuranceCompanyCommand : ICommand<InsuranceCompany>
                 comments: request.Comments
             );
 
-            await _insuranceCompanyRepository.Add(insuranceCompany, cancellationToken);
+            await _insuranceCompanyRepository.Create(insuranceCompany, cancellationToken);
             await _unitOfWork.Commit(cancellationToken);
 
             return insuranceCompany;

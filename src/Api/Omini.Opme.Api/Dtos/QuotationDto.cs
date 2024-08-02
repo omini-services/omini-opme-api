@@ -24,10 +24,10 @@ public sealed record QuotationOutputDto
     public string InternalSpecialistCode { get; set; }
     public string InternalSpecialistName { get; set; }
     public DateTime DueDate { get; set; }
-    public List<QuotationOutputItemDto> Items { get; set; }
+    public List<QuotationItemOutputDto> Items { get; set; }
     public decimal Total { get; set; }
 
-    public sealed record QuotationOutputItemDto
+    public sealed record QuotationItemOutputDto
     {
         public int LineId { get; set; }
         public int LineOrder { get; set; }

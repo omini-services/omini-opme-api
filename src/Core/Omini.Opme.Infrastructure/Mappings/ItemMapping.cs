@@ -5,7 +5,7 @@ using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
-internal class ItemMapping : MasterEntityMapping<Item>
+internal sealed class ItemMapping : MasterEntityMapping<Item>
 {
     public override void Configure(EntityTypeBuilder<Item> builder)
     {

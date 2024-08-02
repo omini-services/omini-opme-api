@@ -10,7 +10,7 @@ using SkiaSharp;
 
 namespace Omini.Opme.Infrastructure.Pdf.QuestPdf;
 
-public sealed class QuotationPdfGenerator : IQuotationPdfGenerator
+internal sealed class QuotationPdfGenerator : IQuotationPdfGenerator
 {
     const string DefaultFont = "Noto Sans";
     private readonly string _basePath;

@@ -3,7 +3,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 using SkiaSharp;
 
-public static class SkiaSharpHelpers
+internal static class SkiaSharpHelpers
 {
     public static void SkiaSharpCanvas(this IContainer container, Action<SKCanvas, Size> drawOnCanvas)
     {

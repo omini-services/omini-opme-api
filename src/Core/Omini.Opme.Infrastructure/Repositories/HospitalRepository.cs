@@ -1,12 +1,10 @@
 using Omini.Opme.Domain.BusinessPartners;
-using Omini.Opme.Domain.Common;
-using Omini.Opme.Domain.Exceptions;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Infrastructure.Contexts;
 
 namespace Omini.Opme.Infrastructure.Repositories;
 
-internal class HospitalRepository : RepositoryMasterEntity<Hospital>, IHospitalRepository
+internal sealed class HospitalRepository : RepositoryMasterEntity<Hospital>, IHospitalRepository
 {
     public HospitalRepository(OpmeContext context) : base(context)
     {

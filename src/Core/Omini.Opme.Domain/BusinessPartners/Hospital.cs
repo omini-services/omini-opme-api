@@ -1,6 +1,6 @@
 using Omini.Opme.Domain.Common;
 using Omini.Opme.Domain.ValueObjects;
-using Omini.Opme.Shared;
+using Omini.Opme.Shared.Formatters;
 
 namespace Omini.Opme.Domain.BusinessPartners;
 

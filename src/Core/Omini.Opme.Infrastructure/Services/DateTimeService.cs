@@ -2,7 +2,7 @@ using Omini.Opme.Domain.Services;
 
 namespace Omini.Opme.Infrastructure.Services;
 
-internal class DateTimeService : IDateTimeService
+internal sealed class DateTimeService : IDateTimeService
 {
     const string BrazilianTimeZone = "Central Brazilian Standard Time";
     public DateTime TimeZoneNow()

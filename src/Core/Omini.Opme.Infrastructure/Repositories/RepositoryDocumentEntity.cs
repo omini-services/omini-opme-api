@@ -66,7 +66,7 @@ internal abstract class RepositoryDocumentEntity<TEntity> : IRespositoryDocument
         return await GetPagedResult(query, currentPage, pageSize, cancellationToken);
     }
 
-    public virtual async Task Add(TEntity entity, CancellationToken cancellationToken = default)
+    public virtual async Task Create(TEntity entity, CancellationToken cancellationToken = default)
     {
         await DbSet.AddAsync(entity, cancellationToken);
     }

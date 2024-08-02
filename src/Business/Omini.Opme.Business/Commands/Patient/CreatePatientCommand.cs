@@ -34,7 +34,7 @@ public record CreatePatientCommand : ICommand<Patient>
                 comments: request.Comments
             );
 
-            await _patientRepository.Add(patient, cancellationToken);
+            await _patientRepository.Create(patient, cancellationToken);
             await _unitOfWork.Commit(cancellationToken);
 
             return patient;

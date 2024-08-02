@@ -52,7 +52,7 @@ public record CreateItemCommand : ICommand<Item>
                 uom: request.Uom
             );
 
-            await _itemRepository.Add(item, cancellationToken);
+            await _itemRepository.Create(item, cancellationToken);
             await _unitOfWork.Commit(cancellationToken);
 
             return item;

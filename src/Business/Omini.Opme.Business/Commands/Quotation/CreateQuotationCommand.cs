@@ -131,7 +131,7 @@ public record CreateQuotationCommand : ICommand<Quotation>
                 return new ValidationResult(validationFailures);
             }
 
-            await _quotationRepository.Add(quotation, cancellationToken);
+            await _quotationRepository.Create(quotation, cancellationToken);
             await _unitOfWork.Commit(cancellationToken);
 
             return quotation;

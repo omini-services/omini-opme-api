@@ -6,7 +6,7 @@ using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Mappings;
 
-internal class InternalSpecialistMapping : MasterEntityMapping<InternalSpecialist>
+internal sealed class InternalSpecialistMapping : MasterEntityMapping<InternalSpecialist>
 {
     public override void Configure(EntityTypeBuilder<InternalSpecialist> builder)
     {

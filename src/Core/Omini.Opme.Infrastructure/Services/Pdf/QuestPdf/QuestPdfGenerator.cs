@@ -3,7 +3,7 @@ using QuestPDF.Drawing;
 
 namespace Omini.Opme.Infrastructure.Pdf.QuestPdf;
 
-public static class QuestPdfConfiguration
+internal static class QuestPdfConfiguration
 {
     public static void RegisterFontsFromPath(string path, ILogger logger)
     {

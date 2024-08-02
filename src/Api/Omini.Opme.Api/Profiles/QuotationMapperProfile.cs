@@ -18,6 +18,6 @@ public class QuotationMapperProfile : Profile
             .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.HospitalName))
             .ForMember(dest => dest.InsuranceCompanyName, opt => opt.MapFrom(src => src.InsuranceCompanyName))
             .ForMember(dest => dest.PayingSourceName, opt => opt.MapFrom(src => src.PayingSourceName));
-        CreateMap<QuotationItem, QuotationOutputDto.QuotationOutputItemDto>();
+        CreateMap<QuotationItem, QuotationOutputDto.QuotationItemOutputDto>();
     }
 }
