@@ -40,9 +40,7 @@ public class QuotationsV1ControllerTests : IntegrationTest
         quotationCreateCommand.PatientFirstName = patientOutputDto.Data.FirstName;
         quotationCreateCommand.PatientLastName = patientOutputDto.Data.LastName;
 
-        quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
-        quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
-        quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
+        quotationCreateCommand.PayingSourceType = PayingSourceType.Insurance;
 
         //act
         var response = await TestClient.Request("/api/v1/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand);
@@ -96,9 +94,7 @@ public class QuotationsV1ControllerTests : IntegrationTest
         quotationCreateCommand.PatientFirstName = patientOutputDto.Data.FirstName;
         quotationCreateCommand.PatientLastName = patientOutputDto.Data.LastName;
 
-        quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
-        quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
-        quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
+        quotationCreateCommand.PayingSourceType = PayingSourceType.Insurance;
 
 
         //act
@@ -134,9 +130,7 @@ public class QuotationsV1ControllerTests : IntegrationTest
         quotationCreateCommand.PatientFirstName = patientOutputDto.Data.FirstName;
         quotationCreateCommand.PatientLastName = patientOutputDto.Data.LastName;
         
-        quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
-        quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
-        quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
+        quotationCreateCommand.PayingSourceType = PayingSourceType.Insurance;
 
         var quotation = (await TestClient.Request("/api/v1/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
 
@@ -150,7 +144,7 @@ public class QuotationsV1ControllerTests : IntegrationTest
             QuotationId = quotation.Id,
             ItemCode = newItem.Code,
             Quantity = faker.Random.Number(0, 100),
-            UnitPrice = Math.Round(faker.Random.Decimal(0, 100), 2),
+            UnitPrice = Math.Round(faker.Random.Double(0, 100), 2),
         };
 
         var updateQuotationResponse = await TestClient.Request($"/api/v1/quotations/{quotation.Id}/items").AsAuthenticated().PostJsonAsync(quotationCreateItemCommand);
@@ -195,9 +189,7 @@ public class QuotationsV1ControllerTests : IntegrationTest
         quotationCreateCommand.PatientFirstName = patientOutputDto.Data.FirstName;
         quotationCreateCommand.PatientLastName = patientOutputDto.Data.LastName;
 
-        quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
-        quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
-        quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
+        quotationCreateCommand.PayingSourceType = PayingSourceType.Insurance;
 
         var quotation = (await TestClient.Request("/api/v1/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
         var lineIdToUpdate = quotation.Items[0].LineId;
@@ -250,9 +242,7 @@ public class QuotationsV1ControllerTests : IntegrationTest
         quotationCreateCommand.PatientCode = patientOutputDto.Data.Code;
         quotationCreateCommand.PatientFirstName = patientOutputDto.Data.FirstName;
         quotationCreateCommand.PatientLastName = patientOutputDto.Data.LastName;
-        quotationCreateCommand.PayingSourceType = PayingSourceType.Hospital;
-        quotationCreateCommand.PayingSourceCode = hospitalOutputDto.Data.Code;
-        quotationCreateCommand.PayingSourceName = hospitalOutputDto.Data.TradeName;
+        quotationCreateCommand.PayingSourceType = PayingSourceType.Insurance;
 
         var quotation = (await TestClient.Request("/api/v1/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
 

@@ -9,13 +9,14 @@ public class GetAllHospitalsQuery : IQuery<Hospital>
 {
     public GetAllHospitalsQuery() { }
 
-    public GetAllHospitalsQuery(QueryFilter queryFilter, PaginationFilter paginationFilter)
+    public GetAllHospitalsQuery(string queryValue, PaginationFilter paginationFilter)
     {
-        QueryFilter = queryFilter;
+        QueryValue = queryValue;
         PaginationFilter = paginationFilter;
     }
+
+    public string QueryValue { get; set; }
     public PaginationFilter PaginationFilter { get; set; }
-    public QueryFilter QueryFilter { get; set; }
 
     public class GetAllHospitalsQueryHandler : IQueryHandler<GetAllHospitalsQuery, Hospital>
     {
@@ -32,8 +33,7 @@ public class GetAllHospitalsQuery : IQuery<Hospital>
                 pageSize: request.PaginationFilter.PageSize,
                 orderByField: request.PaginationFilter.OrderBy,
                 sortDirection: request.PaginationFilter.Direction,
-                queryField: request.QueryFilter.QueryField,
-                queryValue: request.QueryFilter.QueryValue,
+                queryValue: request.QueryValue,
                 cancellationToken);
 
             return hospitals;

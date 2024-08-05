@@ -13,8 +13,8 @@ public record UpdateQuotationItemCommand : ICommand<Quotation>
     public int LineId { get; set; }
     public int? LineOrder { get; set; }
     public string ItemCode { get; set; }
-    public decimal UnitPrice { get; set; }
-    public decimal Quantity { get; set; }
+    public double UnitPrice { get; set; }
+    public double Quantity { get; set; }
 
     public class UpdateQuotationCommandHandler : ICommandHandler<UpdateQuotationItemCommand, Quotation>
     {

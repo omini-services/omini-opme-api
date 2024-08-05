@@ -9,19 +9,19 @@ public class GetAllPhysiciansQuery : IQuery<Physician>
 {
     public GetAllPhysiciansQuery() { }
 
-    public GetAllPhysiciansQuery(QueryFilter queryFilter, PaginationFilter paginationFilter)
+    public GetAllPhysiciansQuery(string queryValue, PaginationFilter paginationFilter)
     {
-        QueryFilter = queryFilter;
+        QueryValue = queryValue;
         PaginationFilter = paginationFilter;
     }
 
+    public string QueryValue { get; set; }
     public PaginationFilter PaginationFilter { get; set; }
 
-    public QueryFilter QueryFilter { get; set; }
     public class GetAllPhysiciansQueryHandler : IQueryHandler<GetAllPhysiciansQuery, Physician>
     {
         private readonly IPhysicianRepository _physicianRepository;
-        public GetAllPhysiciansQueryHandler(IPhysicianRepository physicianRepository)
+        public GetAllPhysiciansQueryHandler(string queryValue, IPhysicianRepository physicianRepository)
         {
             _physicianRepository = physicianRepository;
         }
@@ -33,9 +33,8 @@ public class GetAllPhysiciansQuery : IQuery<Physician>
                 pageSize: request.PaginationFilter.PageSize,
                 orderByField: request.PaginationFilter.OrderBy,
                 sortDirection: request.PaginationFilter.Direction,
-                queryField: request.QueryFilter.QueryField,
-                queryValue: request.QueryFilter.QueryValue,
-                cancellationToken);        
+                queryValue: request.QueryValue,
+                cancellationToken);
 
             return physicians;
         }

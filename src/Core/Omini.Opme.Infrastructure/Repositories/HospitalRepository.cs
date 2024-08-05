@@ -10,26 +10,17 @@ internal sealed class HospitalRepository : RepositoryMasterEntity<Hospital>, IHo
     {
     }
 
-    public override IQueryable<Hospital> Filter(IQueryable<Hospital> query, string? queryField, string? queryValue)
+    public override IQueryable<Hospital> Filter(IQueryable<Hospital> query, string? queryValue = null)
     {
-        if (queryField is not null && queryValue is not null)
-        {
-            queryValue = queryValue.ToLower();
-            switch (queryField.ToLowerInvariant())
-            {
-                case var code when code == nameof(Hospital.Code).ToLower():
-                    query = query.Where(x => x.Code == queryValue);
-                    break;
+        if (query is null) throw new ArgumentNullException(nameof(query));
 
-                case var name when name == nameof(Hospital.Name.TradeName).ToLowerInvariant() || name == nameof(Hospital.Name.LegalName).ToLowerInvariant():
-                    query = query.Where(x => x.Name.LegalName.ToLower().Contains(queryValue)
-                                             || x.Name.TradeName.ToLower().Contains(queryValue));
-                    break;
+        if (queryValue is null) return query;
 
-                default:
-                    return query;
-            }
-        }
+        queryValue = queryValue.ToLower();
+
+        query = query.Where(x => x.Name.LegalName.ToLower().Contains(queryValue)
+                                    || x.Name.TradeName.ToLower().Contains(queryValue)
+                                    || x.Code.ToLower().Equals(queryValue));
 
         return query;
     }

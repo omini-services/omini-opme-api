@@ -10,27 +10,18 @@ internal sealed class PatientRepository : RepositoryMasterEntity<Patient>, IPati
     {
     }
 
-    public override IQueryable<Patient> Filter(IQueryable<Patient> query, string? queryField, string? queryValue)
+    public override IQueryable<Patient> Filter(IQueryable<Patient> query, string? queryValue = null)
     {
-        if (queryField is not null && queryValue is not null)
-        {
-            queryValue = queryValue.ToLower();
-            switch (queryField.ToLowerInvariant())
-            {
-                case var code when code == nameof(Patient.Code).ToLower():
-                    query = query.Where(x => x.Code == queryValue);
-                    break;
+        if (query is null) throw new ArgumentNullException(nameof(query));
 
-                case var name when name == nameof(Patient.Name).ToLowerInvariant():
-                    query = query.Where(x => x.Name.FirstName.ToLower().Contains(queryValue)
-                                             || x.Name.MiddleName.ToLower().Contains(queryValue)
-                                             || x.Name.LastName.ToLower().Contains(queryValue));
-                    break;
+        if (queryValue is null) return query;
 
-                default:
-                    return query;
-            }
-        }
+        queryValue = queryValue.ToLower();
+
+        query = query.Where(x => x.Name.FirstName.ToLower().Contains(queryValue)
+                                 || x.Name.MiddleName.ToLower().Contains(queryValue)
+                                 || x.Name.LastName.ToLower().Contains(queryValue)
+                                 || x.Code.ToLower().Equals(queryValue));
 
         return query;
     }

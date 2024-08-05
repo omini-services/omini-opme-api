@@ -16,15 +16,12 @@ public sealed class Quotation : DocumentEntity
     public string InsuranceCompanyName { get; private set; }
     public string InternalSpecialistCode { get; private set; }
     public PayingSourceType PayingSourceType { get; private set; }
-    public string PayingSourceCode { get; private set; }
-    public string PayingSourceName { get; private set; }
-    //public PayingSource PayingSource { get; set; }
-    // public InternalSpecialist InternalSpecialist { get; private set; }
     private DateTime _dueDate;
     public DateTime DueDate { get { return _dueDate; } private set { _dueDate = value.ToUniversalTime(); } }
     private List<QuotationItem> _items = [];
     public IReadOnlyCollection<QuotationItem> Items => _items;
-    public decimal Total { get; private set; }
+    public double Total { get; private set; }
+    public string Comments { get; set; }
 
     private Quotation() { }
 
@@ -33,8 +30,9 @@ public sealed class Quotation : DocumentEntity
                      string hospitalCode, string hospitalName,
                      string insuranceCompanyCode, string insuranceCompanyName,
                      string internalSpecialistCode,
-                     PayingSourceType payingSourceType, string payingSourceCode, string payingSourceName,
-                     DateTime dueDate)
+                     PayingSourceType payingSourceType,
+                     DateTime dueDate,
+                     string comments)
     {
         SetData(
             patientCode, patientName,
@@ -42,8 +40,9 @@ public sealed class Quotation : DocumentEntity
             hospitalCode, hospitalName,
             insuranceCompanyCode, insuranceCompanyName,
             internalSpecialistCode,
-            payingSourceType, payingSourceCode, payingSourceName,
-            dueDate
+            payingSourceType,
+            dueDate,
+            comments
         );
 
         SetTotal();
@@ -62,8 +61,9 @@ public sealed class Quotation : DocumentEntity
                         string hospitalCode, string hospitalName,
                         string insuranceCompanyCode, string insuranceCompanyName,
                         string internalSpecialistCode,
-                        PayingSourceType payingSourceType, string payingSourceCode, string payingSourceName,
-                        DateTime dueDate)
+                        PayingSourceType payingSourceType,
+                        DateTime dueDate,
+                        string comments)
     {
         PatientCode = patientCode;
         PatientName = patientName;
@@ -75,14 +75,13 @@ public sealed class Quotation : DocumentEntity
         InsuranceCompanyName = insuranceCompanyName;
         InternalSpecialistCode = internalSpecialistCode;
         PayingSourceType = payingSourceType;
-        PayingSourceCode = payingSourceCode;
-        PayingSourceName = payingSourceName;
         DueDate = dueDate;
+        Comments = comments;
 
         SetTotal();
     }
 
-    public void AddItem(string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, decimal unitPrice, decimal quantity, int? lineOrder = null)
+    public void AddItem(string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, double unitPrice, double quantity, int? lineOrder = null)
     {
         var newItem = new QuotationItem(
             documentID: Id,
@@ -132,14 +131,14 @@ public sealed class QuotationItem : DocumentRowEntity
     public string AnvisaCode { get; private set; }
     private DateTime _anvisaDueDate;
     public DateTime AnvisaDueDate { get { return _anvisaDueDate; } private set { _anvisaDueDate = value.ToUniversalTime(); } }
-    public decimal UnitPrice { get; private set; }
-    public decimal Quantity { get; private set; }
-    public decimal LineTotal { get; private set; }
-    private decimal GetLineTotal => Quantity * UnitPrice;
+    public double UnitPrice { get; private set; }
+    public double Quantity { get; private set; }
+    public double LineTotal { get; private set; }
+    private double GetLineTotal => Quantity * UnitPrice;
 
     private QuotationItem() { }
 
-    public QuotationItem(Guid documentID, int lineId, string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, decimal unitPrice, decimal quantity, int? lineOrder = null)
+    public QuotationItem(Guid documentID, int lineId, string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, double unitPrice, double quantity, int? lineOrder = null)
     {
         DocumentId = documentID;
         LineId = lineId;
@@ -147,7 +146,7 @@ public sealed class QuotationItem : DocumentRowEntity
         SetData(itemCode, itemName, referenceCode, anvisaCode, anvisaDueDate, unitPrice, quantity, lineOrder);
     }
 
-    public void SetData(string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, decimal unitPrice, decimal quantity, int? lineOrder = null)
+    public void SetData(string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, double unitPrice, double quantity, int? lineOrder = null)
     {
         if (lineOrder is not null)
         {

@@ -9,19 +9,19 @@ public class GetAllPatientsQuery : IQuery<Patient>
 {
     public GetAllPatientsQuery() { }
 
-    public GetAllPatientsQuery(QueryFilter queryFilter, PaginationFilter paginationFilter)
+    public GetAllPatientsQuery(string queryValue, PaginationFilter paginationFilter)
     {
-        QueryFilter = queryFilter;
+        QueryValue = queryValue;
         PaginationFilter = paginationFilter;
     }
 
+    public string QueryValue { get; set; }
     public PaginationFilter PaginationFilter { get; set; }
 
-    public QueryFilter QueryFilter { get; set; }
     public class GetAllPatientsQueryHandler : IQueryHandler<GetAllPatientsQuery, Patient>
     {
         private readonly IPatientRepository _patientRepository;
-        public GetAllPatientsQueryHandler(IPatientRepository patientRepository)
+        public GetAllPatientsQueryHandler(string queryValue, IPatientRepository patientRepository)
         {
             _patientRepository = patientRepository;
         }
@@ -33,8 +33,7 @@ public class GetAllPatientsQuery : IQuery<Patient>
                 pageSize: request.PaginationFilter.PageSize,
                 orderByField: request.PaginationFilter.OrderBy,
                 sortDirection: request.PaginationFilter.Direction,
-                queryField: request.QueryFilter.QueryField,
-                queryValue: request.QueryFilter.QueryValue,
+                queryValue: request.QueryValue,
                 cancellationToken);
 
             return patients;

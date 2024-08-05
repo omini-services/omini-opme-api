@@ -7,6 +7,7 @@ using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Domain.Services;
 using Omini.Opme.Domain.Services.Pdf;
 using Omini.Opme.Domain.Transactions;
+using Omini.Opme.Infrastructure.Configuration;
 using Omini.Opme.Infrastructure.Contexts;
 using Omini.Opme.Infrastructure.Interceptors;
 using Omini.Opme.Infrastructure.Pdf.QuestPdf;
@@ -21,6 +22,8 @@ public static class DependecyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddAuthenticationConfiguration(configuration);
+        
         services.AddSingleton<AuditableInterceptor>();
         services.AddSingleton<SoftDeletableInterceptor>();
 

@@ -1,4 +1,4 @@
-using Omini.Opme.Domain.Common;
+using Omini.Opme.Shared.Common;
 
 namespace Omini.Opme.Business.Queries;
 

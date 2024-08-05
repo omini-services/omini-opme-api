@@ -10,27 +10,18 @@ internal sealed class ItemRepository : RepositoryMasterEntity<Item>, IItemReposi
     {
     }
 
-    public override IQueryable<Item> Filter(IQueryable<Item> query, string? queryField, string? queryValue)
+    public override IQueryable<Item> Filter(IQueryable<Item> query, string? queryValue = null)
     {
-        if (queryField is not null && queryValue is not null)
-        {
-            queryValue = queryValue.ToLower();
-            switch (queryField.ToLowerInvariant())
-            {
-                case var code when code == nameof(Item.Code).ToLower():
-                    query = query.Where(x => x.Code == queryValue);
-                    break;
+        if (query is null) throw new ArgumentNullException(nameof(query));
 
-                case var name when name == nameof(Item.Name).ToLowerInvariant():
-                    query = query.Where(x => x.Name.ToLower().Contains(queryValue)
-                                             || x.SalesName.ToLower().Contains(queryValue)
-                                             || x.Description.ToLower().Contains(queryValue));
-                    break;
+        if (queryValue is null) return query;
 
-                default:
-                    return query;
-            }
-        }
+        queryValue = queryValue.ToLower();
+
+        query = query.Where(x => x.Name.ToLower().Contains(queryValue)
+             || x.SalesName.ToLower().Contains(queryValue)
+             || x.Description.ToLower().Contains(queryValue)
+             || x.Code.ToLower().Equals(queryValue));
 
         return query;
     }

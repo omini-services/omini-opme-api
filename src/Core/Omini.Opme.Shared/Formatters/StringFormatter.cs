@@ -2,7 +2,7 @@ namespace Omini.Opme.Shared.Formatters;
 
 public static class Formatters
 {
-    public static string GetNumbersOnly(this string value)
+    public static string GetDigits(this string value)
     {
         return string.Concat(value.Where(Char.IsDigit));
     }
@@ -14,7 +14,7 @@ public static class Formatters
             throw new ArgumentNullException(nameof(cpf));
         }
 
-        var cleanCpf = cpf.GetNumbersOnly();
+        var cleanCpf = cpf.GetDigits();
 
         if (cleanCpf.Length != 11)
         {
@@ -31,7 +31,7 @@ public static class Formatters
             throw new ArgumentNullException(nameof(cnpj));
         }
 
-        var cleanCpf = cnpj.GetNumbersOnly();
+        var cleanCpf = cnpj.GetDigits();
 
         if (cleanCpf.Length != 14)
         {
