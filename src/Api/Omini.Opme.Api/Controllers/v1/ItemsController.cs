@@ -19,9 +19,9 @@ public class ItemsController : MainController
     }
 
     [HttpGet]
-    public async Task<ActionResult<PagedResult<ItemOutputDto>>> Get([FromQuery] QueryFilter queryFilter, [FromQuery] PaginationFilter paginationFilter)
+    public async Task<ActionResult<PagedResult<ItemOutputDto>>> Get([FromQuery] string queryValue, [FromQuery] PaginationFilter paginationFilter)
     {
-        var items = await Mediator.Send(new GetAllItemsQuery(queryFilter, paginationFilter));
+        var items = await Mediator.Send(new GetAllItemsQuery(queryValue, paginationFilter));
         var result = Mapper.Map<PagedResult<ItemOutputDto>>(items);
 
         return Ok(ResponseDto.ApiSuccess(result));

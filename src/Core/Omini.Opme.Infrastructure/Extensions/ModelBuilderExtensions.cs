@@ -38,7 +38,7 @@ internal static class ModelBuilderExtensions
            .SelectMany(t => t.GetProperties())
            .Where(p => p.ClrType == typeof(string) && !notIncludedFields.All(n => p.Name.EndsWith(n)));
 
-        foreach (var property in stringProperties)
+        foreach (var property in stringProperties.Where(p => p.Name != "Comments"))
             property.SetMaxLength(100);
     }
 

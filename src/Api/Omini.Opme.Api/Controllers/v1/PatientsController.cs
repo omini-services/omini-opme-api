@@ -19,9 +19,9 @@ public class PatientsController : MainController
     }
 
     [HttpGet]
-    public async Task<ActionResult<PagedResult<PatientOutputDto>>> Get([FromQuery] QueryFilter queryFilter, [FromQuery] PaginationFilter paginationFilter)
+    public async Task<ActionResult<PagedResult<PatientOutputDto>>> Get([FromQuery] string queryValue, [FromQuery] PaginationFilter paginationFilter)
     {
-        var patients = await Mediator.Send(new GetAllPatientsQuery(queryFilter, paginationFilter));
+        var patients = await Mediator.Send(new GetAllPatientsQuery(queryValue, paginationFilter));
         var result = Mapper.Map<PagedResult<PatientOutputDto>>(patients);
 
         return Ok(ResponseDto.ApiSuccess(result));

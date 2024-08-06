@@ -24,17 +24,16 @@ public record CreateQuotationCommand : ICommand<Quotation>
     public string InsuranceCompanyCode { get; set; }
     public string InsuranceCompanyName { get; set; }
     public PayingSourceType PayingSourceType { get; set; }
-    public string PayingSourceCode { get; set; }
-    public string PayingSourceName { get; set; }
     public DateTime DueDate { get; set; }
     public List<CreateQuotationItems> Items { get; set; } = new();
+    public string Comments { get; set; }
 
     public class CreateQuotationItems
     {
         public int? LineOrder { get; set; }
         public string ItemCode { get; set; }
-        public decimal UnitPrice { get; set; }
-        public decimal Quantity { get; set; }
+        public double UnitPrice { get; set; }
+        public double Quantity { get; set; }
     }
 
     public class CreateQuotationCommandHandler : ICommandHandler<CreateQuotationCommand, Quotation>
@@ -102,8 +101,9 @@ public record CreateQuotationCommand : ICommand<Quotation>
                 hospitalCode: hospital.Code, hospitalName: request.HospitalName,
                 insuranceCompanyCode: insuranceCompany.Code, insuranceCompanyName: request.InsuranceCompanyName,
                 internalSpecialistCode: "1",
-                payingSourceType: request.PayingSourceType, payingSourceCode: request.PayingSourceCode, payingSourceName: request.PayingSourceName,
-                dueDate: request.DueDate
+                payingSourceType: request.PayingSourceType,
+                dueDate: request.DueDate,
+                comments: request.Comments
             );
 
             foreach (var (requestItem, index) in request.Items.Select((i, index) => (i, index)))

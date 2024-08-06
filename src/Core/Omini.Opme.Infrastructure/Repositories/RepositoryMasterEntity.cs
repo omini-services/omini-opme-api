@@ -5,6 +5,7 @@ using Omini.Opme.Domain.Common;
 using Omini.Opme.Domain.Exceptions;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Infrastructure.Contexts;
+using Omini.Opme.Shared.Common;
 
 namespace Omini.Opme.Infrastructure;
 
@@ -29,11 +30,11 @@ internal abstract class RepositoryMasterEntity<TEntity> : IRespositoryMasterEnti
         return await DbSet.AsNoTracking().Where(p => p.Code == code).SingleOrDefaultAsync(cancellationToken);
     }
 
-    public virtual async Task<Shared.Entities.PagedResult<TEntity>> GetAll(int currentPage = 1, int pageSize = 100, string? orderByField = null, SortDirection sortDirection = SortDirection.Asc, string? queryField = null, string? queryValue = null, CancellationToken cancellationToken = default)
+    public virtual async Task<Shared.Entities.PagedResult<TEntity>> GetAll(int currentPage = 1, int pageSize = 100, string? orderByField = null, SortDirection sortDirection = SortDirection.Asc, string? queryValue = null, CancellationToken cancellationToken = default)
     {
         var query = DbSet.AsNoTracking();
 
-        query = Filter(query, queryField, queryValue);
+        query = Filter(query, queryValue);
 
         if (orderByField is not null)
         {
@@ -86,7 +87,7 @@ internal abstract class RepositoryMasterEntity<TEntity> : IRespositoryMasterEnti
         return new Shared.Entities.PagedResult<TEntity>(paginatedQuery.Data, currentPage, pageSize, paginatedQuery.TotalCount);
     }
 
-    public virtual IQueryable<TEntity> Filter(IQueryable<TEntity> query, string? queryField, string? queryValue)
+    public virtual IQueryable<TEntity> Filter(IQueryable<TEntity> query, string? queryValue = null)
     {
         return query;
     }

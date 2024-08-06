@@ -9,7 +9,7 @@ using Omini.Opme.Infrastructure.Extensions;
 
 namespace Omini.Opme.Infrastructure.Contexts;
 
-internal sealed class OpmeContext : DbContext
+public sealed class OpmeContext : DbContext
 {
     public OpmeContext(DbContextOptions<OpmeContext> options)
         : base(options)

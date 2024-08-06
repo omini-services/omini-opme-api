@@ -46,8 +46,6 @@ internal class Startup
         services.AddEndpointsApiExplorer();
         services.AddSwaggerConfiguration(Configuration);
 
-        services.AddAuthenticationConfiguration(Configuration);
-
         services.AddInfrastructure(Configuration);
 
         services.AddBusiness();

@@ -12,8 +12,8 @@ public record CreateQuotationItemCommand : ICommand<Quotation>
     public Guid QuotationId { get; set; }
     public int? LineOrder { get; set; }
     public string ItemCode { get; set; }
-    public decimal UnitPrice { get; set; }
-    public decimal Quantity { get; set; }
+    public double UnitPrice { get; set; }
+    public double Quantity { get; set; }
 
     public class CreateQuotationItemCommandHandler : ICommandHandler<CreateQuotationItemCommand, Quotation>
     {

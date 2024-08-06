@@ -9,16 +9,16 @@ public class GetAllInsuranceCompaniesQuery : IQuery<InsuranceCompany>
 {
     public GetAllInsuranceCompaniesQuery() { }
 
-    public GetAllInsuranceCompaniesQuery(QueryFilter queryFilter, PaginationFilter paginationFilter)
+    public GetAllInsuranceCompaniesQuery(string queryValue, PaginationFilter paginationFilter)
     {
-        QueryFilter = queryFilter;
+        QueryValue = queryValue;
         PaginationFilter = paginationFilter;
     }
 
+    public string QueryValue { get; set; }
     public PaginationFilter PaginationFilter { get; set; }
 
-    public QueryFilter QueryFilter { get; set; }
-    
+
     public class GetAllInsuranceCompaniesQueryHandler : IQueryHandler<GetAllInsuranceCompaniesQuery, InsuranceCompany>
     {
         private readonly IInsuranceCompanyRepository _insuranceCompanyRepository;
@@ -34,8 +34,7 @@ public class GetAllInsuranceCompaniesQuery : IQuery<InsuranceCompany>
                 pageSize: request.PaginationFilter.PageSize,
                 orderByField: request.PaginationFilter.OrderBy,
                 sortDirection: request.PaginationFilter.Direction,
-                queryField: request.QueryFilter.QueryField,
-                queryValue: request.QueryFilter.QueryValue,
+                queryValue: request.QueryValue,
                 cancellationToken);
 
             return insuranceCompanies;

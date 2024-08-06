@@ -16,8 +16,7 @@ public class QuotationMapperProfile : Profile
             .ForMember(dest => dest.PhysicianMiddleName, opt => opt.MapFrom(src => src.PhysicianName.MiddleName))
             .ForMember(dest => dest.PhysicianLastName, opt => opt.MapFrom(src => src.PhysicianName.LastName))
             .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.HospitalName))
-            .ForMember(dest => dest.InsuranceCompanyName, opt => opt.MapFrom(src => src.InsuranceCompanyName))
-            .ForMember(dest => dest.PayingSourceName, opt => opt.MapFrom(src => src.PayingSourceName));
+            .ForMember(dest => dest.InsuranceCompanyName, opt => opt.MapFrom(src => src.InsuranceCompanyName));
         CreateMap<QuotationItem, QuotationOutputDto.QuotationItemOutputDto>();
     }
 }

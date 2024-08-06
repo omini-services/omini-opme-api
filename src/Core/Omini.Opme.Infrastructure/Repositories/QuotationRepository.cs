@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Omini.Opme.Domain.Common;
-using Omini.Opme.Domain.Exceptions;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Domain.Sales;
 using Omini.Opme.Infrastructure.Contexts;
+using Omini.Opme.Shared.Formatters;
 
 namespace Omini.Opme.Infrastructure.Repositories;
 
@@ -19,11 +18,6 @@ internal sealed class QuotationRepository : RepositoryDocumentEntity<Quotation>,
                           .Where(p => p.Id == id)
                           .SingleOrDefaultAsync(cancellationToken);
 
-        if (quotation is not null)
-        {
-            //quotation.PayingSource = new PayingSource() { Name = GetPaymentSource(quotation) };
-        }
-
         return quotation;
     }
 
@@ -33,41 +27,30 @@ internal sealed class QuotationRepository : RepositoryDocumentEntity<Quotation>,
                           .Where(p => p.Number == number)
                           .SingleOrDefaultAsync(cancellationToken);
 
-        if (quotation is not null)
-        {
-            //quotation.PayingSource = new PayingSource() { Name = GetPaymentSource(quotation) };
-        }
-
         return quotation;
     }
 
-    private string GetPaymentSource(Quotation quotation)
+    public override IQueryable<Quotation> Filter(IQueryable<Quotation> query, string? queryValue = null)
     {
-        var payingSourceQuery = quotation.PayingSourceType switch
-        {
-            PayingSourceType.Hospital => from hospital in Db.Hospitals
-                                         where hospital.Code == quotation.PayingSourceCode
-                                         select hospital.Name.TradeName,
-            PayingSourceType.Patient => from patient in Db.Patients
-                                        where patient.Code == quotation.PayingSourceCode
-                                        select patient.Name.FullName,
-            PayingSourceType.InsuranceCompany => from insuranceCompany in Db.InsuranceCompanies
-                                                 where insuranceCompany.Code == quotation.PayingSourceCode
-                                                 select insuranceCompany.Name.TradeName,
-            PayingSourceType.Physician => from physician in Db.Physicians
-                                          where physician.Code == quotation.PayingSourceCode
-                                          select physician.Name.FullName,
-            _ => throw new ArgumentException(nameof(quotation.PayingSourceType)),
-        };
+        if (query is null) throw new ArgumentNullException(nameof(query));
 
-        var payingSource = payingSourceQuery.SingleOrDefault();
+        if (queryValue is null) return query;
 
-        if (payingSource is null)
+        queryValue = queryValue.ToLower();
+
+        query = query.Where(x => x.PatientName.FirstName.ToLower().Contains(queryValue) || x.PatientName.MiddleName.ToLower().Contains(queryValue) || x.PatientName.LastName.ToLower().Contains(queryValue)
+                                || x.PhysicianName.FirstName.ToLower().Contains(queryValue) || x.PhysicianName.MiddleName.ToLower().Contains(queryValue) || x.PhysicianName.LastName.ToLower().Contains(queryValue)
+                                || x.HospitalName.ToLower().Contains(queryValue)
+                                || x.InsuranceCompanyName.ToLower().Contains(queryValue));
+
+        var digitsValue = queryValue.GetDigits();
+        long digitFilter;
+        if (long.TryParse(digitsValue, out digitFilter))
         {
-            throw new InvalidPayingSourceException(quotation.PayingSourceCode.ToString());
+            query = query.Where(x => x.Number.Equals(digitFilter));
         }
 
-        return payingSource;
+        return query;
     }
 }
 

@@ -21,7 +21,7 @@ internal static class QuotationFaker
             {
                 ItemCode = item.Data.Code,
                 Quantity = faker.Random.Number(1, 100),
-                UnitPrice = Math.Round(faker.Random.Decimal(max: 1000), 2)
+                UnitPrice = Math.Round(faker.Random.Double(max: 1000), 2)
             });
         }
 

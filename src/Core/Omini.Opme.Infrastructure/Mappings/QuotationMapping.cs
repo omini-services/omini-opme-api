@@ -24,10 +24,6 @@ internal sealed class QuotationMapping : DocumentEntityMapping<Quotation>
                 v => (PayingSourceType)Enum.Parse(typeof(PayingSourceType), v))
             .IsRequired();
 
-        builder.Property(x => x.PayingSourceCode)
-            .HasMaxLength(50)
-            .IsRequired();
-
         builder.OwnsOne(x => x.PatientName)
             .Property(x => x.FirstName)
             .HasColumnName("PatientFirstName")
@@ -75,6 +71,9 @@ internal sealed class QuotationMapping : DocumentEntityMapping<Quotation>
             .WithMany()
             .HasForeignKey(x => x.InsuranceCompanyCode)
             .IsRequired();
+
+        builder.Property(x => x.Comments)
+            .HasMaxLength(1000);
 
         // builder.HasOne(x => x.InsuranceCompany)
         //     .WithMany()

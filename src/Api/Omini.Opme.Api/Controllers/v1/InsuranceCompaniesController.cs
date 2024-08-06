@@ -19,9 +19,9 @@ public class InsuranceCompaniesController : MainController
     }
 
     [HttpGet]
-    public async Task<ActionResult<PagedResult<InsuranceCompanyOutputDto>>> Get([FromQuery] QueryFilter queryFilter, [FromQuery] PaginationFilter paginationFilter)
+    public async Task<ActionResult<PagedResult<InsuranceCompanyOutputDto>>> Get([FromQuery] string queryValue, [FromQuery] PaginationFilter paginationFilter)
     {
-        var insuranceCompanies = await Mediator.Send(new GetAllInsuranceCompaniesQuery(queryFilter, paginationFilter));
+        var insuranceCompanies = await Mediator.Send(new GetAllInsuranceCompaniesQuery(queryValue, paginationFilter));
         var result = Mapper.Map<PagedResult<InsuranceCompanyOutputDto>>(insuranceCompanies);
 
         return Ok(ResponseDto.ApiSuccess(result));

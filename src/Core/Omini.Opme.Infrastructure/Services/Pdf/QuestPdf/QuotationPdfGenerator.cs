@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Reflection;
+using Omini.Opme.Domain.Common;
 using Omini.Opme.Domain.Sales;
 using Omini.Opme.Domain.Services;
 using Omini.Opme.Domain.Services.Pdf;
@@ -142,7 +143,7 @@ internal sealed class QuotationPdfGenerator : IQuotationPdfGenerator
                 AddLabelAndContent(col, "Convênio:", quotation.InsuranceCompanyName);
                 AddHorizontalLine(col);
 
-                AddLabelAndContent(col, "Fonte Pagadora:", quotation.PayingSourceName);
+                AddLabelAndContent(col, "Fonte Pagadora:", quotation.PayingSourceType == PayingSourceType.Insurance ? quotation.InsuranceCompanyName : quotation.PatientName.FullName);
                 AddHorizontalLine(col);
 
                 col.Item().PaddingTop(20).Row(row =>

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Omini.Opme.Domain.Common;
 using Omini.Opme.Domain.Repositories;
 using Omini.Opme.Infrastructure.Contexts;
+using Omini.Opme.Shared.Common;
 
 namespace Omini.Opme.Infrastructure;
 
@@ -57,11 +58,13 @@ internal abstract class RepositoryDocumentEntity<TEntity> : IRespositoryDocument
         return new Shared.Entities.PagedResult<TEntity>(paginatedQuery.Data, currentPage, pageSize, paginatedQuery.TotalCount);
     }
 
-    public virtual async Task<Shared.Entities.PagedResult<TEntity>> GetAll(int currentPage = 1, int pageSize = 100, string? orderByField = null, SortDirection sortDirection = SortDirection.Asc, string? queryField = null, string? queryValue = null, CancellationToken cancellationToken = default)
+    public virtual async Task<Shared.Entities.PagedResult<TEntity>> GetAll(int currentPage = 1, int pageSize = 100, string? orderByField = null, SortDirection sortDirection = SortDirection.Asc, string? queryValue = null, CancellationToken cancellationToken = default)
     {
         var query = DbSet.AsNoTracking();
 
-        query = OrderBy(query, orderByField, sortDirection, queryField, queryValue, cancellationToken);
+        query = Filter(query, queryValue);
+
+        query = OrderBy(query, orderByField, sortDirection, cancellationToken);
 
         return await GetPagedResult(query, currentPage, pageSize, cancellationToken);
     }
@@ -86,23 +89,23 @@ internal abstract class RepositoryDocumentEntity<TEntity> : IRespositoryDocument
         Db?.Dispose();
     }
 
-    public IQueryable<TEntity> OrderBy(IQueryable<TEntity> query, string? orderByField = null, SortDirection sortDirection = SortDirection.Asc, string? queryField = null, string? queryValue = null, CancellationToken cancellationToken = default)
+    public IQueryable<TEntity> OrderBy(IQueryable<TEntity> query, string? orderByField = null, SortDirection sortDirection = SortDirection.Asc, CancellationToken cancellationToken = default)
     {
-        if (queryField is not null)
-        {
-            query.Where($"{queryField} = {queryValue}");
-        }
-
         if (orderByField is not null)
         {
             var orderBy = sortDirection == SortDirection.Desc ? "DESC" : "ASC";
-            query = query.OrderBy($"{orderByField} {orderBy}");
+            query = query.OrderBy($"{orderByField} {orderBy}", cancellationToken);
         }
         else
         {
             query = query.OrderBy(p => p.CreatedOn);
         }
 
+        return query;
+    }
+
+    public virtual IQueryable<TEntity> Filter(IQueryable<TEntity> query, string? queryValue = null)
+    {
         return query;
     }
 }

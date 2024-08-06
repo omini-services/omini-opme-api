@@ -9,15 +9,14 @@ public class GetAllItemsQuery : IQuery<Item>
 {
     public GetAllItemsQuery() { }
 
-    public GetAllItemsQuery(QueryFilter queryFilter, PaginationFilter paginationFilter)
+    public GetAllItemsQuery(string queryValue, PaginationFilter paginationFilter)
     {
-        QueryFilter = queryFilter;
+        QueryValue = queryValue;
         PaginationFilter = paginationFilter;
     }
-
+    public string QueryValue { get; set; }
     public PaginationFilter PaginationFilter { get; set; }
 
-    public QueryFilter QueryFilter { get; set; }
 
     public class GetAllItemsQueryHandler : IQueryHandler<GetAllItemsQuery, Item>
     {
@@ -34,8 +33,7 @@ public class GetAllItemsQuery : IQuery<Item>
                 pageSize: request.PaginationFilter.PageSize,
                 orderByField: request.PaginationFilter.OrderBy,
                 sortDirection: request.PaginationFilter.Direction,
-                queryField: request.QueryFilter.QueryField,
-                queryValue: request.QueryFilter.QueryValue,
+                queryValue: request.QueryValue,
                 cancellationToken);
 
             return items;

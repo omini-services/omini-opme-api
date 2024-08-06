@@ -1,127 +1,116 @@
-// using FluentValidation.Results;
-// using Omini.Opme.Be.Application.Abstractions.Messaging;
-// using Omini.Opme.Be.Domain.Entities;
-// using Omini.Opme.Be.Domain.Enums;
-// using Omini.Opme.Be.Domain.Repositories;
-// using Omini.Opme.Be.Domain.Transactions;
-// using Omini.Opme.Be.Shared.Entities;
+using FluentValidation.Results;
+using Omini.Opme.Domain.Common;
+using Omini.Opme.Domain.Sales;
+using Omini.Opme.Shared.Entities;
+using Omini.Opme.Domain.Repositories;
+using Omini.Opme.Domain.Transactions;
+using Omini.Opme.Domain.ValueObjects;
+using Omini.Opme.Business.Abstractions.Messaging;
 
-// namespace Omini.Opme.Be.Application.Commands;
+namespace Omini.Opme.Business.Commands;
 
-// public record UpdateQuotationCommand : ICommand<Quotation>
-// {
-//     public Guid Id { get; set; }
-//     public string Number { get; set; }
-//     public Guid PatientId { get; set; }
-//     public Guid PhysicianId { get; set; }
-//     public PayingSourceType PayingSourceType { get; set; }
-//     public Guid PayingSourceId { get; set; }
-//     public Guid HospitalId { get; set; }
-//     public Guid InsuranceCompanyId { get; set; }
-//     public Guid InternalSpecialistId { get; set; }
-//     public DateTime DueDate { get; set; }
-//     public IEnumerable<UpdateQuotationItemCommand> Items { get; set; }
+public record UpdateQuotationCommand : ICommand<Quotation>
+{
+    public Guid Id { get; init; }
+    public string PatientCode { get; set; }
+    public string PatientFirstName { get; set; }
+    public string PatientMiddleName { get; set; }
+    public string PatientLastName { get; set; }
+    public string PhysicianCode { get; set; }
+    public string PhysicianFirstName { get; set; }
+    public string PhysicianMiddleName { get; set; }
+    public string PhysicianLastName { get; set; }
+    public string HospitalCode { get; set; }
+    public string HospitalName { get; set; }
+    public string InsuranceCompanyCode { get; set; }
+    public string InsuranceCompanyName { get; set; }
+    public PayingSourceType PayingSourceType { get; set; }
+    public DateTime DueDate { get; set; }
+    public string Comments { get; set; }
 
-//     public class UpdateQuotationItemCommand
-//     {
-//         public int LineId { get; set; }
-//         public int? LineOrder { get; set; }
-//         public string ItemCode { get; set; }
-//         public double UnitPrice { get; set; }
-//         public double Quantity { get; set; }
-//     }
+    public class UpdateQuotationCommandHandler : ICommandHandler<UpdateQuotationCommand, Quotation>
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IHospitalRepository _hospitalRepository;
+        private readonly IPatientRepository _patientRepository;
+        private readonly IInsuranceCompanyRepository _insuranceCompanyRepository;
+        private readonly IPhysicianRepository _physicianRepository;
+        private readonly IItemRepository _itemRepository;
+        private readonly IQuotationRepository _quotationRepository;
 
+        public UpdateQuotationCommandHandler(IUnitOfWork unitOfWork,
+                                             IHospitalRepository hospitalRepository,
+                                             IPatientRepository patientRepository,
+                                             IInsuranceCompanyRepository insuranceCompanyRepository,
+                                             IPhysicianRepository physicianRepository,
+                                             IItemRepository itemRepository,
+                                             IQuotationRepository quotationRepository)
+        {
+            _unitOfWork = unitOfWork;
+            _hospitalRepository = hospitalRepository;
+            _patientRepository = patientRepository;
+            _insuranceCompanyRepository = insuranceCompanyRepository;
+            _physicianRepository = physicianRepository;
+            _itemRepository = itemRepository;
+            _quotationRepository = quotationRepository;
+        }
 
-//     public class UpdateQuotationCommandHandler : ICommandHandler<UpdateQuotationCommand, Quotation>
-//     {
-//         private readonly IUnitOfWork _unitOfWork;
-//         private readonly IHospitalRepository _hospitalRepository;
-//         private readonly IPatientRepository _patientRepository;
-//         private readonly IInsuranceCompanyRepository _insuranceCompanyRepository;
-//         private readonly IPhysicianRepository _physicianRepository;
-//         private readonly IQuotationRepository _quotationRepository;
+        public async Task<Result<Quotation, ValidationResult>> Handle(UpdateQuotationCommand request, CancellationToken cancellationToken)
+        {
+            var quotation = await _quotationRepository.GetById(request.Id, cancellationToken);
+            if (quotation is null)
+            {
+                return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
+            }
 
-//         public UpdateQuotationCommandHandler(IUnitOfWork unitOfWork,
-//                                              IHospitalRepository hospitalRepository,
-//                                              IPatientRepository patientRepository,
-//                                              IInsuranceCompanyRepository insuranceCompanyRepository,
-//                                              IPhysicianRepository physicianRepository,
-//                                              IQuotationRepository quotationRepository)
-//         {
-//             _unitOfWork = unitOfWork;
-//             _hospitalRepository = hospitalRepository;
-//             _patientRepository = patientRepository;
-//             _insuranceCompanyRepository = insuranceCompanyRepository;
-//             _physicianRepository = physicianRepository;
-//             _quotationRepository = quotationRepository;
-//         }
+            var validationFailures = new List<ValidationFailure>();
+            var hospital = await _hospitalRepository.GetByCode(request.HospitalCode, cancellationToken);
+            if (hospital is null)
+            {
+                validationFailures.Add(new ValidationFailure("Hospital Code", "Invalid code"));
+            }
 
-//         public async Task<Result<Quotation, ValidationResult>> Handle(UpdateQuotationCommand request, CancellationToken cancellationToken)
-//         {
-//             var validationFailures = new List<ValidationFailure>();
-//             var hospital = await _hospitalRepository.GetById(request.HospitalId, cancellationToken);
-//             if (hospital is null)
-//             {
-//                 validationFailures.Add(new ValidationFailure("Hospital Id", "Invalid Id"));
-//             }
+            var patient = await _patientRepository.GetByCode(request.PatientCode, cancellationToken);
+            if (patient is null)
+            {
+                validationFailures.Add(new ValidationFailure("Patient Code", "Invalid code"));
+            }
 
-//             var patient = await _patientRepository.GetById(request.PatientId, cancellationToken);
-//             if (patient is null)
-//             {
-//                 validationFailures.Add(new ValidationFailure("Patient Id", "Invalid Id"));
-//             }
+            var insuranceCompany = await _insuranceCompanyRepository.GetByCode(request.InsuranceCompanyCode);
+            if (insuranceCompany is null)
+            {
+                validationFailures.Add(new ValidationFailure("InsuranceCompany Code", "Invalid code"));
+            }
 
-//             var insuranceCompany = await _insuranceCompanyRepository.GetById(request.InsuranceCompanyId, cancellationToken);
-//             if (insuranceCompany is null)
-//             {
-//                 validationFailures.Add(new ValidationFailure("InsuranceCompany Id", "Invalid Id"));
-//             }
+            var physician = await _physicianRepository.GetByCode(request.PhysicianCode);
+            if (physician is null)
+            {
+                validationFailures.Add(new ValidationFailure("Physician Code", "Invalid code"));
+            }
 
-//             var physician = await _physicianRepository.GetById(request.PhysicianId, cancellationToken);
-//             if (physician is null)
-//             {
-//                 validationFailures.Add(new ValidationFailure("Physician Id", "Invalid Id"));
-//             }
+            var patientName = new PersonName(firstName: request.PatientFirstName, lastName: request.PatientLastName, middleName: request.PatientMiddleName);
+            var physicianName = new PersonName(firstName: request.PhysicianFirstName, lastName: request.PhysicianLastName, middleName: request.PhysicianMiddleName);
 
-//             if (validationFailures.Any())
-//             {
-//                 return new ValidationResult(validationFailures);
-//             }
+            quotation.SetData(
+                patientCode: request.PatientCode, patientName: patientName, 
+                physicianCode: request.PhysicianCode, physicianName: physicianName, 
+                hospitalCode: hospital.Code, hospitalName: request.HospitalName,
+                insuranceCompanyCode: insuranceCompany.Code, insuranceCompanyName: request.InsuranceCompanyName,
+                internalSpecialistCode: "1",
+                payingSourceType: request.PayingSourceType,
+                dueDate: request.DueDate,
+                comments: request.Comments
+            );
 
-//             var quotation = await _quotationRepository.GetById(request.Id, cancellationToken);
-//             if (quotation is null)
-//             {
-//                 return new ValidationResult([new ValidationFailure(nameof(request.Id), "Invalid id")]);
-//             }
+            if (validationFailures.Any())
+            {
+                return new ValidationResult(validationFailures);
+            }
 
-//             quotation.Number = request.Number;
-//             quotation.PatientId = request.PatientId;
-//             quotation.PhysicianId = request.PhysicianId;
-//             quotation.PayingSourceType = request.PayingSourceType;
-//             quotation.PayingSourceId = request.PayingSourceId;
-//             quotation.HospitalId = request.HospitalId;
-//             quotation.InsuranceCompanyId = request.InsuranceCompanyId;
-//             quotation.InternalSpecialistId = request.InternalSpecialistId;
-//             quotation.DueDate = request.DueDate.ToUniversalTime();
-//             quotation.Items = request.Items.Select((item, index) => new QuotationItem
-//             {
-//                 QuotationId = quotation.Id,
-//                 LineId = item.LineId,
-//                 LineOrder = item.LineOrder ?? index,
-//                 ItemId = item.ItemId,
-//                 ItemCode = item.ItemCode,
-//                 AnvisaCode = item.AnvisaCode,
-//                 AnvisaDueDate = item.AnvisaDueDate.ToUniversalTime(),
-//                 UnitPrice = item.UnitPrice,
-//                 Quantity = item.Quantity,
-//                 ItemTotal = item.Quantity * item.UnitPrice,
-//             }).ToList();
+            _quotationRepository.Update(quotation, cancellationToken);
+            await _unitOfWork.Commit(cancellationToken);
 
-//             quotation.Total = quotation.Items.Sum(p => p.ItemTotal);
-
-//             await _unitOfWork.Commit(cancellationToken);
-
-//             return quotation;
-//         }
-//     }
-// }
+            return quotation;
+        }
+    }
+}

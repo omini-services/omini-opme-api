@@ -10,26 +10,17 @@ internal sealed class InsuranceCompanyRepository : RepositoryMasterEntity<Insura
     {
     }
 
-    public override IQueryable<InsuranceCompany> Filter(IQueryable<InsuranceCompany> query, string? queryField, string? queryValue)
+    public override IQueryable<InsuranceCompany> Filter(IQueryable<InsuranceCompany> query, string? queryValue = null)
     {
-        if (queryField is not null && queryValue is not null)
-        {
-            queryValue = queryValue.ToLower();
-            switch (queryField.ToLowerInvariant())
-            {
-                case var code when code == nameof(InsuranceCompany.Code).ToLower():
-                    query = query.Where(x => x.Code == queryValue);
-                    break;
+        if (query is null) throw new ArgumentNullException(nameof(query));
 
-                case var name when name == nameof(InsuranceCompany.Name.TradeName).ToLowerInvariant() || name == nameof(InsuranceCompany.Name.LegalName).ToLowerInvariant():
-                    query = query.Where(x => x.Name.LegalName.ToLower().Contains(queryValue)
-                                             || x.Name.TradeName.ToLower().Contains(queryValue));
-                    break;
+        if (queryValue is null) return query;
 
-                default:
-                    return query;
-            }
-        }
+        queryValue = queryValue.ToLower();
+
+        query = query.Where(x => x.Name.LegalName.ToLower().Contains(queryValue)
+                                 || x.Name.TradeName.ToLower().Contains(queryValue)
+                                 || x.Code.ToLower().Equals(queryValue));
 
         return query;
     }

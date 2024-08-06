@@ -9,15 +9,15 @@ public class GetAllQuotationsQuery : IQuery<Quotation>
 {
     public GetAllQuotationsQuery() { }
 
-    public GetAllQuotationsQuery(QueryFilter queryFilter, PaginationFilter paginationFilter)
+    public GetAllQuotationsQuery(string queryValue, PaginationFilter paginationFilter)
     {
-        QueryFilter = queryFilter;
+        QueryValue = queryValue;
         PaginationFilter = paginationFilter;
     }
 
+    public string QueryValue { get; set; }
     public PaginationFilter PaginationFilter { get; set; }
 
-    public QueryFilter QueryFilter { get; set; }
     public class GetAllQuotationsQueryHandler : IQueryHandler<GetAllQuotationsQuery, Quotation>
     {
         private readonly IQuotationRepository _quotationRepository;
@@ -33,8 +33,7 @@ public class GetAllQuotationsQuery : IQuery<Quotation>
                 pageSize: request.PaginationFilter.PageSize,
                 orderByField: request.PaginationFilter.OrderBy,
                 sortDirection: request.PaginationFilter.Direction,
-                queryField: request.QueryFilter.QueryField,
-                queryValue: request.QueryFilter.QueryValue,
+                queryValue: request.QueryValue,
                 cancellationToken);
 
             return quotations;
