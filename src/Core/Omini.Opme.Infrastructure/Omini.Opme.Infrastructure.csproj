@@ -30,4 +30,11 @@
     <ProjectReference Include="..\Omini.Opme.Domain\Omini.Opme.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Seeds/**/*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+
 </Project>

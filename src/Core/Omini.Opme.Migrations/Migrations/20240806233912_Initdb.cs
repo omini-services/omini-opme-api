@@ -281,13 +281,13 @@ namespace Omini.Opme.Migrations.Migrations
                         column: x => x.HospitalCode,
                         principalTable: "Hospitals",
                         principalColumn: "Code",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Quotations_InsuranceCompanies_InsuranceCompanyCode",
                         column: x => x.InsuranceCompanyCode,
                         principalTable: "InsuranceCompanies",
                         principalColumn: "Code",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Quotations_OpmeUsers_CreatedBy",
                         column: x => x.CreatedBy,
@@ -304,13 +304,13 @@ namespace Omini.Opme.Migrations.Migrations
                         column: x => x.PatientCode,
                         principalTable: "Patients",
                         principalColumn: "Code",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Quotations_Physicians_PhysicianCode",
                         column: x => x.PhysicianCode,
                         principalTable: "Physicians",
                         principalColumn: "Code",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -337,7 +337,7 @@ namespace Omini.Opme.Migrations.Migrations
                         column: x => x.ItemCode,
                         principalTable: "Items",
                         principalColumn: "Code",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_QuotationItems_Quotations_DocumentId",
                         column: x => x.DocumentId,
@@ -351,15 +351,15 @@ namespace Omini.Opme.Migrations.Migrations
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "DeletedBy", "DeletedOn", "Email", "IsDeleted", "UpdatedBy", "UpdatedOn" },
                 values: new object[,]
                 {
-                    { new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"), new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 6, 21, 56, 18, 585, DateTimeKind.Utc).AddTicks(2480), null, null, "guilherme_or@outlook.com", false, null, null },
-                    { new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 6, 21, 56, 18, 585, DateTimeKind.Utc).AddTicks(2470), null, null, "test@invalid.com", false, null, null },
-                    { new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"), new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 6, 21, 56, 18, 585, DateTimeKind.Utc).AddTicks(2480), null, null, "dacceto@gmail.com", false, null, null }
+                    { new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"), new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 6, 23, 39, 11, 881, DateTimeKind.Utc).AddTicks(2700), null, null, "guilherme_or@outlook.com", false, null, null },
+                    { new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 6, 23, 39, 11, 881, DateTimeKind.Utc).AddTicks(2700), null, null, "test@invalid.com", false, null, null },
+                    { new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"), new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 6, 23, 39, 11, 881, DateTimeKind.Utc).AddTicks(2700), null, null, "dacceto@gmail.com", false, null, null }
                 });
 
             migrationBuilder.InsertData(
                 table: "InternalSpecialists",
                 columns: new[] { "Code", "CreatedBy", "CreatedOn", "Email", "Telefone", "UpdatedBy", "UpdatedOn", "FirstName", "LastName", "MiddleName" },
-                values: new object[] { "1", new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 6, 21, 56, 18, 585, DateTimeKind.Utc).AddTicks(2560), "comercial@fratermedical.com.br", "(11) 3829-9400", null, null, "Nathália", "Camelo", null });
+                values: new object[] { "1", new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 6, 23, 39, 11, 881, DateTimeKind.Utc).AddTicks(2800), "comercial@fratermedical.com.br", "(11) 3829-9400", null, null, "Nathália", "Camelo", null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Hospitals_CreatedBy",

@@ -41,7 +41,8 @@ internal sealed class QuotationMapping : DocumentEntityMapping<Quotation>
         builder.HasOne<Patient>()
             .WithMany()
             .HasForeignKey(x => x.PatientCode)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.OwnsOne(x => x.PhysicianName)
             .Property(x => x.FirstName)
@@ -60,17 +61,20 @@ internal sealed class QuotationMapping : DocumentEntityMapping<Quotation>
         builder.HasOne<Physician>()
             .WithMany()
             .HasForeignKey(x => x.PhysicianCode)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne<Hospital>()
             .WithMany()
             .HasForeignKey(x => x.HospitalCode)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne<InsuranceCompany>()
             .WithMany()
             .HasForeignKey(x => x.InsuranceCompanyCode)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(x => x.Comments)
             .HasMaxLength(1000);
@@ -102,7 +106,8 @@ internal class QuotationItemMapping : IEntityTypeConfiguration<QuotationItem>
         builder.HasOne<Item>()
             .WithMany()
             .HasForeignKey(x => x.ItemCode)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.ToTable("QuotationItems");
     }

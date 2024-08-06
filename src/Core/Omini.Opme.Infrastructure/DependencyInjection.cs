@@ -38,6 +38,8 @@ public static class DependecyInjection
 
         services.AddScoped<IDateTimeService, DateTimeService>();
 
+        services.AddScoped<IDatabaseRepository, DatabaseRepository>();
+
         services.AddScoped<IOpmeUserRepository, OpmeUserRepository>();
 
         services.AddScoped<IHospitalRepository, HospitalRepository>();

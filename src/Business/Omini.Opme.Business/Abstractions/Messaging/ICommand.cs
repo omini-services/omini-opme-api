@@ -4,6 +4,11 @@ using Omini.Opme.Shared.Entities;
 
 namespace Omini.Opme.Business.Abstractions.Messaging;
 
-public interface ICommand<TResponse> : IRequest<Result<TResponse, ValidationResult>>{
+public interface ICommand<TResponse> : IRequest<Result<TResponse, ValidationResult>>
+{
 
+}
+
+public interface ICommand : IRequest
+{
 }

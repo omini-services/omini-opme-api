@@ -77,7 +77,7 @@ namespace Omini.Opme.Migrations.Migrations
                         {
                             Code = "1",
                             CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
-                            CreatedOn = new DateTime(2024, 8, 6, 21, 56, 18, 585, DateTimeKind.Utc).AddTicks(2560),
+                            CreatedOn = new DateTime(2024, 8, 6, 23, 39, 11, 881, DateTimeKind.Utc).AddTicks(2800),
                             Email = "comercial@fratermedical.com.br",
                             Telefone = "(11) 3829-9400"
                         });
@@ -124,7 +124,7 @@ namespace Omini.Opme.Migrations.Migrations
                         {
                             Id = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
                             CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
-                            CreatedOn = new DateTime(2024, 8, 6, 21, 56, 18, 585, DateTimeKind.Utc).AddTicks(2470),
+                            CreatedOn = new DateTime(2024, 8, 6, 23, 39, 11, 881, DateTimeKind.Utc).AddTicks(2700),
                             Email = "test@invalid.com",
                             IsDeleted = false
                         },
@@ -132,7 +132,7 @@ namespace Omini.Opme.Migrations.Migrations
                         {
                             Id = new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"),
                             CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
-                            CreatedOn = new DateTime(2024, 8, 6, 21, 56, 18, 585, DateTimeKind.Utc).AddTicks(2480),
+                            CreatedOn = new DateTime(2024, 8, 6, 23, 39, 11, 881, DateTimeKind.Utc).AddTicks(2700),
                             Email = "dacceto@gmail.com",
                             IsDeleted = false
                         },
@@ -140,7 +140,7 @@ namespace Omini.Opme.Migrations.Migrations
                         {
                             Id = new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"),
                             CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
-                            CreatedOn = new DateTime(2024, 8, 6, 21, 56, 18, 585, DateTimeKind.Utc).AddTicks(2480),
+                            CreatedOn = new DateTime(2024, 8, 6, 23, 39, 11, 881, DateTimeKind.Utc).AddTicks(2700),
                             Email = "guilherme_or@outlook.com",
                             IsDeleted = false
                         });
@@ -758,25 +758,25 @@ namespace Omini.Opme.Migrations.Migrations
                     b.HasOne("Omini.Opme.Domain.BusinessPartners.Hospital", null)
                         .WithMany()
                         .HasForeignKey("HospitalCode")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Omini.Opme.Domain.BusinessPartners.InsuranceCompany", null)
                         .WithMany()
                         .HasForeignKey("InsuranceCompanyCode")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Omini.Opme.Domain.BusinessPartners.Patient", null)
                         .WithMany()
                         .HasForeignKey("PatientCode")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Omini.Opme.Domain.BusinessPartners.Physician", null)
                         .WithMany()
                         .HasForeignKey("PhysicianCode")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Omini.Opme.Domain.Authentication.OpmeUser", null)
@@ -861,7 +861,7 @@ namespace Omini.Opme.Migrations.Migrations
                     b.HasOne("Omini.Opme.Domain.Warehouse.Item", null)
                         .WithMany()
                         .HasForeignKey("ItemCode")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 

@@ -16,6 +16,7 @@ public sealed class OpmeContext : DbContext
     {
         ChangeTracker.CascadeDeleteTiming = CascadeTiming.OnSaveChanges;
         ChangeTracker.DeleteOrphansTiming = CascadeTiming.OnSaveChanges;
+        
     }
     
     public DbSet<OpmeUser> OpmeUsers { get; set; }
