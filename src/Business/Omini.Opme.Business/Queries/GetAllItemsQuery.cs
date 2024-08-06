@@ -21,7 +21,7 @@ public class GetAllItemsQuery : IQuery<Item>
     public class GetAllItemsQueryHandler : IQueryHandler<GetAllItemsQuery, Item>
     {
         private readonly IItemRepository _itemRepository;
-        public GetAllItemsQueryHandler(string queryValue, IItemRepository itemRepositoryy)
+        public GetAllItemsQueryHandler(IItemRepository itemRepositoryy)
         {
             _itemRepository = itemRepositoryy;
         }

@@ -1,9 +1,11 @@
 .DEFAULT_GOAL := help
 
 createmigration:
+	dotnet build ./src/Core/Omini.Opme.Migrations/Omini.Opme.Migrations.csproj
 	dotnet ef migrations add $(name) --project ./src/Core/Omini.Opme.Migrations/Omini.Opme.Migrations.csproj --startup-project ./src/Api/Omini.Opme.Api
 	
 migrate:
+	dotnet build ./src/Core/Omini.Opme.Migrations/Omini.Opme.Migrations.csproj
 	dotnet ef database update $(name) --project ./src/Core/Omini.Opme.Migrations/Omini.Opme.Migrations.csproj --startup-project ./src/Api/Omini.Opme.Api
 
 build:

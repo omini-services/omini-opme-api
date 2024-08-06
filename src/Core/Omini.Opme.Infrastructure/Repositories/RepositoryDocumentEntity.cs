@@ -62,7 +62,7 @@ internal abstract class RepositoryDocumentEntity<TEntity> : IRespositoryDocument
     {
         var query = DbSet.AsNoTracking();
 
-        Filter(query, queryValue);
+        query = Filter(query, queryValue);
 
         query = OrderBy(query, orderByField, sortDirection, cancellationToken);
 

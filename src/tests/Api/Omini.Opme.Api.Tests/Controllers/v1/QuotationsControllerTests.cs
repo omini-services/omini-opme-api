@@ -129,7 +129,7 @@ public class QuotationsV1ControllerTests : IntegrationTest
         quotationCreateCommand.PatientCode = patientOutputDto.Data.Code;
         quotationCreateCommand.PatientFirstName = patientOutputDto.Data.FirstName;
         quotationCreateCommand.PatientLastName = patientOutputDto.Data.LastName;
-        
+
         quotationCreateCommand.PayingSourceType = PayingSourceType.Insurance;
 
         var quotation = (await TestClient.Request("/api/v1/quotations").AsAuthenticated().PostJsonAsync(quotationCreateCommand).ReceiveJson<ResponseDto<QuotationOutputDto>>()).Data;
@@ -177,10 +177,10 @@ public class QuotationsV1ControllerTests : IntegrationTest
         var quotationCreateCommand = QuotationFaker.GetFakeQuotationCreateCommand(itemOutputDtos);
         quotationCreateCommand.HospitalCode = hospitalOutputDto.Data.Code;
         quotationCreateCommand.HospitalName = hospitalOutputDto.Data.TradeName;
-        
+
         quotationCreateCommand.InsuranceCompanyCode = insuranceCompanyOutputDto.Data.Code;
         quotationCreateCommand.InsuranceCompanyName = insuranceCompanyOutputDto.Data.TradeName;
-        
+
         quotationCreateCommand.PhysicianCode = physicianOutputDto.Data.Code;
         quotationCreateCommand.PhysicianFirstName = physicianOutputDto.Data.FirstName;
         quotationCreateCommand.PhysicianLastName = physicianOutputDto.Data.LastName;
@@ -221,7 +221,7 @@ public class QuotationsV1ControllerTests : IntegrationTest
                                      .AllSatisfy(p => p.LineTotal.Should().BeGreaterThanOrEqualTo(0));
 
         var total = totalCreate - (quotation.Items[0].Quantity * quotation.Items[0].UnitPrice) + (quotation.Items[1].Quantity * quotation.Items[1].UnitPrice);
-        quotationAfterUpdate.Total.Should().Be(total);
+        Math.Round(quotationAfterUpdate.Total, 2).Should().Be(Math.Round(total, 2));
         updatedItem.ItemName.Should().Be(itemOutputDtos[1].Data.Name);
     }
 

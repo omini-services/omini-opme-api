@@ -33,7 +33,7 @@ public static class DependecyInjection
                 sp.GetRequiredService<AuditableInterceptor>(),
                 sp.GetRequiredService<SoftDeletableInterceptor>()
             );
-            opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+            opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("Omini.Opme.Migrations"));
         });
 
         services.AddScoped<IDateTimeService, DateTimeService>();

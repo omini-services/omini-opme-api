@@ -21,7 +21,7 @@ public class GetAllPhysiciansQuery : IQuery<Physician>
     public class GetAllPhysiciansQueryHandler : IQueryHandler<GetAllPhysiciansQuery, Physician>
     {
         private readonly IPhysicianRepository _physicianRepository;
-        public GetAllPhysiciansQueryHandler(string queryValue, IPhysicianRepository physicianRepository)
+        public GetAllPhysiciansQueryHandler(IPhysicianRepository physicianRepository)
         {
             _physicianRepository = physicianRepository;
         }

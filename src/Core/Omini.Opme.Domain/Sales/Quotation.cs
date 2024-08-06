@@ -21,7 +21,7 @@ public sealed class Quotation : DocumentEntity
     private List<QuotationItem> _items = [];
     public IReadOnlyCollection<QuotationItem> Items => _items;
     public double Total { get; private set; }
-    public string Comments { get; set; }
+    public string? Comments { get; set; }
 
     private Quotation() { }
 
@@ -32,7 +32,7 @@ public sealed class Quotation : DocumentEntity
                      string internalSpecialistCode,
                      PayingSourceType payingSourceType,
                      DateTime dueDate,
-                     string comments)
+                     string? comments)
     {
         SetData(
             patientCode, patientName,
@@ -63,7 +63,7 @@ public sealed class Quotation : DocumentEntity
                         string internalSpecialistCode,
                         PayingSourceType payingSourceType,
                         DateTime dueDate,
-                        string comments)
+                        string? comments)
     {
         PatientCode = patientCode;
         PatientName = patientName;

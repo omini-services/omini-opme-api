@@ -36,8 +36,10 @@ internal sealed class QuotationRepository : RepositoryDocumentEntity<Quotation>,
 
         if (queryValue is null) return query;
 
-        query = query.Where(x => x.PatientName.FullName.ToLower().Contains(queryValue)
-                                || x.PhysicianName.FullName.ToLower().Contains(queryValue)
+        queryValue = queryValue.ToLower();
+
+        query = query.Where(x => x.PatientName.FirstName.ToLower().Contains(queryValue) || x.PatientName.MiddleName.ToLower().Contains(queryValue) || x.PatientName.LastName.ToLower().Contains(queryValue)
+                                || x.PhysicianName.FirstName.ToLower().Contains(queryValue) || x.PhysicianName.MiddleName.ToLower().Contains(queryValue) || x.PhysicianName.LastName.ToLower().Contains(queryValue)
                                 || x.HospitalName.ToLower().Contains(queryValue)
                                 || x.InsuranceCompanyName.ToLower().Contains(queryValue));
 

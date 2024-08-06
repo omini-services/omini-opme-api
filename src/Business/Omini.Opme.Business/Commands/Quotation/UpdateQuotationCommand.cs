@@ -107,7 +107,7 @@ public record UpdateQuotationCommand : ICommand<Quotation>
                 return new ValidationResult(validationFailures);
             }
 
-            await _quotationRepository.Create(quotation, cancellationToken);
+            _quotationRepository.Update(quotation, cancellationToken);
             await _unitOfWork.Commit(cancellationToken);
 
             return quotation;

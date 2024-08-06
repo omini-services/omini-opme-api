@@ -21,7 +21,7 @@ public class GetAllQuotationsQuery : IQuery<Quotation>
     public class GetAllQuotationsQueryHandler : IQueryHandler<GetAllQuotationsQuery, Quotation>
     {
         private readonly IQuotationRepository _quotationRepository;
-        public GetAllQuotationsQueryHandler(string queryValue, IQuotationRepository quotationRepository)
+        public GetAllQuotationsQueryHandler(IQuotationRepository quotationRepository)
         {
             _quotationRepository = quotationRepository;
         }
