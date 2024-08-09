@@ -77,13 +77,13 @@ namespace Omini.Opme.Migrations.Migrations
                         {
                             Code = "1",
                             CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
-                            CreatedOn = new DateTime(2024, 8, 9, 21, 19, 35, 949, DateTimeKind.Utc).AddTicks(4060),
+                            CreatedOn = new DateTime(2024, 8, 9, 22, 3, 54, 838, DateTimeKind.Utc).AddTicks(270),
                             Email = "comercial@fratermedical.com.br",
                             Telefone = "(11) 3829-9400"
                         });
                 });
 
-            modelBuilder.Entity("Omini.Opme.Domain.Authentication.OpmeUser", b =>
+            modelBuilder.Entity("Omini.Opme.Domain.Authentication.Company", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -117,6 +117,48 @@ namespace Omini.Opme.Migrations.Migrations
 
                     b.HasKey("Id");
 
+                    b.ToTable("Companies", (string)null);
+                });
+
+            modelBuilder.Entity("Omini.Opme.Domain.Authentication.OpmeUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
                     b.ToTable("OpmeUsers", (string)null);
 
                     b.HasData(
@@ -124,7 +166,7 @@ namespace Omini.Opme.Migrations.Migrations
                         {
                             Id = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
                             CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
-                            CreatedOn = new DateTime(2024, 8, 9, 21, 19, 35, 949, DateTimeKind.Utc).AddTicks(3960),
+                            CreatedOn = new DateTime(2024, 8, 9, 22, 3, 54, 838, DateTimeKind.Utc).AddTicks(190),
                             Email = "test@invalid.com",
                             IsDeleted = false
                         },
@@ -132,7 +174,7 @@ namespace Omini.Opme.Migrations.Migrations
                         {
                             Id = new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"),
                             CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
-                            CreatedOn = new DateTime(2024, 8, 9, 21, 19, 35, 949, DateTimeKind.Utc).AddTicks(3960),
+                            CreatedOn = new DateTime(2024, 8, 9, 22, 3, 54, 838, DateTimeKind.Utc).AddTicks(190),
                             Email = "dacceto@gmail.com",
                             IsDeleted = false
                         },
@@ -140,7 +182,7 @@ namespace Omini.Opme.Migrations.Migrations
                         {
                             Id = new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"),
                             CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
-                            CreatedOn = new DateTime(2024, 8, 9, 21, 19, 35, 949, DateTimeKind.Utc).AddTicks(3960),
+                            CreatedOn = new DateTime(2024, 8, 9, 22, 3, 54, 838, DateTimeKind.Utc).AddTicks(190),
                             Email = "guilherme_or@outlook.com",
                             IsDeleted = false
                         });
@@ -565,6 +607,44 @@ namespace Omini.Opme.Migrations.Migrations
 
                     b.Navigation("Name")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Omini.Opme.Domain.Authentication.Company", b =>
+                {
+                    b.OwnsOne("Omini.Opme.Domain.ValueObjects.CompanyName", "Name", b1 =>
+                        {
+                            b1.Property<Guid>("CompanyId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("LegalName")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("LegalName");
+
+                            b1.Property<string>("TradeName")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("TradeName");
+
+                            b1.HasKey("CompanyId");
+
+                            b1.ToTable("Companies");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CompanyId");
+                        });
+
+                    b.Navigation("Name")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Omini.Opme.Domain.Authentication.OpmeUser", b =>
+                {
+                    b.HasOne("Omini.Opme.Domain.Authentication.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
                 });
 
             modelBuilder.Entity("Omini.Opme.Domain.BusinessPartners.Hospital", b =>

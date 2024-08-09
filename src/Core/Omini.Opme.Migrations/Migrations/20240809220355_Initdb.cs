@@ -33,10 +33,12 @@ namespace Omini.Opme.Migrations.Migrations
                 name: "physiciancode_sequence");
 
             migrationBuilder.CreateTable(
-                name: "OpmeUsers",
+                name: "Companies",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    LegalName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    TradeName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     DeletedBy = table.Column<Guid>(type: "uuid", nullable: true),
                     DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -48,7 +50,32 @@ namespace Omini.Opme.Migrations.Migrations
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_Companies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OpmeUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    DeletedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
                     table.PrimaryKey("PK_OpmeUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OpmeUsers_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -348,18 +375,18 @@ namespace Omini.Opme.Migrations.Migrations
 
             migrationBuilder.InsertData(
                 table: "OpmeUsers",
-                columns: new[] { "Id", "CreatedBy", "CreatedOn", "DeletedBy", "DeletedOn", "Email", "IsDeleted", "UpdatedBy", "UpdatedOn" },
+                columns: new[] { "Id", "CompanyId", "CreatedBy", "CreatedOn", "DeletedBy", "DeletedOn", "Email", "IsDeleted", "UpdatedBy", "UpdatedOn" },
                 values: new object[,]
                 {
-                    { new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"), new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 9, 21, 19, 35, 949, DateTimeKind.Utc).AddTicks(3960), null, null, "guilherme_or@outlook.com", false, null, null },
-                    { new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 9, 21, 19, 35, 949, DateTimeKind.Utc).AddTicks(3960), null, null, "test@invalid.com", false, null, null },
-                    { new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"), new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 9, 21, 19, 35, 949, DateTimeKind.Utc).AddTicks(3960), null, null, "dacceto@gmail.com", false, null, null }
+                    { new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"), null, new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 9, 22, 3, 54, 838, DateTimeKind.Utc).AddTicks(190), null, null, "guilherme_or@outlook.com", false, null, null },
+                    { new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), null, new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 9, 22, 3, 54, 838, DateTimeKind.Utc).AddTicks(190), null, null, "test@invalid.com", false, null, null },
+                    { new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"), null, new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 9, 22, 3, 54, 838, DateTimeKind.Utc).AddTicks(190), null, null, "dacceto@gmail.com", false, null, null }
                 });
 
             migrationBuilder.InsertData(
                 table: "InternalSpecialists",
                 columns: new[] { "Code", "CreatedBy", "CreatedOn", "Email", "Telefone", "UpdatedBy", "UpdatedOn", "FirstName", "LastName", "MiddleName" },
-                values: new object[] { "1", new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 9, 21, 19, 35, 949, DateTimeKind.Utc).AddTicks(4060), "comercial@fratermedical.com.br", "(11) 3829-9400", null, null, "Nathália", "Camelo", null });
+                values: new object[] { "1", new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"), new DateTime(2024, 8, 9, 22, 3, 54, 838, DateTimeKind.Utc).AddTicks(270), "comercial@fratermedical.com.br", "(11) 3829-9400", null, null, "Nathália", "Camelo", null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Hospitals_CreatedBy",
@@ -400,6 +427,11 @@ namespace Omini.Opme.Migrations.Migrations
                 name: "IX_Items_UpdatedBy",
                 table: "Items",
                 column: "UpdatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OpmeUsers_CompanyId",
+                table: "OpmeUsers",
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Patients_CreatedBy",
@@ -486,6 +518,9 @@ namespace Omini.Opme.Migrations.Migrations
 
             migrationBuilder.DropTable(
                 name: "OpmeUsers");
+
+            migrationBuilder.DropTable(
+                name: "Companies");
 
             migrationBuilder.DropSequence(
                 name: "hospitalcode_sequence");

@@ -20,6 +20,7 @@ public sealed class OpmeContext : DbContext
     }
     
     public DbSet<OpmeUser> OpmeUsers { get; set; }
+    public DbSet<Company> Companies { get; set; }
     public DbSet<Item> Items { get; set; }
     public DbSet<Hospital> Hospitals { get; set; }
     public DbSet<InsuranceCompany> InsuranceCompanies { get; set; }

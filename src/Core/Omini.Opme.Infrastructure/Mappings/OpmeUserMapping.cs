@@ -14,6 +14,10 @@ internal sealed class IdentityOpmeUserMapping : IEntityTypeConfiguration<OpmeUse
             .IsRequired()
             .HasMaxLength(100);
 
+        builder.HasOne<Company>()
+            .WithMany()
+            .HasForeignKey(x=>x.CompanyId);
+
         builder.ToTable("OpmeUsers");
     }
 }
