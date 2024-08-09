@@ -140,10 +140,10 @@ internal sealed class QuotationPdfGenerator : IQuotationPdfGenerator
                 AddLabelAndContent(col, "Hospital:", quotation.HospitalName);
                 AddHorizontalLine(col);
 
-                AddLabelAndContent(col, "Convênio:", quotation.InsuranceCompanyName);
+                AddLabelAndContent(col, "Convênio:", quotation.InsuranceCompanyName!);
                 AddHorizontalLine(col);
 
-                AddLabelAndContent(col, "Fonte Pagadora:", quotation.PayingSourceType == PayingSourceType.Insurance ? quotation.InsuranceCompanyName : quotation.PatientName.FullName);
+                AddLabelAndContent(col, "Fonte Pagadora:", quotation.PayingSourceType == PayingSourceType.Insurance ? quotation.InsuranceCompanyName! : quotation.PatientName.FullName);
                 AddHorizontalLine(col);
 
                 col.Item().PaddingTop(20).Row(row =>

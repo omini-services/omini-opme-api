@@ -12,8 +12,8 @@ public sealed class Quotation : DocumentEntity
     public PersonName PhysicianName { get; private set; }
     public string HospitalCode { get; private set; }
     public string HospitalName { get; private set; }
-    public string InsuranceCompanyCode { get; private set; }
-    public string InsuranceCompanyName { get; private set; }
+    public string? InsuranceCompanyCode { get; private set; }
+    public string? InsuranceCompanyName { get; private set; }
     public string InternalSpecialistCode { get; private set; }
     public PayingSourceType PayingSourceType { get; private set; }
     private DateTime _dueDate;

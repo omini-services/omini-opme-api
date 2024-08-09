@@ -12,7 +12,7 @@ using Omini.Opme.Infrastructure.Contexts;
 namespace Omini.Opme.Migrations.Migrations
 {
     [DbContext(typeof(OpmeContext))]
-    [Migration("20240806233912_Initdb")]
+    [Migration("20240809211936_Initdb")]
     partial class Initdb
     {
         /// <inheritdoc />
@@ -80,7 +80,7 @@ namespace Omini.Opme.Migrations.Migrations
                         {
                             Code = "1",
                             CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
-                            CreatedOn = new DateTime(2024, 8, 6, 23, 39, 11, 881, DateTimeKind.Utc).AddTicks(2800),
+                            CreatedOn = new DateTime(2024, 8, 9, 21, 19, 35, 949, DateTimeKind.Utc).AddTicks(4060),
                             Email = "comercial@fratermedical.com.br",
                             Telefone = "(11) 3829-9400"
                         });
@@ -127,7 +127,7 @@ namespace Omini.Opme.Migrations.Migrations
                         {
                             Id = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
                             CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
-                            CreatedOn = new DateTime(2024, 8, 6, 23, 39, 11, 881, DateTimeKind.Utc).AddTicks(2700),
+                            CreatedOn = new DateTime(2024, 8, 9, 21, 19, 35, 949, DateTimeKind.Utc).AddTicks(3960),
                             Email = "test@invalid.com",
                             IsDeleted = false
                         },
@@ -135,7 +135,7 @@ namespace Omini.Opme.Migrations.Migrations
                         {
                             Id = new Guid("e6211f68-cfcd-40e9-a31a-bd0dcf4b4052"),
                             CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
-                            CreatedOn = new DateTime(2024, 8, 6, 23, 39, 11, 881, DateTimeKind.Utc).AddTicks(2700),
+                            CreatedOn = new DateTime(2024, 8, 9, 21, 19, 35, 949, DateTimeKind.Utc).AddTicks(3960),
                             Email = "dacceto@gmail.com",
                             IsDeleted = false
                         },
@@ -143,7 +143,7 @@ namespace Omini.Opme.Migrations.Migrations
                         {
                             Id = new Guid("77e48701-6371-4e3e-8d92-9db4a2bc1e5f"),
                             CreatedBy = new Guid("c8c5ce24-820f-41ba-8560-d7a282d80d29"),
-                            CreatedOn = new DateTime(2024, 8, 6, 23, 39, 11, 881, DateTimeKind.Utc).AddTicks(2700),
+                            CreatedOn = new DateTime(2024, 8, 9, 21, 19, 35, 949, DateTimeKind.Utc).AddTicks(3960),
                             Email = "guilherme_or@outlook.com",
                             IsDeleted = false
                         });
@@ -341,11 +341,9 @@ namespace Omini.Opme.Migrations.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("InsuranceCompanyCode")
-                        .IsRequired()
                         .HasColumnType("character varying(50)");
 
                     b.Property<string>("InsuranceCompanyName")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
@@ -767,8 +765,7 @@ namespace Omini.Opme.Migrations.Migrations
                     b.HasOne("Omini.Opme.Domain.BusinessPartners.InsuranceCompany", null)
                         .WithMany()
                         .HasForeignKey("InsuranceCompanyCode")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Omini.Opme.Domain.BusinessPartners.Patient", null)
                         .WithMany()

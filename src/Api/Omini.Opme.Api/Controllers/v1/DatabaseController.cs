@@ -12,7 +12,8 @@ public class DatabaseController : MainController
         _logger = logger;
     }
 
-    [HttpGet("Prepare")]
+    [HttpPut("Prepare")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> Prepare()
     {
         await Mediator.Send(new PrepareDatabaseCommand());

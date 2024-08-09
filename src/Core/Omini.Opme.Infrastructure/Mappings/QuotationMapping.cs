@@ -73,7 +73,6 @@ internal sealed class QuotationMapping : DocumentEntityMapping<Quotation>
         builder.HasOne<InsuranceCompany>()
             .WithMany()
             .HasForeignKey(x => x.InsuranceCompanyCode)
-            .IsRequired()
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(x => x.Comments)

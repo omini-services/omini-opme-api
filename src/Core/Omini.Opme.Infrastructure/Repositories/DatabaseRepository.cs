@@ -17,7 +17,7 @@ internal sealed class DatabaseRepository : IDatabaseRepository
 
     public async Task PrepareDatabase()
     {
-        await PrepareTable("items.sql", "hospitals.sql");
+        await PrepareTable("reset.sql", "items.sql", "hospitals.sql", "patients.sql", "physicians.sql", "insuranceCompanies.sql", "quotations.sql", "quotationItems.sql");
     }
 
     private async Task PrepareTable(params string[] sqlFiles)

@@ -1,4 +1,4 @@
-delete from "QuotationsItems";
+delete from "QuotationItems";
 delete from "Quotations";
 delete from "Items";
 delete from "Physicians";
