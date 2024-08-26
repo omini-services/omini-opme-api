@@ -79,7 +79,7 @@ public record CreateQuotationCommand : ICommand<Quotation>
             }
 
             var insuranceCompany = await _insuranceCompanyRepository.GetByCode(request.InsuranceCompanyCode);
-            if (insuranceCompany is null)
+            if (insuranceCompany is null && request.PayingSourceType == PayingSourceType.Insurance)
             {
                 validationFailures.Add(new ValidationFailure("InsuranceCompany Code", "Invalid code"));
             }

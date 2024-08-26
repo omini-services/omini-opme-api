@@ -104,7 +104,7 @@ public class QuotationsController : MainController
 
         var result = await Mediator.Send(updateQuotationCommand);
 
-        return ToNoContent(result);
+        return ToOk(result, Mapper.Map<QuotationOutputDto>);
     }
 
     [HttpPut("{quotationId:guid}/items/{lineId:int}")]

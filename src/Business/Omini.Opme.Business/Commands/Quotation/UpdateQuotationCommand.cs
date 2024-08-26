@@ -77,7 +77,7 @@ public record UpdateQuotationCommand : ICommand<Quotation>
             }
 
             var insuranceCompany = await _insuranceCompanyRepository.GetByCode(request.InsuranceCompanyCode);
-            if (insuranceCompany is null)
+            if (insuranceCompany is null && request.PayingSourceType == PayingSourceType.Insurance)
             {
                 validationFailures.Add(new ValidationFailure("InsuranceCompany Code", "Invalid code"));
             }
@@ -92,10 +92,10 @@ public record UpdateQuotationCommand : ICommand<Quotation>
             var physicianName = new PersonName(firstName: request.PhysicianFirstName, lastName: request.PhysicianLastName, middleName: request.PhysicianMiddleName);
 
             quotation.SetData(
-                patientCode: request.PatientCode, patientName: patientName, 
-                physicianCode: request.PhysicianCode, physicianName: physicianName, 
+                patientCode: request.PatientCode, patientName: patientName,
+                physicianCode: request.PhysicianCode, physicianName: physicianName,
                 hospitalCode: hospital.Code, hospitalName: request.HospitalName,
-                insuranceCompanyCode: insuranceCompany.Code, insuranceCompanyName: request.InsuranceCompanyName,
+                insuranceCompanyCode: insuranceCompany?.Code!, insuranceCompanyName: request.InsuranceCompanyName,
                 internalSpecialistCode: "1",
                 payingSourceType: request.PayingSourceType,
                 dueDate: request.DueDate,

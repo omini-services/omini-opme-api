@@ -71,14 +71,17 @@ public sealed class Quotation : DocumentEntity
         PhysicianName = physicianName;
         HospitalCode = hospitalCode;
         HospitalName = hospitalName;
+
         InsuranceCompanyCode = insuranceCompanyCode;
         InsuranceCompanyName = insuranceCompanyName;
+
         InternalSpecialistCode = internalSpecialistCode;
         PayingSourceType = payingSourceType;
         DueDate = dueDate;
         Comments = comments;
 
         SetTotal();
+        CheckPayingSourceType();
     }
 
     public void AddItem(string itemCode, string itemName, string referenceCode, string anvisaCode, DateTime anvisaDueDate, double unitPrice, double quantity, int? lineOrder = null)
@@ -120,6 +123,19 @@ public sealed class Quotation : DocumentEntity
     {
         _items.Remove(item);
         SetTotal();
+    }
+
+    private void CheckPayingSourceType()
+    {
+        if (PayingSourceType == PayingSourceType.Insurance && (string.IsNullOrWhiteSpace(InsuranceCompanyCode) || string.IsNullOrWhiteSpace(InsuranceCompanyName)))
+        {
+            throw new InvalidPayingSourceException("Missing insurance details");
+        }
+
+        if (PayingSourceType == PayingSourceType.Private && !(string.IsNullOrWhiteSpace(InsuranceCompanyCode) || string.IsNullOrWhiteSpace(InsuranceCompanyName)))
+        {
+            throw new InvalidPayingSourceException("Insurance must not be informed if paying source type is private");
+        }
     }
 }
 
