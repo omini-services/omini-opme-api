@@ -43,7 +43,7 @@ internal abstract class RepositoryMasterEntity<TEntity> : IRespositoryMasterEnti
         }
         else
         {
-            query = query.OrderBy(p => p.CreatedOn);
+            query = query.OrderBy(p => p.Code);
         }
 
         return await GetPagedResult(query, currentPage, pageSize, cancellationToken);

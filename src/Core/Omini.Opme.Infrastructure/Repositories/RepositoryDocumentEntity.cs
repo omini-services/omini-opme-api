@@ -98,7 +98,7 @@ internal abstract class RepositoryDocumentEntity<TEntity> : IRespositoryDocument
         }
         else
         {
-            query = query.OrderBy(p => p.CreatedOn);
+            query = query.OrderBy(p => p.Number);
         }
 
         return query;
