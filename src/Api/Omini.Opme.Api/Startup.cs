@@ -39,7 +39,7 @@ internal class Startup
             options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
-        
+
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IClaimsService, ClaimsService>();
 
@@ -57,6 +57,14 @@ internal class Startup
 
         services.AddAutoMapper(typeof(Startup));
         services.AddVersionConfiguration();
+
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+            });
+        });
     }
     public void Configure(WebApplication app, IWebHostEnvironment env)
     {
@@ -89,7 +97,7 @@ internal class Startup
         });
 
         app.UseExceptionMiddleware();
-        app.UseLoggingMiddleware();        
+        app.UseLoggingMiddleware();
 
         app.UseQuestPdf((options) =>
         {
@@ -97,10 +105,12 @@ internal class Startup
         });
 
         app.UseAuthentication();
+        app.UseCors();
         app.UseAuthorization();
 
         app.UseSerilogRequestLogging();
         app.UseRequestContextMiddleware();
+
 
         app.MapControllers();
     }
